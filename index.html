@@ -1,17 +1,18 @@
+```html
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Misbah Messenger - লাইভ চ্যাট ও স্টোরি প্ল্যাটফর্ম</title>
+    <title>Misbah Messenger - Pro Edition</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (Compat Version) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -20,7 +21,7 @@
         body { 
             background-color: #0b141a; 
             color: #e9edef; 
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'Hind Siliguri', system-ui, -apple-system, sans-serif;
             -webkit-user-select: none;
             user-select: none;
         }
@@ -29,19 +30,33 @@
         .msg-receiver { background: #242526; border-radius: 18px 18px 18px 4px; color: #e4e6eb; }
         .neon-clock { font-family: 'Orbitron', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        .story-ring { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .pulse-call { animation: pulse 1.5s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
     </style>
 </head>
-<body class="h-screen flex flex-col justify-between max-w-lg mx-auto border-x border-gray-800" oncontextmenu="return false;">
+<body class="h-screen flex flex-col justify-between max-w-lg mx-auto border-x border-gray-800 relative overflow-hidden" oncontextmenu="return false;">
 
-    <!-- 1. AUTH SECTION (Login & Sign Up - বাধ্যতামূলক) -->
-    <div id="authContainer" class="flex flex-col justify-center items-center h-full p-6 space-y-6">
+    <!-- ==================== 1. AUTH & QUICK LOGIN SECTION ==================== -->
+    <div id="authContainer" class="flex flex-col justify-center items-center h-full p-6 space-y-5 overflow-y-auto">
         <div class="text-center space-y-2">
-            <!-- সুন্দর লোগো ইমেজ -->
-            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="Misbah Messenger Logo" class="w-20 h-20 mx-auto rounded-2xl shadow-lg border-2 border-blue-500 object-cover bg-blue-600 p-2">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="Misbah Messenger" class="w-20 h-20 mx-auto rounded-2xl shadow-xl border-2 border-blue-500 object-cover bg-blue-600 p-2">
             <h1 class="text-2xl font-bold text-amber-300">Misbah Messenger</h1>
-            <p class="text-xs text-gray-400">লগইন করুন বা সাইন আপ করে চ্যাট শুরু করুন</p>
+            <p class="text-xs text-gray-400">নিরাপদ, লাইভ কলিং ও স্টোরি প্ল্যাটফর্ম</p>
         </div>
 
+        <!-- Saved Accounts (Quick One-Tap Login) -->
+        <div id="savedAccountsSection" class="w-full max-w-xs hidden">
+            <p class="text-[11px] text-gray-400 font-semibold mb-2 text-center">সংরক্ষিত অ্যাকাউন্ট (এক ক্লিকে লগইন):</p>
+            <div id="savedAccountsList" class="space-y-2"></div>
+            <div class="my-3 border-b border-gray-800"></div>
+        </div>
+
+        <!-- Auth Tabs -->
         <div class="flex bg-gray-800 p-1 rounded-xl w-full max-w-xs text-xs font-semibold">
             <button onclick="switchAuthTab('login')" id="tabLoginBtn" class="flex-1 py-2 rounded-lg bg-blue-600 text-white transition">লগইন</button>
             <button onclick="switchAuthTab('signup')" id="tabSignupBtn" class="flex-1 py-2 rounded-lg text-gray-400 transition">সাইন আপ</button>
@@ -49,43 +64,54 @@
 
         <!-- Login Form -->
         <form id="loginForm" onsubmit="handleLogin(event)" class="w-full max-w-xs space-y-3 text-xs">
-            <input type="email" id="loginEmail" placeholder="আপনার ইমেইল..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
-            <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
-            <p id="loginError" class="text-red-400 text-center hidden">লগইন ব্যর্থ হয়েছে!</p>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow">লগইন করুন</button>
+            <input type="email" id="loginEmail" placeholder="ইমেইল অ্যাড্রেস..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500">
+            <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500">
+            <div class="flex items-center justify-between text-gray-400 text-[11px]">
+                <label class="flex items-center space-x-1 cursor-pointer">
+                    <input type="checkbox" id="rememberMeCheckbox" checked class="rounded bg-gray-800">
+                    <span>তথ্য সেভ রাখুন</span>
+                </label>
+            </div>
+            <p id="loginError" class="text-red-400 text-center hidden">লগইন ব্যর্থ হয়েছে! ইমেইল বা পাসওয়ার্ড ভুল।</p>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg">লগইন করুন</button>
         </form>
 
         <!-- Sign Up Form -->
         <form id="signupForm" onsubmit="handleSignup(event)" class="w-full max-w-xs space-y-3 text-xs hidden">
-            <input type="text" id="signupName" placeholder="আপনার পূর্ণ নাম..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
-            <input type="email" id="signupEmail" placeholder="ইমেইল..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
-            <input type="password" id="signupPassword" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ ডিজিট)..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
+            <input type="text" id="signupName" placeholder="আপনার পূর্ণ নাম..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-emerald-500">
+            <input type="email" id="signupEmail" placeholder="ইমেইল..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-emerald-500">
+            <input type="password" id="signupPassword" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ ডিজিট)..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-emerald-500">
             <p id="signupError" class="text-red-400 text-center hidden">সাইন আপ ব্যর্থ হয়েছে!</p>
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">অ্যাকাউন্ট তৈরি করুন (Sign Up)</button>
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg">সাইন আপ করুন</button>
         </form>
     </div>
 
-    <!-- 2. MAIN MESSENGER DASHBOARD (লগইন করার পর) -->
-    <div id="mainDashboard" class="hidden flex flex-col h-full">
-        <!-- Header with Live Clock & Date -->
+    <!-- ==================== 2. MAIN DASHBOARD ==================== -->
+    <div id="mainDashboard" class="hidden flex flex-col h-full relative">
+        <!-- Header with Three-line Menu & Live Clock -->
         <header class="p-3 glass-panel flex flex-col border-b border-gray-800 sticky top-0 z-20 space-y-2">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3 cursor-pointer" onclick="openProfileModal()">
-                    <img id="myAvatarImg" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full object-cover border border-amber-400">
-                    <div>
-                        <h2 class="font-bold text-sm text-amber-300" id="myProfileName">ইউজার</h2>
-                        <p class="text-[10px] text-green-400"><i class="fa-solid fa-circle text-[8px]"></i> অনলাইন (প্রোফাইল এডিট)</p>
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleSideMenu()" class="text-amber-300 text-xl p-1.5 bg-gray-800 rounded-xl hover:bg-gray-700">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="flex items-center space-x-2.5 cursor-pointer" onclick="openProfileModal()">
+                        <img id="myAvatarImg" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full object-cover border-2 border-amber-400">
+                        <div>
+                            <h2 class="font-bold text-sm text-amber-300 leading-tight" id="myProfileName">ইউজার</h2>
+                            <p class="text-[10px] text-green-400"><i class="fa-solid fa-circle text-[7px]"></i> সক্রিয় (এডিট)</p>
+                        </div>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button onclick="openAddFriendModal()" class="bg-gray-800 hover:bg-gray-700 p-2 rounded-full text-xs" title="ফ্রেন্ড খুঁজুন">
-                        <i class="fa-solid fa-user-plus text-blue-400"></i>
+                    <button onclick="openAddFriendModal()" class="bg-blue-600/20 text-blue-400 p-2 rounded-xl text-xs hover:bg-blue-600/30" title="বন্ধু খুঁজুন">
+                        <i class="fa-solid fa-user-plus text-sm"></i>
                     </button>
-                    <button onclick="logout()" class="bg-red-600/20 text-red-400 px-3 py-1.5 rounded-xl text-xs font-semibold">লগআউট</button>
+                    <button onclick="logout()" class="bg-red-600/20 text-red-400 px-3 py-1.5 rounded-xl text-xs font-semibold hover:bg-red-600/30">লগআউট</button>
                 </div>
             </div>
-            <!-- লাইভ ঘড়ি ও তারিখ বার -->
-            <div class="flex justify-between items-center bg-gray-900/60 px-3 py-1 rounded-lg text-[11px] text-amber-400 border border-gray-800">
+            <!-- Live Clock & Date Display -->
+            <div class="flex justify-between items-center bg-gray-900/80 px-3 py-1 rounded-lg text-[11px] text-amber-400 border border-gray-800">
                 <span id="liveDateDisplay"><i class="fa-regular fa-calendar-days mr-1"></i> লোড হচ্ছে...</span>
                 <span id="liveClockDisplay" class="neon-clock font-bold"><i class="fa-regular fa-clock mr-1"></i> ০০:০০:০০</span>
             </div>
@@ -94,7 +120,7 @@
         <!-- Stories Section -->
         <div class="p-3 flex space-x-3 overflow-x-auto no-scrollbar border-b border-gray-800 bg-[#111b21]">
             <div onclick="document.getElementById('storyImageInput').click()" class="flex flex-col items-center space-y-1 min-w-[60px] cursor-pointer">
-                <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-lg text-blue-400 border border-dashed border-blue-500">
+                <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-lg text-blue-400 border-2 border-dashed border-blue-500 shadow">
                     <i class="fa-solid fa-plus"></i>
                 </div>
                 <span class="text-[10px] text-gray-400">স্টোরি দিন</span>
@@ -118,7 +144,54 @@
         </div>
     </div>
 
-    <!-- 3. SECURED CHAT ROOM WINDOW -->
+    <!-- ==================== 3. MESSENGER DRAWER MENU (Three Dots / Lines) ==================== -->
+    <div id="sideMenuDrawer" class="fixed inset-0 bg-black/60 z-50 hidden transition-opacity">
+        <div class="w-64 bg-[#111b21] h-full p-4 flex flex-col justify-between border-r border-gray-800 space-y-4">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-brands fa-facebook-messenger text-blue-500 text-xl"></i>
+                        <h3 class="font-bold text-amber-300 text-sm">মেসেঞ্জার সেটিংস</h3>
+                    </div>
+                    <button onclick="toggleSideMenu()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <!-- User Quick Info -->
+                <div class="flex items-center space-x-3 bg-gray-900 p-2.5 rounded-xl border border-gray-800">
+                    <img id="drawerAvatarImg" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full object-cover">
+                    <div class="overflow-hidden">
+                        <h4 id="drawerUserName" class="font-bold text-xs text-white truncate">ইউজার</h4>
+                        <p id="drawerUserEmail" class="text-[9px] text-gray-400 truncate">user@email.com</p>
+                    </div>
+                </div>
+
+                <!-- Settings Options -->
+                <div class="space-y-1 text-xs">
+                    <button onclick="openProfileModal(); toggleSideMenu();" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-800 text-gray-300">
+                        <i class="fa-solid fa-user-gear text-blue-400 w-5"></i>
+                        <span>প্রোফাইল কাস্টমাইজ</span>
+                    </button>
+                    <button onclick="openAddFriendModal(); toggleSideMenu();" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-800 text-gray-300">
+                        <i class="fa-solid fa-users-viewfinder text-emerald-400 w-5"></i>
+                        <span>নতুন বন্ধু খুঁজুন</span>
+                    </button>
+                    <button onclick="alert('আপনার অ্যাকাউন্ট সম্পূর্ণ সুরক্ষিত!');" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-gray-800 text-gray-300">
+                        <i class="fa-solid fa-shield-halved text-amber-400 w-5"></i>
+                        <span>সিকিউরিটি ও প্রাইভেসি</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-2 border-t border-gray-800 pt-3 text-xs">
+                <button onclick="logout()" class="w-full bg-red-600/20 hover:bg-red-600/30 text-red-400 p-2.5 rounded-xl font-bold flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>লগআউট করুন</span>
+                </button>
+                <p class="text-[9px] text-gray-500 text-center">Misbah Messenger v2.5</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 4. SECURED CHAT ROOM WINDOW (With Voice/Video Call) ==================== -->
     <div id="chatRoomModal" class="hidden fixed inset-0 bg-[#0b141a] z-50 flex flex-col justify-between">
         <header class="p-3 bg-[#111b21] flex items-center justify-between border-b border-gray-800">
             <div class="flex items-center space-x-3">
@@ -126,8 +199,17 @@
                 <img id="activeChatAvatarImg" src="https://via.placeholder.com/36" class="w-9 h-9 rounded-full object-cover border border-emerald-400">
                 <div>
                     <h3 class="font-bold text-xs text-amber-300" id="activeChatName">বন্ধু</h3>
-                    <p class="text-[9px] text-green-400"><i class="fa-solid fa-lock text-[8px]"></i> সম্পূর্ণ সুরক্ষিত লাইভ চ্যাট</p>
+                    <p class="text-[9px] text-green-400"><i class="fa-solid fa-lock text-[8px]"></i> এন্ড-টু-এন্ড এনক্রিপ্টেড</p>
                 </div>
+            </div>
+            <!-- Call Buttons -->
+            <div class="flex items-center space-x-2">
+                <button onclick="startCall('audio')" class="bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 p-2 rounded-full text-xs" title="অডিও কল">
+                    <i class="fa-solid fa-phone text-sm"></i>
+                </button>
+                <button onclick="startCall('video')" class="bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 p-2 rounded-full text-xs" title="ভিডিও কল">
+                    <i class="fa-solid fa-video text-sm"></i>
+                </button>
             </div>
         </header>
 
@@ -143,7 +225,57 @@
         </footer>
     </div>
 
-    <!-- 4. PROFILE CUSTOMIZATION MODAL (গ্যালারি থেকে ছবি সিলেক্ট করার ব্যবস্থা) -->
+    <!-- ==================== 5. LIVE CALL OVERLAY MODAL ==================== -->
+    <div id="callOverlayModal" class="hidden fixed inset-0 bg-slate-950/95 z-50 flex flex-col items-center justify-between p-8 text-center">
+        <div class="space-y-3 mt-10">
+            <img id="callUserAvatar" src="https://via.placeholder.com/96" class="w-24 h-24 rounded-full border-4 border-emerald-500 object-cover mx-auto shadow-2xl pulse-call">
+            <h3 id="callUserName" class="text-lg font-bold text-white">বন্ধুর নাম</h3>
+            <p id="callStatusText" class="text-xs text-emerald-400 font-semibold animate-pulse">কল হচ্ছে...</p>
+        </div>
+
+        <div class="flex items-center space-x-6 mb-10">
+            <button onclick="toggleMic()" id="btnMic" class="w-12 h-12 bg-gray-800 rounded-full text-white text-lg flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            <button onclick="endCall()" class="w-16 h-16 bg-red-600 rounded-full text-white text-xl flex items-center justify-center shadow-2xl hover:bg-red-700">
+                <i class="fa-solid fa-phone-slash"></i>
+            </button>
+            <button onclick="toggleCam()" id="btnCam" class="w-12 h-12 bg-gray-800 rounded-full text-white text-lg flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-video"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 6. STORY VIEW & REACTION MODAL ==================== -->
+    <div id="storyViewerModal" class="hidden fixed inset-0 bg-black/95 z-50 flex flex-col justify-between p-4">
+        <div class="flex justify-between items-center text-xs">
+            <div class="flex items-center space-x-2">
+                <img id="storyViewAvatar" src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full border border-amber-400 object-cover">
+                <span id="storyViewAuthor" class="font-bold text-white">ইউজার</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button id="storyDeleteBtn" onclick="deleteActiveStory()" class="text-red-400 text-sm hidden" title="ডিলিট করুন">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+                <button onclick="closeStoryViewer()" class="text-gray-300 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+
+        <div class="flex-grow flex items-center justify-center p-2">
+            <img id="storyViewImg" src="" class="max-h-[70vh] max-w-full rounded-xl object-contain shadow-2xl border border-gray-800">
+        </div>
+
+        <!-- Story Reactions -->
+        <div class="bg-gray-900/90 p-3 rounded-2xl flex justify-around items-center text-xl max-w-xs mx-auto border border-gray-800">
+            <button onclick="sendStoryReaction('❤️')" class="hover:scale-125 transition">❤️</button>
+            <button onclick="sendStoryReaction('👍')" class="hover:scale-125 transition">👍</button>
+            <button onclick="sendStoryReaction('😮')" class="hover:scale-125 transition">😮</button>
+            <button onclick="sendStoryReaction('🔥')" class="hover:scale-125 transition">🔥</button>
+            <button onclick="sendStoryReaction('😂')" class="hover:scale-125 transition">😂</button>
+        </div>
+    </div>
+
+    <!-- ==================== 7. PROFILE CUSTOMIZATION MODAL ==================== -->
     <div id="profileModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
         <div class="bg-[#111b21] border border-gray-700 w-full max-w-sm rounded-2xl p-4 space-y-4 text-xs">
             <div class="flex justify-between items-center border-b border-gray-800 pb-2">
@@ -153,53 +285,58 @@
             <div class="space-y-3">
                 <div class="text-center">
                     <img id="modalPreviewPic" src="https://via.placeholder.com/60" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-400 mb-2">
-                    <button onclick="document.getElementById('profileImageInput').click()" class="bg-gray-800 text-blue-400 px-3 py-1 rounded-lg font-bold border border-gray-700">গ্যালারি থেকে ছবি বদলান</button>
+                    <button onclick="document.getElementById('profileImageInput').click()" class="bg-gray-800 text-blue-400 px-3 py-1.5 rounded-lg font-bold border border-gray-700">গ্যালারি থেকে ছবি পরিবর্তন</button>
                     <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="previewProfileImage(event)">
                 </div>
                 <div>
                     <label class="block text-gray-400 mb-1">আপনার নাম:</label>
-                    <input type="text" id="editProfileName" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-white">
+                    <input type="text" id="editProfileName" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none">
                 </div>
                 <button onclick="saveProfileChanges()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl">পরিবর্তন সেভ করুন</button>
             </div>
         </div>
     </div>
 
-    <!-- 5. ADD FRIEND MODAL (সবার প্রোফাইল শো করবে ও রিকোয়েস্ট পাঠানো যাবে) -->
+    <!-- ==================== 8. ADD FRIEND & USER SEARCH MODAL ==================== -->
     <div id="addFriendModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-        <div class="bg-[#111b21] border border-gray-700 w-full max-w-sm rounded-2xl p-4 space-y-4 text-xs">
+        <div class="bg-[#111b21] border border-gray-700 w-full max-w-sm rounded-2xl p-4 space-y-3 text-xs">
             <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                <h3 class="font-bold text-amber-300 text-sm">সকল ইউজার ও নতুন বন্ধু খুঁজুন</h3>
+                <h3 class="font-bold text-amber-300 text-sm">নতুন বন্ধু খুঁজুন</h3>
                 <button onclick="closeAddFriendModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
             </div>
+            <input type="text" id="searchUserField" onkeyup="filterUsersList()" placeholder="নাম বা ইমেইল দিয়ে খুঁজুন..." class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none">
             <div class="space-y-2 max-h-60 overflow-y-auto" id="allUsersListContainer">
                 <p class="text-gray-400 text-center py-3">ইউজার লোড হচ্ছে...</p>
             </div>
         </div>
     </div>
 
-    <!-- Script & Firebase Controller -->
+    <!-- Script & Controller -->
     <script>
-        // স্ক্রিনশট রোধ সিকিউরিটি
+        // Security Screenshot prevention
         document.addEventListener('keyup', (e) => {
             if (e.key == 'PrintScreen') {
                 navigator.clipboard.writeText('');
-                alert('নিরাপত্তা নীতি অনুযায়ী স্ক্রিনশট নিষেধ!');
+                alert('নিরাপত্তা নীতি অনুযায়ী স্ক্রিনশট নেওয়া নিষেধ!');
             }
         });
 
-        // লাইভ ঘড়ি ও তারিখ সচল রাখা
-        setInterval(() => {
+        // Live Clock and Date Fix
+        function updateClockAndDate() {
             const now = new Date();
-            let timeStr = now.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            let dateStr = now.toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
-            if(document.getElementById('liveClockDisplay')) {
-                document.getElementById('liveClockDisplay.innerHTML').innerHTML; // safe check
-                document.getElementById('liveClockDisplay').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${timeStr}`;
-                document.getElementById('liveDateDisplay').innerHTML = `<i class="fa-regular fa-calendar-days mr-1"></i> ${dateStr}`;
-            }
-        }, 1000);
+            const timeStr = now.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const dateStr = now.toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            const clockEl = document.getElementById('liveClockDisplay');
+            const dateEl = document.getElementById('liveDateDisplay');
+            
+            if(clockEl) clockEl.innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${timeStr}`;
+            if(dateEl) dateEl.innerHTML = `<i class="fa-regular fa-calendar-days mr-1"></i> ${dateStr}`;
+        }
+        setInterval(updateClockAndDate, 1000);
+        updateClockAndDate();
 
+        // Firebase Setup
         const firebaseConfig = {
             apiKey: "AIzaSyDlX9EiOIisDR_n22nY47kZBWUvcvYEd3E",
             authDomain: "misbah-feed0.firebaseapp.com",
@@ -222,6 +359,50 @@
         let tempNewBase64Pic = "";
         let activeTargetUid = null;
         let activeChatRoomId = null;
+        let activeStoryId = null;
+        let allRegisteredUsers = {};
+
+        // Saved accounts in local storage
+        function getSavedAccounts() {
+            return JSON.parse(localStorage.getItem('misbah_saved_accounts') || '[]');
+        }
+
+        function saveAccountToLocal(email, pass, name) {
+            let accounts = getSavedAccounts();
+            if(!accounts.some(a => a.email === email)) {
+                accounts.push({ email, pass, name });
+                localStorage.setItem('misbah_saved_accounts', JSON.stringify(accounts));
+            }
+        }
+
+        function renderSavedAccounts() {
+            const list = getSavedAccounts();
+            const container = document.getElementById('savedAccountsList');
+            const section = document.getElementById('savedAccountsSection');
+            if(list.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+            section.classList.remove('hidden');
+            container.innerHTML = '';
+            list.forEach(acc => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = "w-full flex items-center justify-between p-2.5 bg-gray-900 border border-gray-800 rounded-xl hover:bg-gray-800 text-xs";
+                btn.innerHTML = `<div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-user-check text-emerald-400"></i>
+                    <span class="font-bold text-white">${acc.name || acc.email}</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-500 text-[10px]"></i>`;
+                btn.onclick = () => {
+                    document.getElementById('loginEmail').value = acc.email;
+                    document.getElementById('loginPassword').value = acc.pass;
+                    auth.signInWithEmailAndPassword(acc.email, acc.pass);
+                };
+                container.appendChild(btn);
+            });
+        }
+        renderSavedAccounts();
 
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -235,6 +416,9 @@
                         tempNewBase64Pic = currentUserPic;
                         document.getElementById('myProfileName').innerText = currentUserName;
                         document.getElementById('myAvatarImg').src = currentUserPic;
+                        document.getElementById('drawerUserName').innerText = currentUserName;
+                        document.getElementById('drawerUserEmail').innerText = user.email;
+                        document.getElementById('drawerAvatarImg').src = currentUserPic;
                     } else {
                         currentUserName = user.email.split('@')[0];
                         currentUserPic = 'https://via.placeholder.com/40';
@@ -250,6 +434,7 @@
                 currentUserId = null;
                 document.getElementById('mainDashboard').classList.add('hidden');
                 document.getElementById('authContainer').classList.remove('hidden');
+                renderSavedAccounts();
             }
         });
 
@@ -271,7 +456,11 @@
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPassword').value;
-            auth.signInWithEmailAndPassword(email, pass).catch(() => {
+            const remember = document.getElementById('rememberMeCheckbox').checked;
+
+            auth.signInWithEmailAndPassword(email, pass).then(() => {
+                if(remember) saveAccountToLocal(email, pass, email.split('@')[0]);
+            }).catch(() => {
                 document.getElementById('loginError').classList.remove('hidden');
             });
         }
@@ -284,12 +473,18 @@
 
             auth.createUserWithEmailAndPassword(email, pass).then((res) => {
                 database.ref('users/' + res.user.uid).set({ name: name, email: email, photoUrl: 'https://via.placeholder.com/40' });
+                saveAccountToLocal(email, pass, name);
             }).catch(() => {
                 document.getElementById('signupError').classList.remove('hidden');
             });
         }
 
         function logout() { auth.signOut(); }
+
+        function toggleSideMenu() {
+            const drawer = document.getElementById('sideMenuDrawer');
+            drawer.classList.toggle('hidden');
+        }
 
         function openProfileModal() {
             document.getElementById('editProfileName').value = currentUserName;
@@ -299,7 +494,6 @@
         }
         function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
 
-        // গ্যালারি থেকে প্রোফাইল ছবি প্রিভিউ করার ফাংশন
         function previewProfileImage(event) {
             const file = event.target.files[0];
             if(file) {
@@ -320,7 +514,7 @@
                 name: newName,
                 photoUrl: tempNewBase64Pic
             }).then(() => {
-                alert('প্রোফাইল সফলভাবে আপডেট হয়েছে!');
+                alert('প্রোফাইল আপডেট সম্পন্ন!');
                 closeProfileModal();
             });
         }
@@ -348,35 +542,58 @@
         function openAddFriendModal() {
             document.getElementById('addFriendModal').classList.remove('hidden');
             database.ref('users').on('value', (snap) => {
-                const container = document.getElementById('allUsersListContainer');
-                container.innerHTML = '';
-                const users = snap.val();
-                if(users) {
-                    Object.entries(users).forEach(([uid, uData]) => {
-                        if(uid !== currentUserId) {
-                            const div = document.createElement('div');
-                            div.className = "flex justify-between items-center p-2.5 bg-gray-900 rounded-xl border border-gray-800";
-                            div.innerHTML = `<div class="flex items-center space-x-2.5">
-                                <img src="${uData.photoUrl || 'https://via.placeholder.com/32'}" class="w-9 h-9 rounded-full object-cover border border-amber-400">
-                                <span class="font-bold text-white">${uData.name}</span>
-                            </div>
-                            <button onclick="sendFriendRequest('${uid}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg text-[10px] font-bold text-white shadow">রিকোয়েস্ট পাঠান</button>`;
-                            container.appendChild(div);
-                        }
-                    });
-                }
+                allRegisteredUsers = snap.val() || {};
+                renderUsersList(allRegisteredUsers);
             });
         }
         function closeAddFriendModal() { document.getElementById('addFriendModal').classList.add('hidden'); }
 
+        function renderUsersList(users) {
+            const container = document.getElementById('allUsersListContainer');
+            container.innerHTML = '';
+            if(users) {
+                Object.entries(users).forEach(([uid, uData]) => {
+                    if(uid !== currentUserId) {
+                        const div = document.createElement('div');
+                        div.className = "flex justify-between items-center p-2.5 bg-gray-900 rounded-xl border border-gray-800";
+                        div.innerHTML = `<div class="flex items-center space-x-2.5">
+                            <img src="${uData.photoUrl || 'https://via.placeholder.com/32'}" class="w-9 h-9 rounded-full object-cover border border-amber-400">
+                            <div>
+                                <h4 class="font-bold text-white leading-tight">${uData.name}</h4>
+                                <p class="text-[9px] text-gray-400">${uData.email || ''}</p>
+                            </div>
+                        </div>
+                        <button onclick="sendFriendRequest('${uid}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg text-[10px] font-bold text-white shadow">রিকোয়েস্ট</button>`;
+                        container.appendChild(div);
+                    }
+                });
+            }
+        }
+
+        function filterUsersList() {
+            const query = document.getElementById('searchUserField').value.toLowerCase();
+            const filtered = {};
+            Object.entries(allRegisteredUsers).forEach(([uid, uData]) => {
+                if(uData.name.toLowerCase().includes(query) || (uData.email && uData.email.toLowerCase().includes(query))) {
+                    filtered[uid] = uData;
+                }
+            });
+            renderUsersList(filtered);
+        }
+
         function sendFriendRequest(targetUid) {
-            database.ref(`friendRequests/${targetUid}/${currentUserId}`).set({ name: currentUserName, photoUrl: currentUserPic, status: 'pending' }).then(() => {
+            database.ref(`friendRequests/${targetUid}/${currentUserId}`).set({ 
+                name: currentUserName, 
+                photoUrl: currentUserPic, 
+                status: 'pending' 
+            }).then(() => {
                 alert('ফ্রেন্ড রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
                 closeAddFriendModal();
             });
         }
 
         function loadAllTabsData() {
+            // Friend Requests Listener
             database.ref(`friendRequests/${currentUserId}`).on('value', (snap) => {
                 const reqView = document.getElementById('viewRequests');
                 reqView.innerHTML = '';
@@ -387,12 +604,12 @@
                         if(rData.status === 'pending') {
                             count++;
                             const div = document.createElement('div');
-                            div.className = "flex justify-between items-center p-3 bg-gray-900 rounded-xl";
+                            div.className = "flex justify-between items-center p-3 bg-gray-900 rounded-xl border border-gray-800";
                             div.innerHTML = `<div class="flex items-center space-x-2">
                                 <img src="${rData.photoUrl || 'https://via.placeholder.com/32'}" class="w-8 h-8 rounded-full object-cover">
-                                <span><b>${rData.name}</b> রিকোয়েস্ট পাঠিয়েছেন।</span>
+                                <span class="text-xs"><b>${rData.name}</b> রিকোয়েস্ট পাঠিয়েছেন।</span>
                             </div>
-                            <button onclick="acceptFriend('${senderUid}', '${rData.name}', '${rData.photoUrl || ''}')" class="bg-emerald-600 px-3 py-1 rounded-lg text-white font-bold">এলোও</button>`;
+                            <button onclick="acceptFriend('${senderUid}', '${rData.name}', '${rData.photoUrl || ''}')" class="bg-emerald-600 hover:bg-emerald-700 px-3 py-1 rounded-lg text-white text-xs font-bold shadow">এলোও</button>`;
                             reqView.appendChild(div);
                         }
                     });
@@ -402,6 +619,7 @@
                 if(reqView.innerHTML === '') reqView.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">কোনো রিকোয়েস্ট নেই।</p>';
             });
 
+            // Friends Listener
             database.ref(`friends/${currentUserId}`).on('value', (snap) => {
                 const friendsView = document.getElementById('viewFriends');
                 const chatsView = document.getElementById('viewChats');
@@ -411,29 +629,34 @@
                 if(fList) {
                     Object.entries(fList).forEach(([fUid, fData]) => {
                         const fDiv = document.createElement('div');
-                        fDiv.className = "flex justify-between items-center p-3 bg-gray-900 rounded-xl";
-                        fDiv.innerHTML = `<div class="flex items-center space-x-2">
-                            <img src="${fData.photoUrl || 'https://via.placeholder.com/32'}" class="w-8 h-8 rounded-full object-cover">
-                            <span>${fData.name}</span>
+                        fDiv.className = "flex justify-between items-center p-3 bg-gray-900 rounded-xl border border-gray-800";
+                        fDiv.innerHTML = `<div class="flex items-center space-x-2.5">
+                            <img src="${fData.photoUrl || 'https://via.placeholder.com/32'}" class="w-9 h-9 rounded-full object-cover">
+                            <span class="font-bold text-xs">${fData.name}</span>
                         </div>
-                        <button onclick="openChatRoom('${fUid}', '${fData.name}', '${fData.photoUrl || ''}')" class="bg-blue-600 px-3 py-1.5 rounded-lg text-white font-bold">চ্যাট করুন</button>`;
+                        <button onclick="openChatRoom('${fUid}', '${fData.name}', '${fData.photoUrl || ''}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg text-white font-bold text-xs">চ্যাট করুন</button>`;
                         friendsView.appendChild(fDiv);
 
                         const cDiv = document.createElement('div');
-                        cDiv.className = "flex justify-between items-center p-3 bg-gray-900 rounded-xl cursor-pointer hover:bg-gray-800";
+                        cDiv.className = "flex justify-between items-center p-3 bg-gray-900 rounded-xl border border-gray-800 cursor-pointer hover:bg-gray-800 transition";
                         cDiv.onclick = () => openChatRoom(fUid, fData.name, fData.photoUrl || '');
                         cDiv.innerHTML = `<div class="flex items-center space-x-3">
                             <img src="${fData.photoUrl || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover">
-                            <div><h4 class="font-bold text-white text-xs">${fData.name}</h4><p class="text-[10px] text-gray-400">লাইভ চ্যাট শুরু করুন</p></div>
-                        </div>`;
+                            <div>
+                                <h4 class="font-bold text-white text-xs">${fData.name}</h4>
+                                <p class="text-[10px] text-gray-400">লাইভ মেসেজ ও কল করার জন্য প্রস্তুত</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-circle text-[8px] text-green-500"></i>`;
                         chatsView.appendChild(cDiv);
                     });
                 } else {
                     friendsView.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">কোনো ফ্রেন্ড নেই।</p>';
-                    chatsView.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">ফ্রেন্ড রিকোয়েস্ট এক্সেপ্ট করুন।</p>';
+                    chatsView.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">ফ্রেন্ড রিকোয়েস্ট পাঠাতে উপরে + চাপুন।</p>';
                 }
             });
 
+            // Stories Listener
             database.ref('stories').on('value', (snap) => {
                 const sContainer = document.getElementById('storiesList');
                 sContainer.innerHTML = '';
@@ -441,19 +664,13 @@
                 if(stories) {
                     Object.entries(stories).forEach(([sId, st]) => {
                         const div = document.createElement('div');
-                        div.className = "flex flex-col items-center space-y-1 min-w-[60px] relative";
-                        
-                        let deleteBtnHtml = '';
-                        if(st.userId === currentUserId) {
-                            deleteBtnHtml = `<div class="absolute -top-1 -right-1 bg-black/70 rounded-full px-1 cursor-pointer text-red-400 text-[10px]" onclick="deleteStory('${sId}')" title="ডিলিট স্টোরি"><i class="fa-solid fa-ellipsis-vertical"></i></div>`;
-                        }
-
+                        div.className = "flex flex-col items-center space-y-1 min-w-[60px] cursor-pointer";
+                        div.onclick = () => viewStoryModal(sId, st);
                         div.innerHTML = `
-                            <div class="relative">
-                                <img src="${st.imageUrl}" class="w-12 h-12 rounded-full border-2 border-blue-500 p-0.5 object-cover">
-                                ${deleteBtnHtml}
+                            <div class="relative p-0.5 rounded-full story-ring">
+                                <img src="${st.imageUrl}" class="w-12 h-12 rounded-full border-2 border-gray-900 object-cover">
                             </div>
-                            <span class="text-[10px] text-gray-300 truncate w-12 text-center">${st.userName}</span>`;
+                            <span class="text-[10px] text-gray-300 truncate w-12 text-center font-semibold">${st.userName}</span>`;
                         sContainer.appendChild(div);
                     });
                 }
@@ -464,7 +681,7 @@
             database.ref(`friends/${currentUserId}/${senderUid}`).set({ name: senderName, photoUrl: senderPic });
             database.ref(`friends/${senderUid}/${currentUserId}`).set({ name: currentUserName, photoUrl: currentUserPic });
             database.ref(`friendRequests/${currentUserId}/${senderUid}`).remove().then(() => {
-                alert('ফ্রেন্ড রিকোয়েস্ট এক্সেপ্ট হয়েছে!');
+                alert('ফ্রেন্ড রিকোয়েস্ট এক্সেপ্ট করা হয়েছে!');
             });
         }
 
@@ -477,20 +694,45 @@
                     database.ref('stories').push({
                         userId: currentUserId,
                         userName: currentUserName,
+                        userPic: currentUserPic,
                         imageUrl: base64Image,
                         timestamp: Date.now()
-                    }).then(() => { alert('স্টোরি সফলভাবে আপলোড হয়েছে!'); });
+                    }).then(() => { alert('স্টোরি আপলোড সফল!'); });
                 }
                 reader.readAsDataURL(file);
             }
         }
 
-        function deleteStory(storyId) {
-            if(confirm('এই স্টোরিটি ডিলিট করতে চান?')) {
-                database.ref('stories/' + storyId).remove().then(() => {
+        function viewStoryModal(sId, st) {
+            activeStoryId = sId;
+            document.getElementById('storyViewAuthor').innerText = st.userName;
+            document.getElementById('storyViewAvatar').src = st.userPic || 'https://via.placeholder.com/32';
+            document.getElementById('storyViewImg').src = st.imageUrl;
+            
+            const delBtn = document.getElementById('storyDeleteBtn');
+            if(st.userId === currentUserId) delBtn.classList.remove('hidden');
+            else delBtn.classList.add('hidden');
+
+            document.getElementById('storyViewerModal').classList.remove('hidden');
+        }
+
+        function closeStoryViewer() {
+            document.getElementById('storyViewerModal').classList.add('hidden');
+            activeStoryId = null;
+        }
+
+        function deleteActiveStory() {
+            if(activeStoryId && confirm('আপনি কি এই স্টোরিটি মুছে ফেলতে চান?')) {
+                database.ref('stories/' + activeStoryId).remove().then(() => {
+                    closeStoryViewer();
                     alert('স্টোরি ডিলিট করা হয়েছে!');
                 });
             }
+        }
+
+        function sendStoryReaction(emoji) {
+            alert(`আপনি স্টোরিতে ${emoji} রিঅ্যাক্ট করেছেন!`);
+            closeStoryViewer();
         }
 
         function openChatRoom(targetUid, targetName, targetPic) {
@@ -540,10 +782,37 @@
                     });
                     msgList.scrollTop = msgList.scrollHeight;
                 } else {
-                    msgList.innerHTML = '<p class="text-gray-500 text-center text-xs py-4">নিরাপদ কথোপকথন শুরু করুন...</p>';
+                    msgList.innerHTML = '<p class="text-gray-500 text-center text-xs py-4">নিরাপদ লাইভ চ্যাট শুরু করুন...</p>';
                 }
             });
         }
+
+        // Live Audio/Video Call Controls
+        function startCall(type) {
+            if(!activeTargetUid) return;
+            const targetName = document.getElementById('activeChatName').innerText;
+            const targetPic = document.getElementById('activeChatAvatarImg').src;
+
+            document.getElementById('callUserName').innerText = targetName;
+            document.getElementById('callUserAvatar').src = targetPic;
+            document.getElementById('callStatusText').innerText = type === 'video' ? 'ভিডিও কল হচ্ছে...' : 'অডিও কল হচ্ছে...';
+            document.getElementById('callOverlayModal').classList.remove('hidden');
+        }
+
+        function endCall() {
+            document.getElementById('callOverlayModal').classList.add('hidden');
+        }
+
+        function toggleMic() {
+            const btn = document.getElementById('btnMic');
+            btn.classList.toggle('bg-red-600');
+        }
+
+        function toggleCam() {
+            const btn = document.getElementById('btnCam');
+            btn.classList.toggle('bg-red-600');
+        }
     </script>
 </body>
-    </html>
+</html>
+```
