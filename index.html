@@ -3,249 +3,547 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আন-নুর ইন্টারন্যাশনাল মাদ্রাসা - অভিভাবক পোর্টাল</title>
+    <title>Misbah Messenger - লাইভ চ্যাট ও স্টোরি প্ল্যাটফর্ম</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts (Hind Siliguri) -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        emerald: {
-                            600: '#047857',
-                            700: '#065f46',
-                            800: '#064e3b',
-                            900: '#022c22',
-                        },
-                        gold: {
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                        }
-                    },
-                    fontFamily: {
-                        bengali: ['"Hind Siliguri"', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        body {
-            font-family: 'Hind Siliguri', sans-serif;
-            background-color: #f0fdf4;
+        body { 
+            background-color: #0b141a; 
+            color: #e9edef; 
+            font-family: system-ui, -apple-system, sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
+        .glass-panel { background: rgba(17, 27, 33, 0.95); backdrop-filter: blur(10px); }
+        .msg-sender { background: #0084ff; border-radius: 18px 18px 4px 18px; color: white; }
+        .msg-receiver { background: #242526; border-radius: 18px 18px 18px 4px; color: #e4e6eb; }
+        .neon-clock { font-family: 'Orbitron', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+<body class="h-screen flex flex-col justify-between max-w-lg mx-auto border-x border-gray-800" oncontextmenu="return false;">
 
-    <!-- Header / Navbar -->
-    <header class="bg-emerald-800 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <!-- লোগো ইমেজ -->
-                <img src="1000053910.jpg" alt="An-Noor Logo" class="w-10 h-10 rounded-full border-2 border-gold-400 object-cover shadow">
-                <div>
-                    <h1 class="font-bold text-base leading-tight">আন-নুর ইন্টারন্যাশনাল মাদ্রাসা</h1>
-                    <p class="text-[10px] text-gold-400">৭ নং নিউটাউন, সদর, দিনাজপুর।</p>
-                </div>
-            </div>
-            <div>
-                <button onclick="logout()" id="logoutBtn" class="hidden text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition">
-                    <i class="fa-solid fa-right-from-bracket mr-1"></i> লগআউট
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="max-w-md mx-auto px-4 py-6 w-full flex-grow">
-
-        <!-- 1. Login Section (लॉग इन स्क्रीन) -->
-        <div id="loginSection" class="glass-card p-6 rounded-2xl shadow-xl border-t-4 border-emerald-600 my-auto">
-            <div class="text-center mb-6">
-                <div class="w-20 h-20 mx-auto mb-3 bg-emerald-50 rounded-full flex items-center justify-center border border-emerald-200 shadow-inner">
-                    <img src="1000053910.jpg" alt="Logo" class="w-16 h-16 rounded-full object-cover">
-                </div>
-                <h2 class="text-xl font-bold text-emerald-900">অভিভাবক লগইন প্যানেল</h2>
-                <p class="text-xs text-slate-500 mt-1">আপনার প্রদত্ত আইডি ও পাসওয়ার্ড দিয়ে প্রবেশ করুন</p>
-            </div>
-
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">ইউজার আইডি (User ID)</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                            <i class="fa-solid fa-user"></i>
-                        </span>
-                        <input type="text" id="userId" required placeholder="যেমন: ANN101" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-emerald-600">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">পাসওয়ার্ড (Password)</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                            <i class="fa-solid fa-lock"></i>
-                        </span>
-                        <input type="password" id="password" required placeholder="••••••••" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-emerald-600">
-                    </div>
-                </div>
-
-                <div id="loginError" class="hidden text-xs text-red-600 text-center font-medium bg-red-50 p-2 rounded-lg">
-                    ⚠️ ভুল আইডি অথবা পাসওয়ার্ড দেওয়া হয়েছে! আবার চেষ্টা করুন।
-                </div>
-
-                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl shadow-lg transition duration-300 text-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i> লগইন করুন
-                </button>
-            </form>
-
-            <div class="mt-6 text-center border-t border-slate-200 pt-4">
-                <p class="text-[11px] text-slate-500">সহযোগিতায়: হটলাইন - <span class="font-bold text-emerald-700">০১৭৯৭১১১৫৪৪</span></p>
-            </div>
+    <!-- 1. AUTH SECTION (Login & Sign Up - বাধ্যতামূলক) -->
+    <div id="authContainer" class="flex flex-col justify-center items-center h-full p-6 space-y-6">
+        <div class="text-center space-y-2">
+            <!-- সুন্দর লোগো ইমেজ -->
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="Misbah Messenger Logo" class="w-20 h-20 mx-auto rounded-2xl shadow-lg border-2 border-blue-500 object-cover bg-blue-600 p-2">
+            <h1 class="text-2xl font-bold text-amber-300">Misbah Messenger</h1>
+            <p class="text-xs text-gray-400">লগইন করুন বা সাইন আপ করে চ্যাট শুরু করুন</p>
         </div>
 
-        <!-- 2. Dashboard Section (লগইন করার পর যা দেখাবে) -->
-        <div id="dashboardSection" class="hidden space-y-6">
-            <!-- Student Profile Card -->
-            <div class="bg-gradient-to-r from-emerald-800 to-emerald-900 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
-                <div class="absolute -right-4 -bottom-4 opacity-10 text-8xl">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
-                <div class="flex items-center space-x-4 relative z-10">
-                    <div class="w-16 h-16 rounded-full bg-white p-1 shadow-md">
-                        <img src="1000053910.jpg" alt="Student" class="w-full h-full rounded-full object-cover">
-                    </div>
+        <div class="flex bg-gray-800 p-1 rounded-xl w-full max-w-xs text-xs font-semibold">
+            <button onclick="switchAuthTab('login')" id="tabLoginBtn" class="flex-1 py-2 rounded-lg bg-blue-600 text-white transition">লগইন</button>
+            <button onclick="switchAuthTab('signup')" id="tabSignupBtn" class="flex-1 py-2 rounded-lg text-gray-400 transition">সাইন আপ</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)" class="w-full max-w-xs space-y-3 text-xs">
+            <input type="email" id="loginEmail" placeholder="আপনার ইমেইল..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
+            <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
+            <p id="loginError" class="text-red-400 text-center hidden">লগইন ব্যর্থ হয়েছে!</p>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow">লগইন করুন</button>
+        </form>
+
+        <!-- Sign Up Form -->
+        <form id="signupForm" onsubmit="handleSignup(event)" class="w-full max-w-xs space-y-3 text-xs hidden">
+            <input type="text" id="signupName" placeholder="আপনার পূর্ণ নাম..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
+            <input type="email" id="signupEmail" placeholder="ইমেইল..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
+            <input type="password" id="signupPassword" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ ডিজিট)..." required class="w-full p-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
+            <p id="signupError" class="text-red-400 text-center hidden">সাইন আপ ব্যর্থ হয়েছে!</p>
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow">অ্যাকাউন্ট তৈরি করুন (Sign Up)</button>
+        </form>
+    </div>
+
+    <!-- 2. MAIN MESSENGER DASHBOARD (লগইন করার পর) -->
+    <div id="mainDashboard" class="hidden flex flex-col h-full">
+        <!-- Header with Live Clock & Date -->
+        <header class="p-3 glass-panel flex flex-col border-b border-gray-800 sticky top-0 z-20 space-y-2">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="openProfileModal()">
+                    <img id="myAvatarImg" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full object-cover border border-amber-400">
                     <div>
-                        <h3 id="studentName" class="text-lg font-bold">শিক্ষার্থীর নাম</h3>
-                        <p class="text-xs text-gold-400">শ্রেণি: ১ম শ্রেণি | রোল: ০৫</p>
-                        <p class="text-[11px] text-slate-300 mt-1">আইডি: <span id="displayId" class="font-mono bg-emerald-700 px-2 py-0.5 rounded">ANN101</span></p>
+                        <h2 class="font-bold text-sm text-amber-300" id="myProfileName">ইউজার</h2>
+                        <p class="text-[10px] text-green-400"><i class="fa-solid fa-circle text-[8px]"></i> অনলাইন (প্রোফাইল এডিট)</p>
                     </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="openAddFriendModal()" class="bg-gray-800 hover:bg-gray-700 p-2 rounded-full text-xs" title="ফ্রেন্ড খুঁজুন">
+                        <i class="fa-solid fa-user-plus text-blue-400"></i>
+                    </button>
+                    <button onclick="logout()" class="bg-red-600/20 text-red-400 px-3 py-1.5 rounded-xl text-xs font-semibold">লগআউট</button>
                 </div>
             </div>
-
-            <!-- Notice / Announcement Box -->
-            <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl shadow-sm">
-                <div class="flex items-center gap-2 text-amber-800 font-bold text-sm mb-1">
-                    <i class="fa-solid fa-bullhorn"></i> জরুরি নোটিশ:
-                </div>
-                <p class="text-xs text-amber-900 leading-relaxed">
-                    ২০২৭ শিক্ষাবর্ষে প্রী হতে ৩য় শ্রেণি পর্যন্ত ভর্তি চলছে। আপনার আত্মীয় ও প্রতিবেশীদের বিষয়টি জানান।
-                </p>
+            <!-- লাইভ ঘড়ি ও তারিখ বার -->
+            <div class="flex justify-between items-center bg-gray-900/60 px-3 py-1 rounded-lg text-[11px] text-amber-400 border border-gray-800">
+                <span id="liveDateDisplay"><i class="fa-regular fa-calendar-days mr-1"></i> লোড হচ্ছে...</span>
+                <span id="liveClockDisplay" class="neon-clock font-bold"><i class="fa-regular fa-clock mr-1"></i> ০০:০০:০০</span>
             </div>
+        </header>
 
-            <!-- Quick Info Grid -->
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center">
-                    <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg">
-                        <i class="fa-solid fa-calendar-check"></i>
-                    </div>
-                    <h4 class="text-xs text-slate-500">উপস্থিতি</h4>
-                    <p class="text-base font-bold text-emerald-800 mt-1">উপস্থিত (১৯ দিন)</p>
+        <!-- Stories Section -->
+        <div class="p-3 flex space-x-3 overflow-x-auto no-scrollbar border-b border-gray-800 bg-[#111b21]">
+            <div onclick="document.getElementById('storyImageInput').click()" class="flex flex-col items-center space-y-1 min-w-[60px] cursor-pointer">
+                <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-lg text-blue-400 border border-dashed border-blue-500">
+                    <i class="fa-solid fa-plus"></i>
                 </div>
-
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center">
-                    <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-lg">
-                        <i class="fa-solid fa-file-lines"></i>
-                    </div>
-                    <h4 class="text-xs text-slate-500">মাসিক ফি</h4>
-                    <p class="text-base font-bold text-blue-800 mt-1">পরিশোধিত</p>
-                </div>
+                <span class="text-[10px] text-gray-400">স্টোরি দিন</span>
+                <input type="file" id="storyImageInput" accept="image/*" class="hidden" onchange="uploadStoryImage(event)">
             </div>
-
-            <!-- Results & Progress Card -->
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
-                <h4 class="font-bold text-sm text-slate-800 border-b pb-2 flex items-center justify-between">
-                    <span>সর্বশেষ পরীক্ষার ফলাফল</span>
-                    <span class="text-xs text-emerald-600 font-normal">প্রথম সাময়িক</span>
-                </h4>
-                <div class="space-y-2 text-xs">
-                    <div class="flex justify-between py-1 border-b border-slate-50">
-                        <span class="text-slate-600">কুরআন তিলাওয়াত ও নূরানী:</span>
-                        <span class="font-bold text-emerald-700">এ+ (A+)</span>
-                    </div>
-                    <div class="flex justify-between py-1 border-b border-slate-50">
-                        <span class="text-slate-600">বাংলা ও ইংরেজি:</span>
-                        <span class="font-bold text-emerald-700">এ (A)</span>
-                    </div>
-                    <div class="flex justify-between py-1">
-                        <span class="text-slate-600">গণিত:</span>
-                        <span class="font-bold text-emerald-700">এ+ (A+)</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contact / Help Section -->
-            <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 text-center space-y-2">
-                <p class="text-xs text-emerald-900 font-medium">মাদ্রাসা অফিসে যোগাযোগ করতে:</p>
-                <div class="flex justify-center gap-3">
-                    <a href="tel:01797111544" class="bg-emerald-700 text-white text-xs px-4 py-2 rounded-xl font-bold shadow hover:bg-emerald-800 transition">
-                        <i class="fa-solid fa-phone mr-1"></i> কল করুন
-                    </a>
-                </div>
-            </div>
+            <div id="storiesList" class="flex space-x-3"></div>
         </div>
 
-    </main>
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-gray-800 text-xs font-semibold bg-[#111b21]">
+            <button onclick="switchTab('chats')" id="btnTabChats" class="flex-1 py-2.5 border-b-2 border-blue-500 text-blue-400 text-center">চ্যাট লিস্ট</button>
+            <button onclick="switchTab('requests')" id="btnTabRequests" class="flex-1 py-2.5 text-gray-400 text-center relative">রিকোয়েস্ট <span id="reqBadge" class="bg-red-500 text-white px-1.5 py-0.2 rounded-full text-[9px] hidden">0</span></button>
+            <button onclick="switchTab('friends')" id="btnTabFriends" class="flex-1 py-2.5 text-gray-400 text-center">সকল ফ্রেন্ড</button>
+        </div>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-8">
-        <p>পরিচালনায়: <strong>আন-নুর ইন্টারন্যাশনাল মাদ্রাসা</strong></p>
-        <p class="text-[10px] text-slate-400 mt-0.5">৭ নং নিউটাউন, সদর, দিনাজপুর।</p>
-    </footer>
+        <!-- Tab Contents -->
+        <div class="flex-grow overflow-y-auto p-3 space-y-2 bg-[#0b141a]" id="tabContentContainer">
+            <div id="viewChats" class="space-y-2"><p class="text-xs text-gray-500 text-center py-4">ফ্রেন্ড রিকোয়েস্ট এক্সেপ্ট করে চ্যাট শুরু করুন।</p></div>
+            <div id="viewRequests" class="space-y-2 hidden"><p class="text-xs text-gray-500 text-center py-4">কোনো রিকোয়েস্ট নেই।</p></div>
+            <div id="viewFriends" class="space-y-2 hidden"><p class="text-xs text-gray-500 text-center py-4">কোনো ফ্রেন্ড নেই।</p></div>
+        </div>
+    </div>
 
-    <!-- JavaScript for Authentication & Interactivity -->
+    <!-- 3. SECURED CHAT ROOM WINDOW -->
+    <div id="chatRoomModal" class="hidden fixed inset-0 bg-[#0b141a] z-50 flex flex-col justify-between">
+        <header class="p-3 bg-[#111b21] flex items-center justify-between border-b border-gray-800">
+            <div class="flex items-center space-x-3">
+                <button onclick="closeChatRoom()" class="text-gray-300 px-2 py-1"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+                <img id="activeChatAvatarImg" src="https://via.placeholder.com/36" class="w-9 h-9 rounded-full object-cover border border-emerald-400">
+                <div>
+                    <h3 class="font-bold text-xs text-amber-300" id="activeChatName">বন্ধু</h3>
+                    <p class="text-[9px] text-green-400"><i class="fa-solid fa-lock text-[8px]"></i> সম্পূর্ণ সুরক্ষিত লাইভ চ্যাট</p>
+                </div>
+            </div>
+        </header>
+
+        <div id="chatMessageList" class="flex-grow p-3 overflow-y-auto space-y-2 flex flex-col bg-[#0b141a]"></div>
+
+        <footer class="p-3 bg-[#111b21] flex items-center space-x-2 border-t border-gray-800">
+            <input type="text" id="chatMessageInput" placeholder="নিরাপদ মেসেজ লিখুন..." 
+                   class="flex-grow bg-[#202c33] text-white text-xs rounded-xl px-4 py-3 focus:outline-none"
+                   onkeypress="if(event.key === 'Enter') sendLiveMessage()">
+            <button onclick="sendLiveMessage()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl text-xs font-bold">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </footer>
+    </div>
+
+    <!-- 4. PROFILE CUSTOMIZATION MODAL (গ্যালারি থেকে ছবি সিলেক্ট করার ব্যবস্থা) -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-[#111b21] border border-gray-700 w-full max-w-sm rounded-2xl p-4 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                <h3 class="font-bold text-amber-300 text-sm">প্রোফাইল কাস্টমাইজ করুন</h3>
+                <button onclick="closeProfileModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div class="text-center">
+                    <img id="modalPreviewPic" src="https://via.placeholder.com/60" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-400 mb-2">
+                    <button onclick="document.getElementById('profileImageInput').click()" class="bg-gray-800 text-blue-400 px-3 py-1 rounded-lg font-bold border border-gray-700">গ্যালারি থেকে ছবি বদলান</button>
+                    <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="previewProfileImage(event)">
+                </div>
+                <div>
+                    <label class="block text-gray-400 mb-1">আপনার নাম:</label>
+                    <input type="text" id="editProfileName" class="w-full p-2.5 bg-gray-900 border border-gray-700 rounded-xl text-white">
+                </div>
+                <button onclick="saveProfileChanges()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl">পরিবর্তন সেভ করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. ADD FRIEND MODAL (সবার প্রোফাইল শো করবে ও রিকোয়েস্ট পাঠানো যাবে) -->
+    <div id="addFriendModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-[#111b21] border border-gray-700 w-full max-w-sm rounded-2xl p-4 space-y-4 text-xs">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                <h3 class="font-bold text-amber-300 text-sm">সকল ইউজার ও নতুন বন্ধু খুঁজুন</h3>
+                <button onclick="closeAddFriendModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <div class="space-y-2 max-h-60 overflow-y-auto" id="allUsersListContainer">
+                <p class="text-gray-400 text-center py-3">ইউজার লোড হচ্ছে...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script & Firebase Controller -->
     <script>
-        // ডেমো ইউজার ডাটাবেস (এখানে আপনি গার্ডিয়ানদের আইডি ও পাসওয়ার্ড সেট করে দিতে পারবেন)
-        const guardiansDatabase = {
-            "ANN101": { pass: "1234", name: "আব্দুল্লাহ আল মামুন (অভিভাবক)", class: "প্রী শ্রেণি", roll: "০১" },
-            "ANN102": { pass: "5678", name: "মোছাঃ ফাতেমা খাতুন (অভিভাবক)", class: "১ম শ্রেণি", roll: "০২" },
-            "ANN103": { pass: "2026", name: "মোঃ রফিকুল ইসলাম (অভিভাবক)", class: "২য় শ্রেণি", roll: "০৩" }
+        // স্ক্রিনশট রোধ সিকিউরিটি
+        document.addEventListener('keyup', (e) => {
+            if (e.key == 'PrintScreen') {
+                navigator.clipboard.writeText('');
+                alert('নিরাপত্তা নীতি অনুযায়ী স্ক্রিনশট নিষেধ!');
+            }
+        });
+
+        // লাইভ ঘড়ি ও তারিখ সচল রাখা
+        setInterval(() => {
+            const now = new Date();
+            let timeStr = now.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            let dateStr = now.toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' });
+            if(document.getElementById('liveClockDisplay')) {
+                document.getElementById('liveClockDisplay.innerHTML').innerHTML; // safe check
+                document.getElementById('liveClockDisplay').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${timeStr}`;
+                document.getElementById('liveDateDisplay').innerHTML = `<i class="fa-regular fa-calendar-days mr-1"></i> ${dateStr}`;
+            }
+        }, 1000);
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDlX9EiOIisDR_n22nY47kZBWUvcvYEd3E",
+            authDomain: "misbah-feed0.firebaseapp.com",
+            databaseURL: "https://misbah-feed0-default-rtdb.firebaseio.com",
+            projectId: "misbah-feed0",
+            storageBucket: "misbah-feed0.firebasestorage.app",
+            messagingSenderId: "117643854786",
+            appId: "1:117643854786:web:d0fcc3f44a825e6f74d8c5b",
+            measurementId: "G-GWENW8Q1J6"
         };
 
-        function handleLogin(event) {
-            event.preventDefault();
-            const inputId = document.getElementById('userId').value.trim();
-            const inputPass = document.getElementById('password').value.trim();
-            const errorDiv = document.getElementById('loginError');
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-            if (guardiansDatabase[inputId] && guardiansDatabase[inputId].pass === inputPass) {
-                // সফল লগইন
-                errorDiv.classList.add('hidden');
-                
-                // ড্যাশবোর্ড ডেটা আপডেট
-                const student = guardiansDatabase[inputId];
-                document.getElementById('studentName').textContent = student.name;
-                document.getElementById('displayId').textContent = inputId;
+        let currentUser = null;
+        let currentUserId = null;
+        let currentUserName = "";
+        let currentUserPic = "";
+        let tempNewBase64Pic = "";
+        let activeTargetUid = null;
+        let activeChatRoomId = null;
 
-                // সেকশন পরিবর্তন
-                document.getElementById('loginSection').classList.add('hidden');
-                document.getElementById('dashboardSection').classList.remove('hidden');
-                document.getElementById('logoutBtn').classList.remove('hidden');
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                currentUserId = user.uid;
+                database.ref('users/' + currentUserId).on('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        const uData = snapshot.val();
+                        currentUserName = uData.name;
+                        currentUserPic = uData.photoUrl || 'https://via.placeholder.com/40';
+                        tempNewBase64Pic = currentUserPic;
+                        document.getElementById('myProfileName').innerText = currentUserName;
+                        document.getElementById('myAvatarImg').src = currentUserPic;
+                    } else {
+                        currentUserName = user.email.split('@')[0];
+                        currentUserPic = 'https://via.placeholder.com/40';
+                        tempNewBase64Pic = currentUserPic;
+                        database.ref('users/' + currentUserId).set({ name: currentUserName, email: user.email, photoUrl: currentUserPic });
+                    }
+                });
+                document.getElementById('authContainer').classList.add('hidden');
+                document.getElementById('mainDashboard').classList.remove('hidden');
+                loadAllTabsData();
             } else {
-                // ভুল হলে এরর দেখাবে
-                errorDiv.classList.remove('hidden');
+                currentUser = null;
+                currentUserId = null;
+                document.getElementById('mainDashboard').classList.add('hidden');
+                document.getElementById('authContainer').classList.remove('hidden');
+            }
+        });
+
+        function switchAuthTab(tab) {
+            if(tab === 'login') {
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('signupForm').classList.add('hidden');
+                document.getElementById('tabLoginBtn').className = 'flex-1 py-2 rounded-lg bg-blue-600 text-white transition';
+                document.getElementById('tabSignupBtn').className = 'flex-1 py-2 rounded-lg text-gray-400 transition';
+            } else {
+                document.getElementById('signupForm').classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('tabSignupBtn').className = 'flex-1 py-2 rounded-lg bg-emerald-600 text-white transition';
+                document.getElementById('tabLoginBtn').className = 'flex-1 py-2 rounded-lg text-gray-400 transition';
             }
         }
 
-        function logout() {
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
-            document.getElementById('logoutBtn').classList.add('hidden');
-            document.getElementById('userId').value = '';
-            document.getElementById('password').value = '';
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPassword').value;
+            auth.signInWithEmailAndPassword(email, pass).catch(() => {
+                document.getElementById('loginError').classList.remove('hidden');
+            });
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const pass = document.getElementById('signupPassword').value;
+
+            auth.createUserWithEmailAndPassword(email, pass).then((res) => {
+                database.ref('users/' + res.user.uid).set({ name: name, email: email, photoUrl: 'https://via.placeholder.com/40' });
+            }).catch(() => {
+                document.getElementById('signupError').classList.remove('hidden');
+            });
+        }
+
+        function logout() { auth.signOut(); }
+
+        function openProfileModal() {
+            document.getElementById('editProfileName').value = currentUserName;
+            document.getElementById('modalPreviewPic').src = currentUserPic;
+            tempNewBase64Pic = currentUserPic;
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+
+        // গ্যালারি থেকে প্রোফাইল ছবি প্রিভিউ করার ফাংশন
+        function previewProfileImage(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempNewBase64Pic = e.target.result;
+                    document.getElementById('modalPreviewPic').src = tempNewBase64Pic;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveProfileChanges() {
+            const newName = document.getElementById('editProfileName').value.trim();
+            if(!newName) return alert('নাম খালি রাখা যাবে না!');
+
+            database.ref('users/' + currentUserId).update({
+                name: newName,
+                photoUrl: tempNewBase64Pic
+            }).then(() => {
+                alert('প্রোফাইল সফলভাবে আপডেট হয়েছে!');
+                closeProfileModal();
+            });
+        }
+
+        function switchTab(tab) {
+            document.getElementById('viewChats').classList.add('hidden');
+            document.getElementById('viewRequests').classList.add('hidden');
+            document.getElementById('viewFriends').classList.add('hidden');
+            document.getElementById('btnTabChats').className = 'flex-1 py-2.5 text-gray-400 text-center';
+            document.getElementById('btnTabRequests').className = 'flex-1 py-2.5 text-gray-400 text-center relative';
+            document.getElementById('btnTabFriends').className = 'flex-1 py-2.5 text-gray-400 text-center';
+
+            if(tab === 'chats') {
+                document.getElementById('viewChats').classList.remove('hidden');
+                document.getElementById('btnTabChats').className = 'flex-1 py-2.5 border-b-2 border-blue-500 text-blue-400 text-center';
+            } else if(tab === 'requests') {
+                document.getElementById('viewRequests').classList.remove('hidden');
+                document.getElementById('btnTabRequests').className = 'flex-1 py-2.5 border-b-2 border-blue-500 text-blue-400 text-center relative';
+            } else if(tab === 'friends') {
+                document.getElementById('viewFriends').classList.remove('hidden');
+                document.getElementById('btnTabFriends').className = 'flex-1 py-2.5 border-b-2 border-blue-500 text-blue-400 text-center';
+            }
+        }
+
+        function openAddFriendModal() {
+            document.getElementById('addFriendModal').classList.remove('hidden');
+            database.ref('users').on('value', (snap) => {
+                const container = document.getElementById('allUsersListContainer');
+                container.innerHTML = '';
+                const users = snap.val();
+                if(users) {
+                    Object.entries(users).forEach(([uid, uData]) => {
+                        if(uid !== currentUserId) {
+                            const div = document.createElement('div');
+                            div.className = "flex justify-between items-center p-2.5 bg-gray-900 rounded-xl border border-gray-800";
+                            div.innerHTML = `<div class="flex items-center space-x-2.5">
+                                <img src="${uData.photoUrl || 'https://via.placeholder.com/32'}" class="w-9 h-9 rounded-full object-cover border border-amber-400">
+                                <span class="font-bold text-white">${uData.name}</span>
+                            </div>
+                            <button onclick="sendFriendRequest('${uid}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded-lg text-[10px] font-bold text-white shadow">রিকোয়েস্ট পাঠান</button>`;
+                            container.appendChild(div);
+                        }
+                    });
+                }
+            });
+        }
+        function closeAddFriendModal() { document.getElementById('addFriendModal').classList.add('hidden'); }
+
+        function sendFriendRequest(targetUid) {
+            database.ref(`friendRequests/${targetUid}/${currentUserId}`).set({ name: currentUserName, photoUrl: currentUserPic, status: 'pending' }).then(() => {
+                alert('ফ্রেন্ড রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
+                closeAddFriendModal();
+            });
+        }
+
+        function loadAllTabsData() {
+            database.ref(`friendRequests/${currentUserId}`).on('value', (snap) => {
+                const reqView = document.getElementById('viewRequests');
+                reqView.innerHTML = '';
+                const reqs = snap.val();
+                let count = 0;
+                if(reqs) {
+                    Object.entries(reqs).forEach(([senderUid, rData]) => {
+                        if(rData.status === 'pending') {
+                            count++;
+                            const div = document.createElement('div');
+                            div.className = "flex justify-between items-center p-3 bg-gray-900 rounded-xl";
+                            div.innerHTML = `<div class="flex items-center space-x-2">
+                                <img src="${rData.photoUrl || 'https://via.placeholder.com/32'}" class="w-8 h-8 rounded-full object-cover">
+                                <span><b>${rData.name}</b> রিকোয়েস্ট পাঠিয়েছেন।</span>
+                            </div>
+                            <button onclick="acceptFriend('${senderUid}', '${rData.name}', '${rData.photoUrl || ''}')" class="bg-emerald-600 px-3 py-1 rounded-lg text-white font-bold">এলোও</button>`;
+                            reqView.appendChild(div);
+                        }
+                    });
+                }
+                const badge = document.getElementById('reqBadge');
+                if(count > 0) { badge.innerText = count; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+                if(reqView.innerHTML === '') reqView.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">কোনো রিকোয়েস্ট নেই।</p>';
+            });
+
+            database.ref(`friends/${currentUserId}`).on('value', (snap) => {
+                const friendsView = document.getElementById('viewFriends');
+                const chatsView = document.getElementById('viewChats');
+                friendsView.innerHTML = '';
+                chatsView.innerHTML = '';
+                const fList = snap.val();
+                if(fList) {
+                    Object.entries(fList).forEach(([fUid, fData]) => {
+                        const fDiv = document.createElement('div');
+                        fDiv.className = "flex justify-between items-center p-3 bg-gray-900 rounded-xl";
+                        fDiv.innerHTML = `<div class="flex items-center space-x-2">
+                            <img src="${fData.photoUrl || 'https://via.placeholder.com/32'}" class="w-8 h-8 rounded-full object-cover">
+                            <span>${fData.name}</span>
+                        </div>
+                        <button onclick="openChatRoom('${fUid}', '${fData.name}', '${fData.photoUrl || ''}')" class="bg-blue-600 px-3 py-1.5 rounded-lg text-white font-bold">চ্যাট করুন</button>`;
+                        friendsView.appendChild(fDiv);
+
+                        const cDiv = document.createElement('div');
+                        cDiv.className = "flex justify-between items-center p-3 bg-gray-900 rounded-xl cursor-pointer hover:bg-gray-800";
+                        cDiv.onclick = () => openChatRoom(fUid, fData.name, fData.photoUrl || '');
+                        cDiv.innerHTML = `<div class="flex items-center space-x-3">
+                            <img src="${fData.photoUrl || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover">
+                            <div><h4 class="font-bold text-white text-xs">${fData.name}</h4><p class="text-[10px] text-gray-400">লাইভ চ্যাট শুরু করুন</p></div>
+                        </div>`;
+                        chatsView.appendChild(cDiv);
+                    });
+                } else {
+                    friendsView.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">কোনো ফ্রেন্ড নেই।</p>';
+                    chatsView.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">ফ্রেন্ড রিকোয়েস্ট এক্সেপ্ট করুন।</p>';
+                }
+            });
+
+            database.ref('stories').on('value', (snap) => {
+                const sContainer = document.getElementById('storiesList');
+                sContainer.innerHTML = '';
+                const stories = snap.val();
+                if(stories) {
+                    Object.entries(stories).forEach(([sId, st]) => {
+                        const div = document.createElement('div');
+                        div.className = "flex flex-col items-center space-y-1 min-w-[60px] relative";
+                        
+                        let deleteBtnHtml = '';
+                        if(st.userId === currentUserId) {
+                            deleteBtnHtml = `<div class="absolute -top-1 -right-1 bg-black/70 rounded-full px-1 cursor-pointer text-red-400 text-[10px]" onclick="deleteStory('${sId}')" title="ডিলিট স্টোরি"><i class="fa-solid fa-ellipsis-vertical"></i></div>`;
+                        }
+
+                        div.innerHTML = `
+                            <div class="relative">
+                                <img src="${st.imageUrl}" class="w-12 h-12 rounded-full border-2 border-blue-500 p-0.5 object-cover">
+                                ${deleteBtnHtml}
+                            </div>
+                            <span class="text-[10px] text-gray-300 truncate w-12 text-center">${st.userName}</span>`;
+                        sContainer.appendChild(div);
+                    });
+                }
+            });
+        }
+
+        function acceptFriend(senderUid, senderName, senderPic) {
+            database.ref(`friends/${currentUserId}/${senderUid}`).set({ name: senderName, photoUrl: senderPic });
+            database.ref(`friends/${senderUid}/${currentUserId}`).set({ name: currentUserName, photoUrl: currentUserPic });
+            database.ref(`friendRequests/${currentUserId}/${senderUid}`).remove().then(() => {
+                alert('ফ্রেন্ড রিকোয়েস্ট এক্সেপ্ট হয়েছে!');
+            });
+        }
+
+        function uploadStoryImage(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    database.ref('stories').push({
+                        userId: currentUserId,
+                        userName: currentUserName,
+                        imageUrl: base64Image,
+                        timestamp: Date.now()
+                    }).then(() => { alert('স্টোরি সফলভাবে আপলোড হয়েছে!'); });
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function deleteStory(storyId) {
+            if(confirm('এই স্টোরিটি ডিলিট করতে চান?')) {
+                database.ref('stories/' + storyId).remove().then(() => {
+                    alert('স্টোরি ডিলিট করা হয়েছে!');
+                });
+            }
+        }
+
+        function openChatRoom(targetUid, targetName, targetPic) {
+            activeTargetUid = targetUid;
+            document.getElementById('activeChatName').innerText = targetName;
+            document.getElementById('activeChatAvatarImg').src = targetPic || 'https://via.placeholder.com/36';
+            document.getElementById('chatRoomModal').classList.remove('hidden');
+
+            activeChatRoomId = currentUserId < targetUid ? `${currentUserId}_${targetUid}` : `${targetUid}_${currentUserId}`;
+            loadLiveMessages();
+        }
+
+        function closeChatRoom() {
+            document.getElementById('chatRoomModal').classList.add('hidden');
+            activeTargetUid = null;
+            activeChatRoomId = null;
+        }
+
+        function sendLiveMessage() {
+            const input = document.getElementById('chatMessageInput');
+            const text = input.value.trim();
+            if(!text || !activeChatRoomId) return;
+
+            database.ref(`chats/${activeChatRoomId}`).push({
+                sender: currentUserId,
+                text: text,
+                timestamp: Date.now()
+            }).then(() => {
+                input.value = '';
+            });
+        }
+
+        function loadLiveMessages() {
+            const msgList = document.getElementById('chatMessageList');
+            database.ref(`chats/${activeChatRoomId}`).on('value', (snap) => {
+                msgList.innerHTML = '';
+                const msgs = snap.val();
+                if(msgs) {
+                    Object.values(msgs).forEach(m => {
+                        const isMe = m.sender === currentUserId;
+                        const div = document.createElement('div');
+                        div.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'} my-1`;
+                        div.innerHTML = `<div class="max-w-[75%] px-3 py-2 text-xs ${isMe ? 'msg-sender' : 'msg-receiver'} shadow">
+                            ${m.text}
+                        </div>`;
+                        msgList.appendChild(div);
+                    });
+                    msgList.scrollTop = msgList.scrollHeight;
+                } else {
+                    msgList.innerHTML = '<p class="text-gray-500 text-center text-xs py-4">নিরাপদ কথোপকথন শুরু করুন...</p>';
+                }
+            });
         }
     </script>
 </body>
-</html>
+    </html>
