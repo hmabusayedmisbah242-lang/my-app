@@ -1,108 +1,365 @@
 <!DOCTYPE html>
-<html lang="bn" class="dark">
+<html lang="bn">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#0f172a" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050810">
 <title>Misbah Powerful AI</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  darkMode: 'class',
-  theme: { extend: {
-    fontFamily: { bn: ['"Hind Siliguri"', 'sans-serif'] },
-    colors: { brand: { 400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca' } }
-  }}
-};
-</script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
   * { -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; }
-  body { font-family: 'Hind Siliguri', system-ui, sans-serif; -webkit-user-select: none; user-select: none; }
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  .gradient-text { background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .glass { background: rgba(15,23,42,.6); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.06); }
-  .chat-user { background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; border-radius: 18px 18px 2px 18px; }
-  .chat-ai { background: rgba(30,41,59,.75); border: 1px solid rgba(255,255,255,.08); color: #f8fafc; border-radius: 18px 18px 18px 2px; }
-  .tab-btn.active { color: #818cf8; }
-  .tab-btn.active .tab-icon { background: linear-gradient(135deg,#6366f1,#8b5cf6); color: #fff; }
-  .typing-dot { animation: bounceDot 1.2s infinite; }
+  html, body { height: 100%; overflow: hidden; }
+  body { font-family: 'Hind Siliguri', sans-serif; background: #050810; }
+  .font-orbitron { font-family: 'Orbitron', sans-serif; letter-spacing: -0.5px; }
+
+  /* ── ambient orbs ── */
+  .bg-ambient { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .35; animation: floatOrb 18s ease-in-out infinite; }
+  .orb-1 { width: 340px; height: 340px; background: #6366f1; top: -100px; left: -100px; }
+  .orb-2 { width: 280px; height: 280px; background: #a855f7; bottom: -80px; right: -80px; animation-delay: -6s; }
+  .orb-3 { width: 220px; height: 220px; background: #ec4899; top: 45%; right: -60px; animation-delay: -12s; }
+  @keyframes floatOrb {
+    0%,100% { transform: translate(0,0) scale(1); opacity: .25; }
+    50% { transform: translate(40px,-50px) scale(1.2); opacity: .55; }
+  }
+
+  /* ── gradient text (always animated) ── */
+  .gradient-text {
+    background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6, #818cf8);
+    background-size: 250% 250%;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: gradientShift 5s ease infinite;
+  }
+  @keyframes gradientShift {
+    0%,100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .glass { background: rgba(10,15,30,.75); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.07); }
+
+  /* ── chat bubbles ── */
+  .chat-user { background: linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border-radius:18px 18px 2px 18px; }
+  .chat-ai { background: rgba(30,41,59,.85); border:1px solid rgba(255,255,255,.08); color:#f8fafc; border-radius:18px 18px 18px 2px; }
+
+  /* ── tabs ── */
+  .tab-btn { transition: all .25s cubic-bezier(.16,1,.3,1); }
+  .tab-btn.active { color: #a5b4fc; transform: translateY(-3px); }
+  .tab-btn.active .tab-icon { background: linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; box-shadow: 0 4px 14px rgba(99,102,241,.55); }
+
+  /* ── typing ── */
+  .typing-dot { animation: bounceDot 1.2s infinite; display: inline-block; }
   .typing-dot:nth-child(2) { animation-delay: .15s; }
   .typing-dot:nth-child(3) { animation-delay: .3s; }
-  @keyframes bounceDot { 0%,80%,100% { transform: scale(.6); opacity:.5 } 40% { transform: scale(1); opacity:1 } }
-  .pulse-ring { box-shadow: 0 0 0 0 rgba(99,102,241,.7); animation: pulseRing 2s infinite; }
+  @keyframes bounceDot { 0%,80%,100%{transform:scale(.6);opacity:.5} 40%{transform:scale(1);opacity:1} }
+
+  /* ── pulse ring (logo) ── */
+  .pulse-ring { box-shadow: 0 0 0 0 rgba(99,102,241,.7); animation: pulseRing 2.2s infinite; }
   @keyframes pulseRing {
     0% { box-shadow: 0 0 0 0 rgba(99,102,241,.7); }
-    70% { box-shadow: 0 0 0 20px rgba(99,102,241,0); }
+    70% { box-shadow: 0 0 0 16px rgba(99,102,241,0); }
     100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
   }
-  .fade-in { animation: fadeIn .25s ease-out; }
-  @keyframes fadeIn { from { opacity:0; transform: translateY(6px) } to { opacity:1; transform: translateY(0) } }
-  pre { background: #0b1220; padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 11px; line-height: 1.5; }
-  code { background: rgba(99,102,241,.15); padding: 1px 5px; border-radius: 4px; font-size: .9em; }
+
+  /* ── entrance ── */
+  .fade-in { animation: fadeIn .35s ease-out; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .slide-up { animation: slideUp .55s cubic-bezier(.16,1,.3,1); }
+  @keyframes slideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── rotations ── */
+  .spin-slow { animation: spin 8s linear infinite; }
+  .spin-counter { animation: spin 18s linear infinite reverse; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── shimmer buttons ── */
+  .btn-glow { position: relative; overflow: hidden; }
+  .btn-glow::before {
+    content:''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 2.8s infinite;
+  }
+  @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+  /* ── scrollbars ── */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ── markdown ── */
+  pre { background:#0b1220; padding:10px; border-radius:8px; overflow-x:auto; font-size:11px; line-height:1.5; }
+  code { background: rgba(99,102,241,.15); padding:1px 5px; border-radius:4px; font-size:.9em; }
   pre code { background: transparent; padding: 0; }
-  select, input, textarea { user-select: text; -webkit-user-select: text; }
+
+  input, textarea, select { user-select: text !important; -webkit-user-select: text !important; }
+
+  /* ── toast ── */
+  #toast.show { opacity: 1; transform: translate(-50%, 0); }
+  #toast { opacity: 0; transform: translate(-50%, -20px); transition: all .3s ease; }
 </style>
 </head>
+<body>
 
-<body class="bg-slate-950 text-slate-100 h-screen flex flex-col max-w-md mx-auto border-x border-slate-800 overflow-hidden font-bn">
-
-<!-- ========== TOAST ========== -->
-<div id="toast" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[200] bg-slate-900 text-white border border-indigo-500/40 text-xs px-4 py-2.5 rounded-full shadow-2xl flex items-center space-x-2">
-  <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
-  <span id="toastMsg" class="font-semibold">মেসেজ</span>
+<!-- ═══════════ ambient background ═══════════ -->
+<div class="bg-ambient">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 </div>
 
-<!-- ========== SETTINGS MODAL ========== -->
-<div id="settingsModal" class="hidden fixed inset-0 bg-black/80 z-[150] flex items-center justify-center p-4">
-  <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto no-scrollbar p-5 space-y-4">
-    <div class="flex justify-between items-center">
+<!-- ═══════════ SPLASH ═══════════ -->
+<div id="splash" class="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-slate-950 transition-opacity duration-500">
+  <div class="relative w-44 h-44 flex items-center justify-center">
+    <div class="absolute inset-0 rounded-full bg-indigo-500/20 blur-3xl"></div>
+    <div class="absolute inset-0 rounded-full border border-indigo-500/40 animate-ping"></div>
+    <div class="absolute inset-0 spin-slow">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-pink-400 shadow-lg shadow-pink-500"></div>
+    </div>
+    <div class="absolute inset-4 spin-counter">
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-lg shadow-cyan-500"></div>
+    </div>
+    <div class="absolute inset-2 rounded-full border border-dashed border-indigo-400/50"></div>
+    <div class="relative w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-2xl shadow-indigo-500/50">
+      <i class="fa-solid fa-earth-asia text-white text-5xl"></i>
+    </div>
+  </div>
+  <h1 class="mt-12 text-3xl font-extrabold gradient-text font-orbitron">Misbah Powerful AI</h1>
+  <p class="mt-2 text-xs text-indigo-300/70 tracking-[0.3em]">POWERING THE WORLD OF AI</p>
+  <div class="mt-6 flex items-center space-x-1.5">
+    <span class="w-2 h-2 rounded-full bg-indigo-400 typing-dot"></span>
+    <span class="w-2 h-2 rounded-full bg-purple-400 typing-dot"></span>
+    <span class="w-2 h-2 rounded-full bg-pink-400 typing-dot"></span>
+  </div>
+  <p class="absolute bottom-8 text-[10px] text-slate-500">Developer Of ❤️ HM Abu Sayed Misbah</p>
+</div>
+
+<!-- ═══════════ SETUP ═══════════ -->
+<div id="setup" class="hidden fixed inset-0 z-[900] flex items-center justify-center p-4 bg-slate-950/95">
+  <div class="w-full max-w-sm bg-slate-900 border border-indigo-500/30 rounded-3xl p-6 space-y-5 slide-up shadow-2xl shadow-indigo-500/20">
+    <div class="text-center space-y-2">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/40">
+        <i class="fa-solid fa-key text-white text-2xl"></i>
+      </div>
+      <h2 class="text-lg font-extrabold gradient-text">স্বাগতম!</h2>
+      <p class="text-[11px] text-slate-400 leading-relaxed">একবার API key দিন — চিরকালের জন্য সেভ হয়ে যাবে। শুধু আপনার ব্রাউজারেই থাকবে।</p>
+    </div>
+
+    <div class="space-y-3">
+      <div>
+        <label class="text-[10px] font-bold text-emerald-300 flex items-center mb-1">
+          <i class="fa-solid fa-gem mr-1"></i> Gemini API Key
+          <span class="ml-auto text-[8px] bg-emerald-600 text-white px-1.5 py-0.5 rounded">FREE</span>
+        </label>
+        <input id="setupGemini" type="password" placeholder="AIza..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
+        <a href="https://aistudio.google.com/apikey" target="_blank" class="text-[9px] text-indigo-400 underline mt-1 inline-block">
+          <i class="fa-solid fa-arrow-up-right-from-square mr-0.5"></i> ফ্রি key নিন (৩০ সেকেন্ড)
+        </a>
+      </div>
+      <div>
+        <label class="text-[10px] font-bold text-amber-300 mb-1 block">
+          <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> OpenAI Key <span class="text-slate-500">(optional)</span>
+        </label>
+        <input id="setupOpenAI" type="password" placeholder="sk-..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
+        <p class="text-[9px] text-slate-500 mt-1">না দিলেও চলবে — Gemini দিয়ে সব কাজ করবে</p>
+      </div>
+    </div>
+
+    <button onclick="finishSetup()" class="btn-glow w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-bold py-3 rounded-xl text-sm active:scale-95 transition shadow-lg shadow-indigo-500/30">
+      <i class="fa-solid fa-rocket mr-1"></i> শুরু করুন
+    </button>
+
+    <p class="text-[9px] text-slate-500 text-center leading-relaxed">
+      <i class="fa-solid fa-shield-halved mr-1 text-emerald-500"></i> Keys শুধু আপনার ব্রাউজারে সেভ হয় — কোথাও পাঠানো হয় না
+    </p>
+    <p class="text-[9px] text-slate-600 text-center">Developer Of ❤️ <span class="text-indigo-500">HM Abu Sayed Misbah</span></p>
+  </div>
+</div>
+
+<!-- ═══════════ MAIN APP ═══════════ -->
+<div id="app" class="hidden h-full flex flex-col max-w-md mx-auto relative" style="z-index:10;">
+
+  <!-- HEADER -->
+  <header class="glass px-3 py-2.5 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
+    <div class="flex items-center space-x-2">
+      <div class="w-9 h-9 rounded-xl p-0.5 bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 pulse-ring">
+        <div class="w-full h-full bg-slate-900 rounded-[9px] flex items-center justify-center">
+          <i class="fa-solid fa-earth-asia text-indigo-400 text-sm"></i>
+        </div>
+      </div>
+      <div>
+        <h1 class="text-sm font-extrabold gradient-text leading-tight">Misbah Powerful AI</h1>
+        <p id="headerStatus" class="text-[9px] text-indigo-400 font-semibold">Connecting...</p>
+      </div>
+    </div>
+    <div class="flex space-x-1.5">
+      <button onclick="openSettings()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center justify-center"><i class="fa-solid fa-gear"></i></button>
+      <button onclick="newChat()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center justify-center"><i class="fa-solid fa-plus"></i></button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 overflow-y-auto no-scrollbar p-3 bg-slate-950/60 relative" style="padding-bottom:80px;">
+
+    <!-- CHAT -->
+    <section id="view-chat" class="h-full flex flex-col">
+      <div class="flex items-center space-x-2 mb-2">
+        <button onclick="openModelPicker('chat')" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-left text-[11px] font-semibold hover:border-indigo-500 transition">
+          <i class="fa-solid fa-cube text-indigo-400 mr-1"></i>
+          <span id="chatModelLabel">Gemini · 2.5 Flash</span>
+          <i class="fa-solid fa-chevron-down float-right text-slate-500 mt-0.5"></i>
+        </button>
+      </div>
+      <div id="chatContainer" class="flex-1 overflow-y-auto no-scrollbar space-y-3 pb-2 min-h-[300px]"></div>
+      <div class="bg-slate-950/80 pt-2 sticky bottom-0">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-1.5 flex items-end space-x-1.5 focus-within:border-indigo-500 transition">
+          <button onclick="quickVoice()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm flex-shrink-0 flex items-center justify-center"><i class="fa-solid fa-microphone"></i></button>
+          <textarea id="userInput" rows="1" placeholder="যেকোনো প্রশ্ন করুন..." class="flex-1 bg-transparent text-xs text-slate-100 resize-none max-h-24 py-2 focus:outline-none"></textarea>
+          <button onclick="sendMessage()" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white text-sm flex-shrink-0 active:scale-95 transition flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMAGE -->
+    <section id="view-image" class="hidden space-y-3 fade-in">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
+            <h3 class="text-xs font-bold">AI Image Generator</h3>
+          </div>
+          <button onclick="openModelPicker('image')" class="text-[10px] bg-slate-800 px-2 py-1 rounded-lg text-purple-300">
+            <span id="imageModelLabel">Gemini · Nano Banana</span> ▾
+          </button>
+        </div>
+        <textarea id="imagePrompt" rows="3" placeholder="e.g., A cyberpunk Dhaka at night, neon rickshaws, monsoon rain, cinematic 8k..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-purple-500"></textarea>
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] text-slate-400">Aspect Ratio</span>
+          <select id="imageAspect" class="bg-slate-950 border border-slate-700 text-slate-300 text-[10px] rounded-lg px-2 py-1">
+            <option value="1:1">1:1</option>
+            <option value="16:9">16:9</option>
+            <option value="9:16">9:16</option>
+            <option value="4:3">4:3</option>
+            <option value="3:4">3:4</option>
+          </select>
+        </div>
+        <button onclick="generateImage()" class="btn-glow w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-2.5 rounded-xl text-xs active:scale-95 transition">
+          <i class="fa-solid fa-sparkles mr-1"></i> Generate Image
+        </button>
+      </div>
+      <div id="imageResults" class="space-y-3"></div>
+    </section>
+
+    <!-- VOICE -->
+    <section id="view-voice" class="hidden space-y-3 fade-in">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-volume-high text-emerald-400"></i>
+          <h3 class="text-xs font-bold">Text → Speech</h3>
+        </div>
+        <textarea id="ttsInput" rows="4" placeholder="যা শুনতে চান, এখানে লিখুন..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-emerald-500"></textarea>
+        <div class="grid grid-cols-2 gap-2 text-[10px]">
+          <label class="text-slate-400">Rate<input id="ttsRate" type="range" min=".5" max="2" step=".1" value="1" class="w-full accent-emerald-500" /></label>
+          <label class="text-slate-400">Pitch<input id="ttsPitch" type="range" min=".5" max="2" step=".1" value="1" class="w-full accent-emerald-500" /></label>
+        </div>
+        <div class="flex space-x-2">
+          <button onclick="doTTS()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg"><i class="fa-solid fa-play mr-1"></i> Speak</button>
+          <button onclick="stopTTS()" class="bg-slate-700 px-3 rounded-lg text-xs"><i class="fa-solid fa-stop"></i></button>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-microphone-lines text-blue-400"></i>
+          <h3 class="text-xs font-bold">Speech → Text</h3>
+        </div>
+        <div id="sttLive" class="min-h-[70px] bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-300 whitespace-pre-wrap">Tap "Start" and speak...</div>
+        <div class="flex space-x-2">
+          <button onclick="startSTT()" id="sttStartBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg"><i class="fa-solid fa-microphone mr-1"></i> Start</button>
+          <button onclick="stopSTT()" class="bg-slate-700 px-3 rounded-lg text-xs"><i class="fa-solid fa-stop"></i></button>
+          <button onclick="copySTT()" class="bg-slate-700 px-3 rounded-lg text-xs"><i class="fa-solid fa-copy"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALL -->
+    <section id="view-call" class="hidden fade-in">
+      <div class="relative rounded-3xl overflow-hidden border border-slate-800 bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950" style="min-height:420px;">
+        <video id="callVideo" autoplay muted playsinline class="hidden absolute inset-0 w-full h-full object-cover"></video>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 space-y-3">
+          <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center pulse-ring">
+            <i class="fa-solid fa-robot text-white text-3xl"></i>
+          </div>
+          <h3 class="text-base font-bold gradient-text">Misbah AI</h3>
+          <p id="callStatus" class="text-xs text-slate-400">"Start Call" চাপুন — কথা বলে AI-র সাথে</p>
+          <div id="callTranscript" class="w-full max-h-32 overflow-y-auto no-scrollbar text-left text-[11px] space-y-1.5 px-2"></div>
+        </div>
+        <div class="absolute bottom-3 left-0 right-0 flex justify-center space-x-3">
+          <button onclick="startCall('voice')" class="w-14 h-14 rounded-full bg-emerald-600 text-white shadow-xl active:scale-95 transition flex items-center justify-center"><i class="fa-solid fa-phone text-lg"></i></button>
+          <button onclick="startCall('video')" class="w-14 h-14 rounded-full bg-indigo-600 text-white shadow-xl active:scale-95 transition flex items-center justify-center"><i class="fa-solid fa-video text-lg"></i></button>
+          <button onclick="endCall()" class="w-14 h-14 rounded-full bg-red-600 text-white shadow-xl active:scale-95 transition flex items-center justify-center"><i class="fa-solid fa-phone-slash text-lg"></i></button>
+        </div>
+      </div>
+      <p class="text-[10px] text-slate-500 text-center mt-2 px-3">আপনার কথা → AI → কণ্ঠে উত্তর → আবার শুনবে</p>
+    </section>
+
+    <!-- TOOLS -->
+    <section id="view-tools" class="hidden space-y-3 fade-in">
+      <div class="border-b border-slate-800 pb-2">
+        <h3 class="text-xs font-bold"><i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Prompt Tools</h3>
+        <p class="text-[10px] text-slate-400">এক ট্যাপে প্রম্পট লোড হবে</p>
+      </div>
+      <div id="toolsGrid" class="grid grid-cols-2 gap-2"></div>
+    </section>
+
+    <!-- SAVED -->
+    <section id="view-saved" class="hidden space-y-3 fade-in">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 class="text-xs font-bold"><i class="fa-solid fa-bookmark text-indigo-400 mr-1"></i> Saved Items</h3>
+        <button onclick="clearSaved()" class="text-[10px] text-red-400 font-bold">Clear All</button>
+      </div>
+      <div id="savedContainer" class="space-y-2"></div>
+    </section>
+  </main>
+
+  <!-- DEV CREDIT (above nav) -->
+  <div class="pointer-events-none text-center py-1 bg-gradient-to-t from-slate-950 to-transparent">
+    <p class="text-[9px] text-slate-500">Developer Of ❤️ <span class="text-indigo-400 font-semibold">HM Abu Sayed Misbah</span></p>
+  </div>
+
+  <!-- NAV -->
+  <nav class="glass border-t border-slate-800 flex-shrink-0">
+    <div class="grid grid-cols-6 text-[9px] font-bold text-slate-500">
+      <button onclick="switchTab('chat')"  data-tab="chat"  class="tab-btn active flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-comments text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Chat</button>
+      <button onclick="switchTab('image')" data-tab="image" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-image text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Image</button>
+      <button onclick="switchTab('voice')" data-tab="voice" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-volume-high text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Voice</button>
+      <button onclick="switchTab('call')"  data-tab="call"  class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-phone text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Call</button>
+      <button onclick="switchTab('tools')" data-tab="tools" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-bolt text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Tools</button>
+      <button onclick="switchTab('saved')" data-tab="saved" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-bookmark text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Saved</button>
+    </div>
+  </nav>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="hidden fixed inset-0 bg-black/85 z-[950] flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto no-scrollbar p-5 space-y-4 slide-up">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
       <h3 class="font-bold text-sm gradient-text"><i class="fa-solid fa-gear mr-1"></i> Settings</h3>
       <button onclick="closeSettings()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <p class="text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-300 rounded-lg p-2 leading-relaxed">
-      <i class="fa-solid fa-shield-halved mr-1"></i>
-      API key শুধু <b>আপনার ব্রাউজারে</b> 저장 হয়, কোথাও পাঠানো হয় না। পাবলিক কম্পিউটারে ব্যবহারের পর Settings → Clear চাপুন।
-    </p>
-
-    <!-- Gemini (free) -->
     <div class="space-y-1">
-      <label class="text-[11px] font-bold text-emerald-300 flex items-center">
-        <i class="fa-solid fa-gem mr-1"></i> Gemini API Key
-        <span class="ml-auto text-[9px] bg-emerald-600 text-white px-1.5 py-0.5 rounded">FREE</span>
-      </label>
-      <input id="keyGemini" type="password" placeholder="AIza…" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
-      <a class="text-[9px] text-indigo-400 underline" target="_blank" href="https://aistudio.google.com/apikey">aistudio.google.com/apikey</a>
+      <label class="text-[11px] font-bold text-emerald-300 flex items-center mb-1"><i class="fa-solid fa-gem mr-1"></i> Gemini API Key</label>
+      <input id="keyGemini" type="password" placeholder="AIza..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
     </div>
 
-    <!-- OpenAI -->
     <div class="space-y-1">
-      <label class="text-[11px] font-bold text-emerald-400"><i class="fa-solid fa-brain mr-1"></i> OpenAI Key (GPT, DALL·E, Whisper, TTS)</label>
-      <input id="keyOpenAI" type="password" placeholder="sk-…" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
-      <a class="text-[9px] text-indigo-400 underline" target="_blank" href="https://platform.openai.com/api-keys">platform.openai.com/api-keys</a>
+      <label class="text-[11px] font-bold text-amber-300 mb-1 block"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> OpenAI Key <span class="text-slate-500 font-normal">(optional)</span></label>
+      <input id="keyOpenai" type="password" placeholder="sk-..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
     </div>
 
-    <!-- Grok -->
     <div class="space-y-1">
-      <label class="text-[11px] font-bold text-orange-400"><i class="fa-solid fa-bolt mr-1"></i> xAI Grok Key</label>
-      <input id="keyGrok" type="password" placeholder="xai-…" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
-      <a class="text-[9px] text-indigo-400 underline" target="_blank" href="https://console.x.ai">console.x.ai</a>
-    </div>
-
-    <!-- Claude -->
-    <div class="space-y-1">
-      <label class="text-[11px] font-bold text-amber-400"><i class="fa-solid fa-feather mr-1"></i> Anthropic Claude Key</label>
-      <input id="keyClaude" type="password" placeholder="sk-ant-…" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
-      <a class="text-[9px] text-indigo-400 underline" target="_blank" href="https://console.anthropic.com">console.anthropic.com</a>
-    </div>
-
-    <!-- Voice language -->
-    <div class="space-y-1">
-      <label class="text-[11px] font-bold text-slate-300">Voice Language</label>
+      <label class="text-[11px] font-bold text-slate-300 mb-1 block">Voice Language</label>
       <select id="voiceLangSel" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-xs">
         <option value="bn-BD">বাংলা (বাংলাদেশ)</option>
         <option value="bn-IN">বাংলা (ভারত)</option>
@@ -114,17 +371,17 @@ tailwind.config = {
     </div>
 
     <div class="flex space-x-2 pt-1">
-      <button onclick="saveSettings()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 rounded-lg">
-        <i class="fa-solid fa-floppy-disk mr-1"></i> Save
-      </button>
+      <button onclick="saveSettings()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 rounded-lg"><i class="fa-solid fa-floppy-disk mr-1"></i> Save</button>
       <button onclick="clearKeys()" class="px-3 bg-red-900/50 text-red-300 text-xs rounded-lg">Clear</button>
     </div>
+
+    <p class="text-[9px] text-slate-500 text-center pt-2 border-t border-slate-800">Developer Of ❤️ <span class="text-indigo-400">HM Abu Sayed Misbah</span></p>
   </div>
 </div>
 
-<!-- ========== MODEL PICKER MODAL ========== -->
-<div id="modelModal" class="hidden fixed inset-0 bg-black/80 z-[150] flex items-end justify-center">
-  <div class="bg-slate-900 border-t border-slate-700 rounded-t-2xl w-full max-w-md max-h-[70vh] overflow-y-auto no-scrollbar p-4 space-y-3">
+<!-- MODEL PICKER -->
+<div id="modelModal" class="hidden fixed inset-0 bg-black/85 z-[950] flex items-end justify-center">
+  <div class="bg-slate-900 border-t border-slate-700 rounded-t-2xl w-full max-w-md max-h-[75vh] overflow-y-auto no-scrollbar p-4 space-y-3 slide-up">
     <div class="flex justify-between items-center border-b border-slate-800 pb-2">
       <h3 id="modelModalTitle" class="text-sm font-bold gradient-text">মডেল বাছুন</h3>
       <button onclick="closeModelPicker()" class="text-slate-400"><i class="fa-solid fa-xmark"></i></button>
@@ -134,313 +391,31 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- ========== HEADER ========== -->
-<header class="glass px-3 py-2.5 border-b border-slate-800 flex items-center justify-between sticky top-0 z-30">
-  <div class="flex items-center space-x-2">
-    <div class="w-9 h-9 rounded-xl p-0.5 bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 pulse-ring">
-      <div class="w-full h-full bg-slate-900 rounded-[9px] flex items-center justify-center">
-        <i class="fa-solid fa-robot text-indigo-400 text-sm"></i>
-      </div>
-    </div>
-    <div>
-      <h1 class="text-sm font-extrabold gradient-text leading-tight">Misbah Powerful AI</h1>
-      <p id="headerStatus" class="text-[9px] text-indigo-400 font-semibold">Initializing…</p>
-    </div>
-  </div>
-  <div class="flex space-x-1.5">
-    <button onclick="openSettings()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs"><i class="fa-solid fa-gear"></i></button>
-    <button onclick="newChat()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs"><i class="fa-solid fa-plus"></i></button>
-  </div>
-</header>
-
-<!-- ========== MAIN ========== -->
-<main class="flex-1 overflow-y-auto no-scrollbar p-3 pb-24 bg-slate-950">
-
-  <!-- CHAT -->
-  <section id="viewChat" class="h-full flex flex-col">
-    <div class="flex items-center space-x-2 mb-2">
-      <button onclick="openModelPicker('chat')" id="chatModelBtn" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-left text-[11px] font-semibold hover:border-indigo-500 transition">
-        <i class="fa-solid fa-cube text-indigo-400 mr-1"></i>
-        <span id="chatModelLabel">Gemini · 2.5 Flash</span>
-        <i class="fa-solid fa-chevron-down float-right text-slate-500"></i>
-      </button>
-      <button onclick="showChatList()" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 text-xs"><i class="fa-solid fa-list"></i></button>
-    </div>
-    <div id="chatContainer" class="flex-1 overflow-y-auto no-scrollbar space-y-3"></div>
-    <div class="bg-slate-950 pt-2 sticky bottom-0">
-      <div class="bg-slate-900 border border-slate-700 rounded-2xl p-1.5 flex items-end space-x-1.5 focus-within:border-indigo-500 transition">
-        <button onclick="quickVoice()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm flex-shrink-0"><i class="fa-solid fa-microphone"></i></button>
-        <textarea id="userInput" rows="1" placeholder="যেকোনো প্রশ্ন করুন…" class="flex-1 bg-transparent text-xs text-slate-100 resize-none max-h-24 py-2 focus:outline-none"></textarea>
-        <button onclick="sendMessage()" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white text-sm flex-shrink-0 active:scale-95 transition"><i class="fa-solid fa-paper-plane"></i></button>
-      </div>
-    </div>
-  </section>
-
-  <!-- IMAGE -->
-  <section id="viewImage" class="hidden space-y-3 fade-in">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
-          <h3 class="text-xs font-bold">AI Image Generator</h3>
-        </div>
-        <button onclick="openModelPicker('image')" id="imageModelBtn" class="text-[10px] bg-slate-800 px-2 py-1 rounded-lg text-indigo-300">
-          <span id="imageModelLabel">Gemini · Nano Banana</span> ▾
-        </button>
-      </div>
-      <textarea id="imagePrompt" rows="3" placeholder="e.g., A cyberpunk Dhaka at night, neon rickshaws, monsoon rain, cinematic 8k…" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-purple-500"></textarea>
-      <div class="flex justify-between items-center">
-        <span class="text-[10px] text-slate-400">Aspect Ratio</span>
-        <select id="imageAspect" class="bg-slate-950 border border-slate-700 text-slate-300 text-[10px] rounded-lg px-2 py-1">
-          <option value="1:1">1:1</option>
-          <option value="16:9">16:9</option>
-          <option value="9:16">9:16</option>
-          <option value="4:3">4:3</option>
-          <option value="3:4">3:4</option>
-        </select>
-      </div>
-      <button onclick="generateImage()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-2.5 rounded-xl text-xs active:scale-95 transition">
-        <i class="fa-solid fa-sparkles mr-1"></i> Generate Image
-      </button>
-      <p class="text-[9px] text-amber-400/80"><i class="fa-solid fa-shield-halved mr-1"></i> Explicit / nude কনটেন্ট ব্লক করা হয়।</p>
-    </div>
-    <div id="imageResults" class="space-y-3"></div>
-  </section>
-
-  <!-- VIDEO -->
-  <section id="viewVideo" class="hidden space-y-3 fade-in">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-film text-pink-400"></i>
-          <h3 class="text-xs font-bold">AI Video Generator</h3>
-        </div>
-        <button onclick="openModelPicker('video')" id="videoModelBtn" class="text-[10px] bg-slate-800 px-2 py-1 rounded-lg text-pink-300">
-          <span id="videoModelLabel">Gemini · Veo 3</span> ▾
-        </button>
-      </div>
-      <textarea id="videoPrompt" rows="3" placeholder="e.g., Waves crashing on a tropical beach at sunset, drone shot, 4K cinematic…" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-pink-500"></textarea>
-      <div class="flex justify-between items-center">
-        <span class="text-[10px] text-slate-400">Aspect</span>
-        <select id="videoAspect" class="bg-slate-950 border border-slate-700 text-slate-300 text-[10px] rounded-lg px-2 py-1">
-          <option value="16:9">16:9</option>
-          <option value="9:16">9:16</option>
-          <option value="1:1">1:1</option>
-        </select>
-      </div>
-      <button onclick="generateVideo()" class="w-full bg-gradient-to-r from-pink-600 to-red-600 text-white font-bold py-2.5 rounded-xl text-xs active:scale-95 transition">
-        <i class="fa-solid fa-video mr-1"></i> Generate Video (~1-3 min)
-      </button>
-      <p class="text-[10px] text-amber-400/80 leading-relaxed">
-        <i class="fa-solid fa-circle-info mr-1"></i>
-        Veo 3 Gemini API-তে paid tier দরকার। Free key দিলে স্পষ্ট error আসবে। কাজ করলে ভিডিওর লিংক নিচে আসবে।
-      </p>
-    </div>
-    <div id="videoResults" class="space-y-3"></div>
-  </section>
-
-  <!-- VOICE -->
-  <section id="viewVoice" class="hidden space-y-3 fade-in">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-      <div class="flex items-center space-x-2">
-        <i class="fa-solid fa-volume-high text-emerald-400"></i>
-        <h3 class="text-xs font-bold">Text → Speech</h3>
-      </div>
-      <textarea id="ttsInput" rows="4" placeholder="যা শুনতে চান, এখানে লিখুন…" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-emerald-500"></textarea>
-      <div class="grid grid-cols-2 gap-2 text-[10px]">
-        <label class="text-slate-400">Engine
-          <select id="ttsEngine" class="w-full bg-slate-950 border border-slate-700 rounded px-1 py-1 mt-1">
-            <option value="browser">Browser (Free)</option>
-            <option value="openai">OpenAI TTS</option>
-          </select>
-        </label>
-        <label class="text-slate-400">Voice
-          <select id="ttsVoice" class="w-full bg-slate-950 border border-slate-700 rounded px-1 py-1 mt-1"></select>
-        </label>
-      </div>
-      <div class="grid grid-cols-2 gap-2 text-[10px]">
-        <label class="text-slate-400">Rate <input id="ttsRate" type="range" min=".5" max="2" step=".1" value="1" class="w-full accent-emerald-500" /></label>
-        <label class="text-slate-400">Pitch <input id="ttsPitch" type="range" min=".5" max="2" step=".1" value="1" class="w-full accent-emerald-500" /></label>
-      </div>
-      <div class="flex space-x-2">
-        <button onclick="doTTS()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg"><i class="fa-solid fa-play mr-1"></i> Speak</button>
-        <button onclick="stopTTS()" class="bg-slate-700 px-3 rounded-lg text-xs"><i class="fa-solid fa-stop"></i></button>
-      </div>
-    </div>
-
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-      <div class="flex items-center space-x-2">
-        <i class="fa-solid fa-microphone-lines text-blue-400"></i>
-        <h3 class="text-xs font-bold">Speech → Text</h3>
-      </div>
-      <div id="sttLive" class="min-h-[70px] bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-300 whitespace-pre-wrap">Tap "Start" and speak…</div>
-      <div class="flex space-x-2">
-        <button onclick="startSTT()" id="sttStartBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg"><i class="fa-solid fa-microphone mr-1"></i> Start</button>
-        <button onclick="stopSTT()" class="bg-slate-700 px-3 rounded-lg text-xs"><i class="fa-solid fa-stop"></i></button>
-        <button onclick="copyText(State.stt.buffer)" class="bg-slate-700 px-3 rounded-lg text-xs"><i class="fa-solid fa-copy"></i></button>
-      </div>
-    </div>
-  </section>
-
-  <!-- CALL -->
-  <section id="viewCall" class="hidden fade-in h-full flex flex-col">
-    <div class="flex-1 relative rounded-3xl overflow-hidden border border-slate-800 bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950">
-      <video id="callVideo" autoplay muted playsinline class="hidden absolute inset-0 w-full h-full object-cover"></video>
-      <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 space-y-3">
-        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center pulse-ring">
-          <i class="fa-solid fa-robot text-white text-3xl"></i>
-        </div>
-        <h3 class="text-base font-bold gradient-text">Misbah AI</h3>
-        <p id="callStatus" class="text-xs text-slate-400">"Start Call" চাপুন — কথা বলে AI-র সাথে</p>
-        <div id="callTranscript" class="w-full max-h-40 overflow-y-auto no-scrollbar text-left text-[11px] space-y-1.5 px-2"></div>
-      </div>
-      <div class="absolute bottom-3 left-0 right-0 flex justify-center space-x-3">
-        <button onclick="startCall('voice')" class="w-14 h-14 rounded-full bg-emerald-600 text-white shadow-xl active:scale-95 transition"><i class="fa-solid fa-phone text-lg"></i></button>
-        <button onclick="startCall('video')" class="w-14 h-14 rounded-full bg-indigo-600 text-white shadow-xl active:scale-95 transition"><i class="fa-solid fa-video text-lg"></i></button>
-        <button onclick="endCall()" class="w-14 h-14 rounded-full bg-red-600 text-white shadow-xl active:scale-95 transition"><i class="fa-solid fa-phone-slash text-lg"></i></button>
-      </div>
-    </div>
-    <p class="text-[10px] text-slate-500 text-center mt-2 px-3 leading-relaxed">
-      Voice loop: আপনার কথা → STT → LLM → TTS → আবার শুনবে।<br>
-      <span class="text-amber-500">AI-এর মুখ নড়ানো লিপ-সিঙ্ক ভিডিও কল করতে HeyGen/D-ID-এর paid API লাগবে।</span>
-    </p>
-  </section>
-
-  <!-- TOOLS -->
-  <section id="viewTools" class="hidden space-y-3 fade-in">
-    <div class="border-b border-slate-800 pb-2">
-      <h3 class="text-xs font-bold"><i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Prompt Tools</h3>
-      <p class="text-[10px] text-slate-400">এক ট্যাপে প্রম্পট লোড হবে</p>
-    </div>
-    <div id="toolsGrid" class="grid grid-cols-2 gap-2"></div>
-  </section>
-
-  <!-- SAVED -->
-  <section id="viewSaved" class="hidden space-y-3 fade-in">
-    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-      <h3 class="text-xs font-bold"><i class="fa-solid fa-bookmark text-indigo-400 mr-1"></i> Saved Items</h3>
-      <button onclick="clearSaved()" class="text-[10px] text-red-400 font-bold">Clear All</button>
-    </div>
-    <div id="savedContainer" class="space-y-2"></div>
-  </section>
-
-</main>
-
-<!-- ========== BOTTOM NAV ========== -->
-<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 z-40">
-  <div class="grid grid-cols-7 text-[9px] font-bold text-slate-500">
-    <button onclick="switchTab('chat')"  data-tab="chat"  class="tab-btn active flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-comments text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Chat</button>
-    <button onclick="switchTab('image')" data-tab="image" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-image text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Image</button>
-    <button onclick="switchTab('video')" data-tab="video" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-film text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Video</button>
-    <button onclick="switchTab('voice')" data-tab="voice" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-volume-high text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Voice</button>
-    <button onclick="switchTab('call')"  data-tab="call"  class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-phone text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Call</button>
-    <button onclick="switchTab('tools')" data-tab="tools" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-bolt text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Tools</button>
-    <button onclick="switchTab('saved')" data-tab="saved" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-bookmark text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Saved</button>
-  </div>
-</nav>
+<!-- TOAST -->
+<div id="toast" class="fixed top-4 left-1/2 z-[999] bg-slate-900 text-white border border-indigo-500/40 text-xs px-4 py-2.5 rounded-full shadow-2xl flex items-center space-x-2 -translate-x-1/2">
+  <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+  <span id="toastMsg" class="font-semibold">মেসেজ</span>
+</div>
 
 <script>
-/* ============================================================
-   1. PROVIDER REGISTRY
-   ============================================================ */
-const PROVIDERS = {
-  gemini: {
-    label: 'Gemini', icon: 'fa-gem', color: 'text-blue-400', free: true,
-    chatModels: [
-      { id:'gemini-2.5-flash', name:'Gemini 2.5 Flash' },
-      { id:'gemini-2.5-pro',   name:'Gemini 2.5 Pro' },
-      { id:'gemini-2.0-flash', name:'Gemini 2.0 Flash' },
-    ],
-    imageModels: [
-      { id:'gemini-2.5-flash-image-preview', name:'Nano Banana (2.5 Flash Image)' },
-      { id:'imagen-4.0-generate-001',        name:'Imagen 4' },
-    ],
-    videoModels: [
-      { id:'veo-3.0-generate-001', name:'Veo 3' },
-      { id:'veo-2.0-generate-001', name:'Veo 2' },
-    ],
-  },
-  openai: {
-    label: 'OpenAI', icon: 'fa-brain', color: 'text-emerald-400', free: false,
-    chatModels: [
-      { id:'gpt-4o',        name:'GPT-4o' },
-      { id:'gpt-4o-mini',   name:'GPT-4o Mini' },
-      { id:'gpt-4-turbo',   name:'GPT-4 Turbo' },
-      { id:'o1-mini',       name:'o1 Mini' },
-    ],
-    imageModels: [{ id:'dall-e-3', name:'DALL·E 3' }],
-    videoModels: [],
-  },
-  grok: {
-    label: 'Grok', icon: 'fa-bolt', color: 'text-orange-400', free: false,
-    chatModels: [
-      { id:'grok-2-latest',    name:'Grok 2' },
-      { id:'grok-vision-beta', name:'Grok Vision' },
-      { id:'grok-beta',        name:'Grok Beta' },
-    ],
-    imageModels: [], videoModels: [],
-  },
-  claude: {
-    label: 'Claude', icon: 'fa-feather', color: 'text-amber-400', free: false,
-    chatModels: [
-      { id:'claude-3-5-sonnet-latest', name:'Claude 3.5 Sonnet' },
-      { id:'claude-3-5-haiku-latest',  name:'Claude 3.5 Haiku' },
-      { id:'claude-3-opus-latest',     name:'Claude 3 Opus' },
-    ],
-    imageModels: [], videoModels: [],
-  },
-};
+/* ═══════════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
 
-/* ============================================================
-   2. STATE (persisted)
-   ============================================================ */
-const State = {
-  keys: {
-    gemini: localStorage.getItem('mpa_key_gemini') || '',
-    openai: localStorage.getItem('mpa_key_openai') || '',
-    grok:   localStorage.getItem('mpa_key_grok')   || '',
-    claude: localStorage.getItem('mpa_key_claude') || '',
-  },
-  selection: {
-    chat:  { provider:'gemini', model:'gemini-2.5-flash' },
-    image: { provider:'gemini', model:'gemini-2.5-flash-image-preview' },
-    video: { provider:'gemini', model:'veo-3.0-generate-001' },
-  },
-  voiceLang: localStorage.getItem('mpa_voice_lang') || 'bn-BD',
-  chats: JSON.parse(localStorage.getItem('mpa_chats') || '[]'),
-  activeChatId: localStorage.getItem('mpa_active_chat') || null,
-  saved: JSON.parse(localStorage.getItem('mpa_saved') || '[]'),
-  stt: { recognition: null, buffer: '' },
-  call: { active: false, mode: 'voice', stream: null, recognition: null, speaking: false },
-  recorder: null, mediaStream: null, mediaChunks: [],
-};
-
-function persistKeys() {
-  Object.keys(State.keys).forEach(k => localStorage.setItem('mpa_key_' + k, State.keys[k]));
-}
-function persistChats() {
-  localStorage.setItem('mpa_chats', JSON.stringify(State.chats.slice(-20)));
-  localStorage.setItem('mpa_active_chat', State.activeChatId || '');
-}
-function persistSaved() {
-  State.saved = State.saved.slice(0, 40);
-  localStorage.setItem('mpa_saved', JSON.stringify(State.saved));
-}
-
-/* ============================================================
-   3. UTILITIES
-   ============================================================ */
 function showToast(msg, icon = 'fa-circle-check', color = 'text-emerald-400') {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').innerText = msg;
-  document.getElementById('toastIcon').className = `fa-solid ${icon} ${color}`;
-  t.classList.remove('hidden');
+  const t = $('toast');
+  $('toastMsg').innerText = msg;
+  $('toastIcon').className = `fa-solid ${icon} ${color}`;
+  t.classList.add('show');
   clearTimeout(t._tid);
-  t._tid = setTimeout(() => t.classList.add('hidden'), 2600);
+  t._tid = setTimeout(() => t.classList.remove('show'), 2600);
 }
+
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
+
 function renderMarkdown(t) {
   let s = escapeHtml(t);
   s = s.replace(/```(\w+)?\n?([\s\S]*?)```/g, (_,l,c) => `<pre><code>${c.trim()}</code></pre>`);
@@ -454,274 +429,239 @@ function renderMarkdown(t) {
   s = s.replace(/\n/g, '<br>');
   return s;
 }
+
 function copyText(txt) {
-  navigator.clipboard.writeText(txt).then(() => showToast('কপি হয়েছে', 'fa-copy'))
+  navigator.clipboard.writeText(txt)
+    .then(() => showToast('কপি হয়েছে', 'fa-copy'))
     .catch(() => showToast('ব্যর্থ', 'fa-triangle-exclamation', 'text-red-400'));
 }
 
-/* ============================================================
-   4. INIT
-   ============================================================ */
+/* ═══════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════ */
+const State = {
+  keys: {
+    gemini: localStorage.getItem('mpa_gemini') || '',
+    openai: localStorage.getItem('mpa_openai') || ''
+  },
+  selection: {
+    chat:  { provider: 'gemini', model: 'gemini-2.5-flash' },
+    image: { provider: 'gemini', model: 'gemini-2.5-flash-image-preview' }
+  },
+  voiceLang: localStorage.getItem('mpa_lang') || 'bn-BD',
+  messages: JSON.parse(localStorage.getItem('mpa_messages') || '[]'),
+  saved: JSON.parse(localStorage.getItem('mpa_saved') || '[]'),
+  stt: { recognition: null, buffer: '' },
+  call: { active: false, stream: null, recognition: null, speaking: false }
+};
+
+const PROVIDERS = {
+  gemini: {
+    label: 'Gemini', icon: 'fa-gem', free: true,
+    chatModels: [
+      { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
+      { id: 'gemini-2.5-pro',   name: 'Gemini 2.5 Pro' },
+      { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash' }
+    ],
+    imageModels: [{ id: 'gemini-2.5-flash-image-preview', name: 'Nano Banana' }]
+  },
+  openai: {
+    label: 'OpenAI', icon: 'fa-brain', free: false,
+    chatModels: [
+      { id: 'gpt-4o',      name: 'GPT-4o' },
+      { id: 'gpt-4o-mini', name: 'GPT-4o Mini' },
+      { id: 'gpt-4-turbo', name: 'GPT-4 Turbo' }
+    ],
+    imageModels: [{ id: 'dall-e-3', name: 'DALL·E 3' }]
+  }
+};
+
+/* ═══════════════════════════════════════════════════
+   BOOT
+   ═══════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', () => {
   startClock();
-  renderTools();
-  renderSaved();
-  populateBrowserVoices();
-  updateChatModelLabel();
-  updateImageModelLabel();
-  updateVideoModelLabel();
-  loadChat();
-  document.getElementById('userInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  });
-  document.getElementById('userInput').addEventListener('input', e => {
-    e.target.style.height = 'auto';
-    e.target.style.height = Math.min(e.target.scrollHeight, 96) + 'px';
-  });
-  if (!State.keys.gemini && !State.keys.openai) {
-    setTimeout(() => { showToast('Settings থেকে API key দিন', 'fa-key', 'text-amber-400'); openSettings(); }, 700);
-  }
+
+  setTimeout(() => {
+    const splash = $('splash');
+    splash.style.opacity = '0';
+    setTimeout(() => splash.remove(), 500);
+
+    setTimeout(() => {
+      if (!State.keys.gemini && !State.keys.openai) {
+        $('setup').classList.remove('hidden');
+      } else {
+        showApp();
+      }
+    }, 300);
+  }, 2600);
 });
 
+function finishSetup() {
+  const g = $('setupGemini').value.trim();
+  const o = $('setupOpenAI').value.trim();
+  if (!g && !o) return showToast('অন্তত একটা key দিন', 'fa-triangle-exclamation', 'text-red-400');
+  if (g) { State.keys.gemini = g; localStorage.setItem('mpa_gemini', g); }
+  if (o) { State.keys.openai = o; localStorage.setItem('mpa_openai', o); }
+  showApp();
+  showToast('চালু হয়েছে! 🚀', 'fa-rocket');
+}
+
+function showApp() {
+  $('app').classList.remove('hidden');
+  $('setup').classList.add('hidden');
+  renderTools();
+  renderSaved();
+  initVoices();
+  updateChatModelLabel();
+  updateImageModelLabel();
+  if (State.messages.length) loadMessages();
+  else renderWelcome();
+}
+
 function startClock() {
-  const el = document.getElementById('headerStatus');
+  const el = $('headerStatus');
+  if (!el) return;
   const tick = () => {
     const t = new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
     el.innerHTML = `<i class="fa-solid fa-circle text-emerald-400 text-[6px] mr-1"></i>Online • ${t}`;
   };
-  tick(); setInterval(tick, 1000);
+  tick();
+  setInterval(tick, 1000);
 }
 
-/* ============================================================
-   5. TABS
-   ============================================================ */
+/* ═══════════════════════════════════════════════════
+   TABS
+   ═══════════════════════════════════════════════════ */
 function switchTab(tab) {
   document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('view' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+  $('view-' + tab).classList.remove('hidden');
   document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
   if (tab === 'saved') renderSaved();
-  if (tab === 'voice') populateBrowserVoices();
+  if (tab === 'voice') initVoices();
 }
 
-/* ============================================================
-   6. SETTINGS
-   ============================================================ */
+/* ═══════════════════════════════════════════════════
+   SETTINGS
+   ═══════════════════════════════════════════════════ */
 function openSettings() {
-  ['gemini','openai','grok','claude'].forEach(p => {
-    document.getElementById('key' + p.charAt(0).toUpperCase() + p.slice(1)).value = State.keys[p] || '';
-  });
-  document.getElementById('voiceLangSel').value = State.voiceLang;
-  document.getElementById('settingsModal').classList.remove('hidden');
+  $('keyGemini').value = State.keys.gemini;
+  $('keyOpenai').value = State.keys.openai;
+  $('voiceLangSel').value = State.voiceLang;
+  $('settingsModal').classList.remove('hidden');
 }
-function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
+function closeSettings() { $('settingsModal').classList.add('hidden'); }
 function saveSettings() {
-  State.keys.gemini = document.getElementById('keyGemini').value.trim();
-  State.keys.openai = document.getElementById('keyOpenAI').value.trim();
-  State.keys.grok   = document.getElementById('keyGrok').value.trim();
-  State.keys.claude = document.getElementById('keyClaude').value.trim();
-  State.voiceLang   = document.getElementById('voiceLangSel').value;
-  localStorage.setItem('mpa_voice_lang', State.voiceLang);
-  persistKeys();
+  State.keys.gemini = $('keyGemini').value.trim();
+  State.keys.openai = $('keyOpenai').value.trim();
+  State.voiceLang   = $('voiceLangSel').value;
+  localStorage.setItem('mpa_gemini', State.keys.gemini);
+  localStorage.setItem('mpa_openai', State.keys.openai);
+  localStorage.setItem('mpa_lang', State.voiceLang);
   closeSettings();
-  showToast('সেটিংস সংরক্ষিত', 'fa-floppy-disk');
+  showToast('সেটিংস সেভ', 'fa-floppy-disk');
 }
 function clearKeys() {
-  if (!confirm('সব API key মুছে ফেলবেন?')) return;
-  State.keys = { gemini:'', openai:'', grok:'', claude:'' };
-  persistKeys(); closeSettings();
-  showToast('মুছে ফেলা হয়েছে', 'fa-trash');
+  if (!confirm('সব API key মুছবেন?')) return;
+  State.keys = { gemini:'', openai:'' };
+  localStorage.removeItem('mpa_gemini');
+  localStorage.removeItem('mpa_openai');
+  closeSettings();
+  showToast('মুছে ফেলা হয়েছে');
 }
 
-/* ============================================================
-   7. MODEL PICKER
-   ============================================================ */
+/* ═══════════════════════════════════════════════════
+   MODEL PICKER
+   ═══════════════════════════════════════════════════ */
 let pickerTarget = 'chat', pickerProvider = 'gemini';
+
 function openModelPicker(target) {
   pickerTarget = target;
   pickerProvider = State.selection[target].provider;
-  document.getElementById('modelModalTitle').innerText = `মডেল বাছুন — ${target.toUpperCase()}`;
-  document.getElementById('modelModal').classList.remove('hidden');
+  $('modelModalTitle').innerText = `মডেল — ${target === 'chat' ? 'CHAT' : 'IMAGE'}`;
+  $('modelModal').classList.remove('hidden');
   renderPicker();
 }
-function closeModelPicker() { document.getElementById('modelModal').classList.add('hidden'); }
+function closeModelPicker() { $('modelModal').classList.add('hidden'); }
 
 function renderPicker() {
   const modelKey = pickerTarget + 'Models';
-  const tabs = document.getElementById('providerTabs');
-  tabs.innerHTML = Object.entries(PROVIDERS)
-    .filter(([k,p]) => (p[modelKey] || []).length > 0)
-    .map(([k,p]) => {
-      const active = k === pickerProvider;
-      const keySet = !!State.keys[k];
-      return `<button onclick="pickerProvider='${k}';renderPicker()"
-        class="px-3 py-1.5 rounded-full text-[10px] font-bold whitespace-nowrap border ${active ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-800 border-slate-700 text-slate-300'}">
-        <i class="fa-solid ${p.icon} mr-1"></i>${p.label}
-        ${p.free ? '<span class="ml-1 text-[8px] bg-emerald-600 px-1 rounded">FREE</span>' : ''}
-        ${!keySet ? '<i class="fa-solid fa-key ml-1 text-[8px] text-amber-400"></i>' : ''}
-      </button>`;
-    }).join('');
+  const tabs = $('providerTabs');
+  tabs.innerHTML = Object.entries(PROVIDERS).map(([k, p]) => {
+    const active = k === pickerProvider;
+    const hasKey = !!State.keys[k];
+    return `<button onclick="pickerProvider='${k}';renderPicker()"
+      class="px-3 py-1.5 rounded-full text-[10px] font-bold whitespace-nowrap border ${active ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-800 border-slate-700 text-slate-300'}">
+      <i class="fa-solid ${p.icon} mr-1"></i>${p.label}
+      ${p.free ? '<span class="ml-1 text-[8px] bg-emerald-600 px-1 rounded">FREE</span>' : ''}
+      ${!hasKey ? '<i class="fa-solid fa-key ml-1 text-[8px] text-amber-400"></i>' : ''}
+    </button>`;
+  }).join('');
 
   const provider = PROVIDERS[pickerProvider];
   const models = provider[modelKey] || [];
-  const list = document.getElementById('modelList');
   const current = State.selection[pickerTarget];
 
-  list.innerHTML = models.map(m => {
+  $('modelList').innerHTML = models.map(m => {
     const selected = current.provider === pickerProvider && current.model === m.id;
     return `<button onclick="pickModel('${pickerProvider}','${m.id}')"
       class="w-full text-left p-2.5 rounded-xl border flex items-center justify-between ${selected ? 'bg-indigo-600/20 border-indigo-500' : 'bg-slate-800/50 border-slate-700 hover:border-slate-500'}">
       <span class="text-[11px] font-semibold">${m.name}</span>
       <code class="text-[9px] text-slate-500">${m.id}</code>
     </button>`;
-  }).join('') +
-  (!State.keys[pickerProvider] ?
-    `<p class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-lg p-2 mt-2">
-      <i class="fa-solid fa-key mr-1"></i> এই provider-এর key নেই। Settings থেকে দিন।
-    </p>` : '');
+  }).join('');
 }
 
 function pickModel(provider, model) {
   State.selection[pickerTarget] = { provider, model };
   if (pickerTarget === 'chat') updateChatModelLabel();
-  if (pickerTarget === 'image') updateImageModelLabel();
-  if (pickerTarget === 'video') updateVideoModelLabel();
+  else updateImageModelLabel();
   closeModelPicker();
-  showToast('মডেল বদলানো হয়েছে', 'fa-check');
+  showToast('মডেল বদলানো ✓');
 }
 function updateChatModelLabel() {
   const s = State.selection.chat;
-  document.getElementById('chatModelLabel').innerText = `${PROVIDERS[s.provider].label} · ${PROVIDERS[s.provider].chatModels.find(m => m.id === s.model)?.name || s.model}`;
+  const m = PROVIDERS[s.provider].chatModels.find(x => x.id === s.model);
+  $('chatModelLabel').innerText = `${PROVIDERS[s.provider].label} · ${m ? m.name : s.model}`;
 }
 function updateImageModelLabel() {
   const s = State.selection.image;
-  document.getElementById('imageModelLabel').innerText = `${PROVIDERS[s.provider].label} · ${PROVIDERS[s.provider].imageModels.find(m => m.id === s.model)?.name || s.model}`;
-}
-function updateVideoModelLabel() {
-  const s = State.selection.video;
-  document.getElementById('videoModelLabel').innerText = `${PROVIDERS[s.provider].label} · ${PROVIDERS[s.provider].videoModels.find(m => m.id === s.model)?.name || s.model}`;
+  const m = PROVIDERS[s.provider].imageModels.find(x => x.id === s.model);
+  $('imageModelLabel').innerText = `${PROVIDERS[s.provider].label} · ${m ? m.name : s.model}`;
 }
 
-/* ============================================================
-   8. PROVIDER ADAPTERS — CHAT
-   ============================================================ */
-async function chatGemini(key, model, messages, system) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
-  const body = {
-    contents: messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
-  };
-  if (system) body.systemInstruction = { parts: [{ text: system }] };
-  const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  const c = data.candidates?.[0];
-  const text = c?.content?.parts?.map(p => p.text).filter(Boolean).join('') || 'উত্তর পাওয়া যায়নি।';
-  const sources = (c?.groundingMetadata?.groundingChunks || []).map(x => x.web?.title || x.web?.uri).filter(Boolean);
-  return { text, sources };
-}
-
-async function chatOpenAI(key, model, messages, system) {
-  const url = 'https://api.openai.com/v1/chat/completions';
-  const msgs = system ? [{ role:'system', content: system }, ...messages] : messages;
-  const res = await fetch(url, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${key}` },
-    body: JSON.stringify({ model, messages: msgs })
-  });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  return { text: data.choices?.[0]?.message?.content || 'উত্তর পাওয়া যায়নি।', sources: [] };
-}
-
-async function chatGrok(key, model, messages, system) {
-  const url = 'https://api.x.ai/v1/chat/completions';
-  const msgs = system ? [{ role:'system', content: system }, ...messages] : messages;
-  const res = await fetch(url, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${key}` },
-    body: JSON.stringify({ model, messages: msgs })
-  });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  return { text: data.choices?.[0]?.message?.content || 'উত্তর পাওয়া যায়নি।', sources: [] };
-}
-
-async function chatClaude(key, model, messages, system) {
-  const url = 'https://api.anthropic.com/v1/messages';
-  const body = { model, max_tokens: 4096, messages };
-  if (system) body.system = system;
-  const res = await fetch(url, {
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key': key,
-      'anthropic-version':'2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true',
-    },
-    body: JSON.stringify(body)
-  });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  return { text: data.content?.map(c => c.text).filter(Boolean).join('') || 'উত্তর পাওয়া যায়নি।', sources: [] };
-}
-
-async function callChat(messages) {
-  const { provider, model } = State.selection.chat;
-  const key = State.keys[provider];
-  if (!key) throw new Error(`${PROVIDERS[provider].label} API key দেওয়া হয়নি — Settings থেকে দিন।`);
-  const system = 'You are Misbah Powerful AI, a smart, friendly multilingual assistant. Reply in the same language as the user (Bengali/English/etc). Use markdown when helpful. Refuse sexual/explicit content, deception, or harm.';
-  if (provider === 'gemini') return chatGemini(key, model, messages, system);
-  if (provider === 'openai') return chatOpenAI(key, model, messages, system);
-  if (provider === 'grok')   return chatGrok(key, model, messages, system);
-  if (provider === 'claude') return chatClaude(key, model, messages, system);
-  throw new Error('Unknown provider');
-}
-
-/* ============================================================
-   9. CHAT — CORE
-   ============================================================ */
-function getActiveChat() {
-  return State.chats.find(c => c.id === State.activeChatId);
-}
-function ensureChat() {
-  let chat = getActiveChat();
-  if (!chat) {
-    chat = { id: Date.now(), title: 'New Chat', messages: [] };
-    State.chats.unshift(chat);
-    State.activeChatId = chat.id;
-    persistChats();
-  }
-  return chat;
-}
-
-function loadChat() {
-  const chat = getActiveChat();
-  if (!chat || !chat.messages.length) { renderWelcome(); return; }
-  const c = document.getElementById('chatContainer');
-  c.innerHTML = '';
-  chat.messages.forEach(m => appendMessage(m.role, m.content, m.sources || [], false));
-  c.scrollTop = c.scrollHeight;
-}
-
+/* ═══════════════════════════════════════════════════
+   CHAT CORE
+   ═══════════════════════════════════════════════════ */
 function renderWelcome() {
-  document.getElementById('chatContainer').innerHTML = `
+  $('chatContainer').innerHTML = `
     <div class="bg-gradient-to-br from-slate-900 via-indigo-950/50 to-slate-900 border border-indigo-500/20 rounded-2xl p-4 text-center space-y-2 fade-in">
-      <div class="w-14 h-14 rounded-full bg-indigo-600/20 text-indigo-400 mx-auto flex items-center justify-center text-2xl"><i class="fa-solid fa-brain"></i></div>
+      <div class="w-14 h-14 rounded-full bg-indigo-600/20 text-indigo-400 mx-auto flex items-center justify-center text-2xl">
+        <i class="fa-solid fa-brain"></i>
+      </div>
       <h3 class="text-sm font-bold text-slate-200">Misbah Powerful AI-তে স্বাগতম!</h3>
-      <p class="text-[11px] text-slate-400 leading-relaxed">Chat, Image, Video, Voice, Call — সব এক জায়গায়। উপরে মডেল বাছুন।</p>
+      <p class="text-[11px] text-slate-400 leading-relaxed">প্রশ্ন করুন, ছবি বানান, কথা বলুন — সব এক জায়গায়</p>
       <div class="flex flex-wrap gap-1.5 justify-center pt-1">
         ${[
           ['আজকের শীর্ষ খবর কী?', '📰 খবর'],
           ['Python এ for loop বুঝিয়ে দাও', '💻 কোড'],
           ['১০ লাইনে গল্প লিখো', '📖 গল্প'],
-          ['একটি অনুপ্রেরণামূলক উক্তি', '✨ মোটিভেশন'],
+          ['একটি অনুপ্রেরণামূলক উক্তি', '✨ মোটিভেশন']
         ].map(([q,l]) => `<button onclick="quickAsk(${JSON.stringify(q).replace(/"/g,'&quot;')})" class="text-[10px] bg-indigo-950/80 border border-indigo-500/30 text-indigo-300 px-2.5 py-1 rounded-full hover:bg-indigo-900">${l}</button>`).join('')}
       </div>
     </div>`;
 }
 
+function loadMessages() {
+  const c = $('chatContainer');
+  c.innerHTML = '';
+  State.messages.forEach(m => appendMessage(m.role, m.content, m.sources || [], false));
+  c.scrollTop = c.scrollHeight;
+}
+
 function appendMessage(role, text, sources = [], save = true) {
-  const c = document.getElementById('chatContainer');
+  const c = $('chatContainer');
   if (c.children.length === 1 && c.children[0].querySelector('.fa-brain')) c.innerHTML = '';
 
   const wrap = document.createElement('div');
@@ -730,14 +670,15 @@ function appendMessage(role, text, sources = [], save = true) {
   const bubble = document.createElement('div');
   bubble.className = `max-w-[88%] p-3 text-xs leading-relaxed shadow-md ${role === 'user' ? 'chat-user whitespace-pre-wrap' : 'chat-ai'}`;
 
-  if (role === 'user') bubble.textContent = text;
-  else {
+  if (role === 'user') {
+    bubble.textContent = text;
+  } else {
     bubble.innerHTML = renderMarkdown(text);
     if (sources.length) {
       bubble.innerHTML += `<div class="mt-2 pt-2 border-t border-slate-700/60 text-[9px] text-slate-400"><b>🔗 Sources:</b><br>${sources.slice(0,4).map(s => '• ' + escapeHtml(s)).join('<br>')}</div>`;
     }
     bubble.innerHTML += `<div class="mt-1.5 flex gap-3">
-      <button onclick="quickSpeak(this.closest('.chat-ai').innerText)" class="text-[10px] text-indigo-400 hover:underline"><i class="fa-solid fa-volume-high mr-0.5"></i>শুনুন</button>
+      <button onclick="speakText(this.closest('.chat-ai').innerText)" class="text-[10px] text-indigo-400 hover:underline"><i class="fa-solid fa-volume-high mr-0.5"></i>শুনুন</button>
       <button onclick="copyText(this.closest('.chat-ai').innerText)" class="text-[10px] text-slate-400 hover:underline"><i class="fa-solid fa-copy mr-0.5"></i>কপি</button>
     </div>`;
   }
@@ -747,15 +688,14 @@ function appendMessage(role, text, sources = [], save = true) {
   c.scrollTop = c.scrollHeight;
 
   if (save) {
-    const chat = ensureChat();
-    chat.messages.push({ role, content: text, sources });
-    if (chat.messages.length === 1 && role === 'user') chat.title = text.slice(0, 30);
-    persistChats();
+    State.messages.push({ role, content: text, sources });
+    if (State.messages.length > 60) State.messages = State.messages.slice(-60);
+    localStorage.setItem('mpa_messages', JSON.stringify(State.messages));
   }
 }
 
 function appendLoader() {
-  const c = document.getElementById('chatContainer');
+  const c = $('chatContainer');
   const id = 'ldr_' + Date.now();
   const div = document.createElement('div');
   div.id = id;
@@ -769,22 +709,26 @@ function appendLoader() {
   c.scrollTop = c.scrollHeight;
   return id;
 }
-function removeById(id) { const e = document.getElementById(id); if (e) e.remove(); }
+function removeById(id) { const e = $(id); if (e) e.remove(); }
 
 async function sendMessage() {
-  const input = document.getElementById('userInput');
+  const input = $('userInput');
   const text = input.value.trim();
   if (!text) return;
+
   const provider = State.selection.chat.provider;
-  if (!State.keys[provider]) { openSettings(); showToast(`${PROVIDERS[provider].label} key দিন`, 'fa-key', 'text-amber-400'); return; }
+  if (!State.keys[provider]) {
+    openSettings();
+    return showToast(`${PROVIDERS[provider].label} key দিন`, 'fa-key', 'text-amber-400');
+  }
 
   appendMessage('user', text);
-  input.value = ''; input.style.height = 'auto';
+  input.value = '';
+  input.style.height = 'auto';
   const ldr = appendLoader();
 
   try {
-    const chat = getActiveChat();
-    const history = chat.messages.slice(-20).map(m => ({ role: m.role, content: m.content }));
+    const history = State.messages.slice(-20).map(m => ({ role: m.role, content: m.content }));
     const { text: aiText, sources } = await callChat(history);
     removeById(ldr);
     appendMessage('assistant', aiText, sources);
@@ -795,66 +739,84 @@ async function sendMessage() {
 }
 
 function quickAsk(q) {
-  document.getElementById('userInput').value = q;
+  $('userInput').value = q;
   switchTab('chat');
   sendMessage();
 }
 
 function newChat() {
-  State.activeChatId = null;
+  if (State.messages.length && !confirm('নতুন চ্যাট শুরু করবেন? আগের মেসেজ থাকবে না।')) return;
+  State.messages = [];
+  localStorage.setItem('mpa_messages', '[]');
   renderWelcome();
-  showToast('নতুন চ্যাট');
+  showToast('নতুন চ্যাট শুরু', 'fa-plus');
 }
 
-function showChatList() {
-  if (!State.chats.length) return showToast('কোনো চ্যাট নেই');
-  const list = State.chats.slice(0, 15).map(c =>
-    `<button onclick="loadChatById(${c.id})" class="w-full text-left p-2.5 bg-slate-800 rounded-lg mb-1 text-[11px]">
-      <b>${escapeHtml(c.title || 'Untitled')}</b><br>
-      <span class="text-[9px] text-slate-500">${c.messages.length} messages</span>
-    </button>`
-  ).join('');
-  // Simple alert-style list (could be modal but keeping simple)
-  const modal = window.confirm('চ্যাট লিস্ট দেখতে OK চাপুন, অথবা Cancel দিয়ে বাতিল') ;
-  if (!modal) return;
-  const w = window.open('', '_blank', 'width=300,height=400');
-  if (w) {
-    w.document.write(`<html><body style="font-family:sans-serif;background:#0f172a;color:#fff;padding:12px">
-      <h3 style="font-size:13px">আপনার চ্যাট</h3>${list}</body></html>`);
-  }
-}
-function loadChatById(id) {
-  State.activeChatId = id;
-  persistChats();
-  switchTab('chat');
-  loadChat();
-}
-
-/* ============================================================
-   10. IMAGE GENERATION
-   ============================================================ */
-async function imageGemini(key, model, prompt, aspect) {
+/* ═══════════════════════════════════════════════════
+   PROVIDER ADAPTERS
+   ═══════════════════════════════════════════════════ */
+async function chatGemini(key, model, messages, system) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
   const body = {
-    contents: [{ role:'user', parts:[{ text: prompt }] }],
-    generationConfig: { responseModalities:['IMAGE'], imageConfig: { aspectRatio: aspect } }
+    contents: messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }))
   };
+  if (system) body.systemInstruction = { parts: [{ text: system }] };
   const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
   const data = await res.json();
   if (data.error) throw new Error(data.error.message);
+  const c = data.candidates?.[0];
+  const text = c?.content?.parts?.map(p => p.text).filter(Boolean).join('') || 'উত্তর পাওয়া যায়নি।';
+  const sources = (c?.groundingMetadata?.groundingChunks || []).map(x => x.web?.title || x.web?.uri).filter(Boolean);
+  return { text, sources };
+}
+
+async function chatOpenAI(key, model, messages, system) {
+  const msgs = system ? [{ role:'system', content: system }, ...messages] : messages;
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${key}` },
+    body: JSON.stringify({ model, messages: msgs })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return { text: data.choices?.[0]?.message?.content || 'উত্তর পাওয়া যায়নি।', sources: [] };
+}
+
+async function callChat(messages) {
+  const { provider, model } = State.selection.chat;
+  const key = State.keys[provider];
+  if (!key) throw new Error(`${PROVIDERS[provider].label} key দেওয়া হয়নি`);
+  const system = 'You are Misbah Powerful AI, a smart multilingual assistant. Reply in the same language as the user. Use markdown when helpful. Refuse sexual/explicit content, deception, or harm.';
+  if (provider === 'gemini') return chatGemini(key, model, messages, system);
+  if (provider === 'openai') return chatOpenAI(key, model, messages, system);
+  throw new Error('Unknown provider');
+}
+
+/* ═══════════════════════════════════════════════════
+   IMAGE
+   ═══════════════════════════════════════════════════ */
+async function imageGemini(key, model, prompt, aspect) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+  const res = await fetch(url, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      contents: [{ role:'user', parts:[{ text: prompt }] }],
+      generationConfig: { responseModalities:['IMAGE'], imageConfig: { aspectRatio: aspect } }
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
   const part = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
-  if (!part) throw new Error('ছবি পাওয়া যায়নি (key-তে access নেই?)');
+  if (!part) throw new Error('ছবি পাওয়া যায়নি');
   return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
 }
 
 async function imageOpenAI(key, model, prompt, aspect) {
-  const url = 'https://api.openai.com/v1/images/generations';
   const sizeMap = { '1:1':'1024x1024', '16:9':'1792x1024', '9:16':'1024x1792' };
-  const body = { model, prompt, n:1, size: sizeMap[aspect] || '1024x1024', response_format:'b64_json' };
-  const res = await fetch(url, {
+  const res = await fetch('https://api.openai.com/v1/images/generations', {
     method:'POST',
     headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${key}` },
-    body: JSON.stringify(body)
+    body: JSON.stringify({ model, prompt, n:1, size: sizeMap[aspect] || '1024x1024', response_format:'b64_json' })
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error.message);
@@ -862,9 +824,10 @@ async function imageOpenAI(key, model, prompt, aspect) {
 }
 
 async function generateImage() {
-  const prompt = document.getElementById('imagePrompt').value.trim();
-  const aspect = document.getElementById('imageAspect').value;
+  const prompt = $('imagePrompt').value.trim();
+  const aspect = $('imageAspect').value;
   if (!prompt) return showToast('ছবির বর্ণনা লিখুন', 'fa-pen', 'text-amber-400');
+
   const { provider, model } = State.selection.image;
   const key = State.keys[provider];
   if (!key) { openSettings(); return showToast(`${PROVIDERS[provider].label} key দিন`, 'fa-key', 'text-amber-400'); }
@@ -873,126 +836,50 @@ async function generateImage() {
     return showToast('এই কনটেন্ট অনুমোদিত নয়', 'fa-shield-halved', 'text-red-400');
   }
 
-  const results = document.getElementById('imageResults');
+  const results = $('imageResults');
   const id = 'img_' + Date.now();
   results.insertAdjacentHTML('afterbegin', `
     <div id="${id}" class="bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-2 fade-in">
       <div class="py-6 text-center space-y-2">
         <i class="fa-solid fa-spinner fa-spin text-2xl text-purple-400"></i>
-        <p class="text-xs font-bold">ছবি তৈরি হচ্ছে…</p>
+        <p class="text-xs font-bold">ছবি তৈরি হচ্ছে...</p>
       </div>
     </div>`);
 
   try {
-    let dataUrl;
-    if (provider === 'gemini') dataUrl = await imageGemini(key, model, prompt, aspect);
-    else if (provider === 'openai') dataUrl = await imageOpenAI(key, model, prompt, aspect);
-    else throw new Error('এই provider-এ image generation নেই');
+    const dataUrl = provider === 'gemini'
+      ? await imageGemini(key, model, prompt, aspect)
+      : await imageOpenAI(key, model, prompt, aspect);
 
     const saved = { id: Date.now(), type:'image', data: dataUrl, prompt };
-    document.getElementById(id).innerHTML = `
+    $(id).innerHTML = `
       <img src="${dataUrl}" class="w-full rounded-xl border border-slate-700" />
       <p class="text-[10px] text-slate-400 italic">"${escapeHtml(prompt).slice(0,80)}"</p>
       <div class="flex space-x-2">
-        <button onclick='saveToLibrary(${JSON.stringify(saved)})' class="flex-1 bg-indigo-600 text-white text-xs py-1.5 rounded-lg"><i class="fa-solid fa-bookmark mr-1"></i>Save</button>
+        <button onclick='saveToLibrary(${JSON.stringify(saved).replace(/'/g, "\\'")})' class="flex-1 bg-indigo-600 text-white text-xs py-1.5 rounded-lg"><i class="fa-solid fa-bookmark mr-1"></i>Save</button>
         <a href="${dataUrl}" download="misbah-ai-${Date.now()}.png" class="flex-1 bg-slate-700 text-white text-xs py-1.5 rounded-lg text-center"><i class="fa-solid fa-download mr-1"></i>Download</a>
       </div>`;
     showToast('ছবি তৈরি ✓', 'fa-image');
   } catch (e) {
-    document.getElementById(id).innerHTML = `<p class="text-xs text-red-400 p-2">❌ ${escapeHtml(e.message)}</p>`;
+    $(id).innerHTML = `<p class="text-xs text-red-400 p-2">❌ ${escapeHtml(e.message)}</p>`;
   }
 }
 
-/* ============================================================
-   11. VIDEO GENERATION (Veo)
-   ============================================================ */
-async function generateVideo() {
-  const prompt = document.getElementById('videoPrompt').value.trim();
-  const aspect = document.getElementById('videoAspect').value;
-  if (!prompt) return showToast('ভিডিও বর্ণনা লিখুন', 'fa-pen', 'text-amber-400');
-  const { provider, model } = State.selection.video;
-  const key = State.keys[provider];
-  if (!key) { openSettings(); return showToast('Gemini key দিন', 'fa-key', 'text-amber-400'); }
-
-  if (/\b(nude|naked|porn|sex|xxx|18\+|explicit|nsfw)\b/i.test(prompt)) {
-    return showToast('এই কনটেন্ট অনুমোদিত নয়', 'fa-shield-halved', 'text-red-400');
-  }
-
-  const results = document.getElementById('videoResults');
-  const id = 'vid_' + Date.now();
-  results.insertAdjacentHTML('afterbegin', `
-    <div id="${id}" class="bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-2 fade-in">
-      <div class="py-6 text-center space-y-2">
-        <i class="fa-solid fa-spinner fa-spin text-2xl text-pink-400"></i>
-        <p class="text-xs font-bold">ভিডিও তৈরি হচ্ছে… (১–৩ মিনিট)</p>
-        <p id="${id}_status" class="text-[9px] text-slate-500"></p>
-      </div>
-    </div>`);
-
-  try {
-    const startUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predictLongRunning?key=${key}`;
-    const res = await fetch(startUrl, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ instances:[{ prompt }], parameters:{ aspectRatio: aspect } })
-    });
-    const startData = await res.json();
-    if (startData.error) throw new Error(startData.error.message);
-    const opName = startData.name;
-    document.getElementById(id + '_status').innerText = 'Operation: ' + opName.split('/').pop();
-
-    // Poll
-    let attempts = 0;
-    const poll = setInterval(async () => {
-      attempts++;
-      try {
-        const pollRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/${opName}?key=${key}`);
-        const pollData = await pollRes.json();
-        if (pollData.error) { clearInterval(poll); throw new Error(pollData.error.message); }
-        if (pollData.done) {
-          clearInterval(poll);
-          const resp = pollData.response || {};
-          const uri = resp.generateVideoResponse?.generatedSamples?.[0]?.video?.uri
-                   || resp.videos?.[0]?.uri
-                   || resp.generatedVideos?.[0]?.video?.uri;
-          if (!uri) {
-            document.getElementById(id).innerHTML = `<p class="text-xs text-amber-400 p-2">Operation শেষ কিন্তু video URL পাওয়া যায়নি। Response inspect করুন।</p>`;
-            return;
-          }
-          document.getElementById(id).innerHTML = `
-            <video src="${uri}" controls class="w-full rounded-xl border border-slate-700"></video>
-            <div class="flex space-x-2">
-              <a href="${uri}" target="_blank" class="flex-1 bg-pink-600 text-white text-xs py-1.5 rounded-lg text-center"><i class="fa-solid fa-download mr-1"></i>Open / Download</a>
-            </div>`;
-          showToast('ভিডিও তৈরি ✓', 'fa-video');
-        } else if (attempts > 100) {
-          clearInterval(poll);
-          document.getElementById(id + '_status').innerText = 'Time out — Google AI Studio-তে চেক করুন।';
-        }
-      } catch (e) {
-        clearInterval(poll);
-        document.getElementById(id).innerHTML = `<p class="text-xs text-red-400 p-2">❌ ${escapeHtml(e.message)}</p>`;
-      }
-    }, 5000);
-
-  } catch (e) {
-    document.getElementById(id).innerHTML = `<p class="text-xs text-red-400 p-2">❌ ${escapeHtml(e.message)}<br><span class="text-slate-500 text-[10px]">Veo = paid tier। আপনার key-তে access না থাকলে এই error আসবে।</span></p>`;
-  }
+/* ═══════════════════════════════════════════════════
+   TTS / STT
+   ═══════════════════════════════════════════════════ */
+function initVoices() {
+  if (!window.speechSynthesis) return;
+  const load = () => {
+    const v = speechSynthesis.getVoices();
+    if (!v.length) setTimeout(load, 300);
+  };
+  load();
+  speechSynthesis.onvoiceschanged = load;
 }
 
-/* ============================================================
-   12. TTS / STT
-   ============================================================ */
-function populateBrowserVoices() {
-  const sel = document.getElementById('ttsVoice');
-  if (!sel) return;
-  const voices = speechSynthesis.getVoices();
-  if (!voices.length) { setTimeout(populateBrowserVoices, 300); return; }
-  sel.innerHTML = voices.map((v,i) => `<option value="${i}">${v.name.slice(0,16)}</option>`).join('');
-}
-if (window.speechSynthesis) speechSynthesis.onvoiceschanged = populateBrowserVoices;
-
-function quickSpeak(txt) {
-  if (!('speechSynthesis' in window)) return showToast('TTS সাপোর্ট নেই');
+function speakText(txt) {
+  if (!('speechSynthesis' in window)) return showToast('TTS সাপোর্ট নেই', 'fa-triangle-exclamation', 'text-red-400');
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(txt);
   u.lang = State.voiceLang;
@@ -1000,44 +887,23 @@ function quickSpeak(txt) {
   showToast('বলছে…', 'fa-volume-high');
 }
 
-async function doTTS() {
-  const text = document.getElementById('ttsInput').value.trim();
+function doTTS() {
+  const text = $('ttsInput').value.trim();
   if (!text) return showToast('কিছু লিখুন', 'fa-pen', 'text-amber-400');
-  const engine = document.getElementById('ttsEngine').value;
-
-  if (engine === 'browser') {
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = State.voiceLang;
-    u.rate = parseFloat(document.getElementById('ttsRate').value);
-    u.pitch = parseFloat(document.getElementById('ttsPitch').value);
-    const voices = speechSynthesis.getVoices();
-    const idx = document.getElementById('ttsVoice').value;
-    if (voices[idx]) u.voice = voices[idx];
-    speechSynthesis.speak(u);
-    showToast('বলছে…', 'fa-volume-high');
-  } else {
-    const key = State.keys.openai;
-    if (!key) return showToast('OpenAI key দিন', 'fa-key', 'text-amber-400');
-    try {
-      const res = await fetch('https://api.openai.com/v1/audio/speech', {
-        method:'POST',
-        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${key}` },
-        body: JSON.stringify({ model:'tts-1', input: text, voice:'alloy' })
-      });
-      if (!res.ok) throw new Error('TTS ব্যর্থ');
-      const blob = await res.blob();
-      const audio = new Audio(URL.createObjectURL(blob));
-      audio.play();
-      showToast('বাজছে…', 'fa-volume-high');
-    } catch (e) { showToast(e.message, 'fa-triangle-exclamation', 'text-red-400'); }
-  }
+  if (!('speechSynthesis' in window)) return showToast('TTS সাপোর্ট নেই');
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = State.voiceLang;
+  u.rate = parseFloat($('ttsRate').value);
+  u.pitch = parseFloat($('ttsPitch').value);
+  speechSynthesis.speak(u);
+  showToast('বলছে…', 'fa-volume-high');
 }
 function stopTTS() { speechSynthesis.cancel(); }
 
 function startSTT() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return showToast('STT সাপোর্ট নেই', 'fa-triangle-exclamation', 'text-amber-400');
+  if (!SR) return showToast('STT সাপোর্ট নেই (Chrome ব্যবহার করুন)', 'fa-triangle-exclamation', 'text-red-400');
   stopSTT();
   State.stt.buffer = '';
   const r = new SR();
@@ -1052,36 +918,33 @@ function startSTT() {
       else interim += res[0].transcript;
     }
     State.stt.buffer += final;
-    document.getElementById('sttLive').innerHTML = escapeHtml(State.stt.buffer) +
-      `<span class="text-slate-500">${escapeHtml(interim)}</span>`;
+    $('sttLive').innerHTML = escapeHtml(State.stt.buffer) + `<span class="text-slate-500">${escapeHtml(interim)}</span>`;
   };
   r.onerror = ev => showToast('STT: ' + ev.error, 'fa-triangle-exclamation', 'text-red-400');
-  r.onend = () => { document.getElementById('sttStartBtn').innerHTML = '<i class="fa-solid fa-microphone mr-1"></i> Start'; };
+  r.onend = () => { $('sttStartBtn').innerHTML = '<i class="fa-solid fa-microphone mr-1"></i> Start'; };
   r.start();
   State.stt.recognition = r;
-  document.getElementById('sttStartBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Listening…';
+  $('sttStartBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Listening...';
   showToast('বলুন…', 'fa-microphone', 'text-blue-400');
 }
 function stopSTT() { if (State.stt.recognition) { try { State.stt.recognition.stop(); } catch {} State.stt.recognition = null; } }
+function copySTT() { copyText(State.stt.buffer); }
 
 function quickVoice() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return showToast('STT সাপোর্ট নেই');
+  if (!SR) return showToast('STT সাপোর্ট নেই', 'fa-triangle-exclamation', 'text-red-400');
   const r = new SR();
   r.lang = State.voiceLang;
   r.interimResults = false;
-  r.onresult = e => {
-    document.getElementById('userInput').value = e.results[0][0].transcript;
-    showToast('ক্যাপচার ✓');
-  };
+  r.onresult = e => { $('userInput').value = e.results[0][0].transcript; showToast('ক্যাপচার ✓'); };
   r.onerror = () => showToast('STT error', 'fa-triangle-exclamation', 'text-red-400');
   r.start();
   showToast('বলুন…', 'fa-microphone', 'text-indigo-400');
 }
 
-/* ============================================================
-   13. CALL (voice / video)
-   ============================================================ */
+/* ═══════════════════════════════════════════════════
+   CALL
+   ═══════════════════════════════════════════════════ */
 async function startCall(mode) {
   const provider = State.selection.chat.provider;
   if (!State.keys[provider]) { openSettings(); return showToast('API key দিন', 'fa-key', 'text-amber-400'); }
@@ -1091,20 +954,21 @@ async function startCall(mode) {
 
   if (State.call.active) endCall();
   State.call.active = true;
-  State.call.mode = mode;
-  document.getElementById('callTranscript').innerHTML = '';
+  $('callTranscript').innerHTML = '';
 
   if (mode === 'video') {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio: false });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
       State.call.stream = stream;
-      const v = document.getElementById('callVideo');
+      const v = $('callVideo');
       v.srcObject = stream;
       v.classList.remove('hidden');
-    } catch { showToast('ক্যামেরা নেই — voice মোড', 'fa-camera', 'text-amber-400'); State.call.mode = 'voice'; }
+    } catch {
+      showToast('ক্যামেরা নেই — voice মোড', 'fa-camera', 'text-amber-400');
+    }
   }
 
-  setCallStatus('Listening…');
+  setCallStatus('Listening...');
   callTurn();
 }
 
@@ -1121,18 +985,17 @@ function callTurn() {
     const userText = e.results[0][0].transcript.trim();
     if (!userText) return;
     addCallMsg('user', userText);
-    setCallStatus('Thinking…');
+    setCallStatus('Thinking...');
     try {
-      const history = [{ role: 'user', content: userText }];
-      const { text: aiText } = await callChat(history);
+      const { text: aiText } = await callChat([{ role: 'user', content: userText }]);
       addCallMsg('ai', aiText);
-      setCallStatus('Speaking…');
+      setCallStatus('Speaking...');
       State.call.speaking = true;
       const u = new SpeechSynthesisUtterance(aiText);
       u.lang = State.voiceLang;
       u.onend = () => {
         State.call.speaking = false;
-        if (State.call.active) { setCallStatus('Listening…'); setTimeout(callTurn, 300); }
+        if (State.call.active) { setCallStatus('Listening...'); setTimeout(callTurn, 300); }
       };
       speechSynthesis.speak(u);
     } catch (err) {
@@ -1146,7 +1009,7 @@ function callTurn() {
 }
 
 function addCallMsg(role, text) {
-  const c = document.getElementById('callTranscript');
+  const c = $('callTranscript');
   const p = document.createElement('div');
   p.className = role === 'user'
     ? 'text-right bg-indigo-600/30 rounded-lg px-2 py-1.5'
@@ -1155,23 +1018,23 @@ function addCallMsg(role, text) {
   c.appendChild(p);
   c.scrollTop = c.scrollHeight;
 }
-function setCallStatus(t) { document.getElementById('callStatus').textContent = t; }
+function setCallStatus(t) { $('callStatus').textContent = t; }
 
 function endCall() {
   State.call.active = false;
   State.call.speaking = false;
   try { State.call.recognition?.stop(); } catch {}
   if (State.call.stream) { State.call.stream.getTracks().forEach(t => t.stop()); State.call.stream = null; }
-  document.getElementById('callVideo').classList.add('hidden');
-  document.getElementById('callVideo').srcObject = null;
+  $('callVideo').classList.add('hidden');
+  $('callVideo').srcObject = null;
   speechSynthesis.cancel();
   setCallStatus('"Start Call" চাপুন');
   showToast('কল শেষ', 'fa-phone-slash');
 }
 
-/* ============================================================
-   14. TOOLS
-   ============================================================ */
+/* ═══════════════════════════════════════════════════
+   TOOLS
+   ═══════════════════════════════════════════════════ */
 const TOOLS = [
   { icon:'fa-language', color:'text-blue-400', title:'অনুবাদক', prefix:'নিচের লেখাটি সুন্দরভাবে বাংলায় অনুবাদ করে দাও:\n' },
   { icon:'fa-envelope-open-text', color:'text-emerald-400', title:'Email Writer', prefix:'নিচের বিষয়ে পেশাদার ইমেইল লিখে দাও:\n' },
@@ -1182,40 +1045,45 @@ const TOOLS = [
   { icon:'fa-graduation-cap', color:'text-cyan-400', title:'শিক্ষক', prefix:'নিচের বিষয়টি সহজ ভাষায় উদাহরণ দিয়ে ব্যাখ্যা করো:\n' },
   { icon:'fa-lightbulb', color:'text-yellow-400', title:'আইডিয়া', prefix:'নিচের বিষয়ে ১০টি ক্রিয়েটিভ আইডিয়া দাও:\n' },
   { icon:'fa-utensils', color:'text-red-400', title:'রেসিপি', prefix:'এই উপকরণ দিয়ে রেসিপি লেখো:\n' },
-  { icon:'fa-plane', color:'text-sky-400', title:'ট্রাভেল', prefix:'নিচের গন্তব্যের ৩ দিনের ট্রাভেল প্ল্যান:\n' },
+  { icon:'fa-plane', color:'text-sky-400', title:'ট্রাভেল', prefix:'নিচের গন্তব্যের ৩ দিনের ট্রাভেল প্ল্যান:\n' }
 ];
+
 function renderTools() {
-  document.getElementById('toolsGrid').innerHTML = TOOLS.map(t => `
+  $('toolsGrid').innerHTML = TOOLS.map(t => `
     <div onclick="useTool(${JSON.stringify(t.prefix).replace(/"/g,'&quot;')},${JSON.stringify(t.title).replace(/"/g,'&quot;')})"
-         class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-pointer hover:border-indigo-500 transition space-y-1">
+         class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-pointer hover:border-indigo-500 transition space-y-1 active:scale-95">
       <i class="fa-solid ${t.icon} ${t.color} text-lg"></i>
       <h4 class="font-bold text-slate-200 text-[11px]">${t.title}</h4>
     </div>`).join('');
 }
 function useTool(prefix, title) {
   switchTab('chat');
-  const inp = document.getElementById('userInput');
-  inp.value = prefix; inp.focus();
-  showToast(`${title} প্রম্পট লোড`, 'fa-bolt', 'text-amber-400');
+  const inp = $('userInput');
+  inp.value = prefix;
+  inp.focus();
+  showToast(`${title} লোড`, 'fa-bolt', 'text-amber-400');
 }
 
-/* ============================================================
-   15. SAVED
-   ============================================================ */
+/* ═══════════════════════════════════════════════════
+   SAVED
+   ═══════════════════════════════════════════════════ */
 function saveToLibrary(item) {
   State.saved.unshift(item);
-  persistSaved();
+  State.saved = State.saved.slice(0, 40);
+  localStorage.setItem('mpa_saved', JSON.stringify(State.saved));
   renderSaved();
   showToast('সেভ হয়েছে', 'fa-bookmark');
 }
+
 function renderSaved() {
-  const c = document.getElementById('savedContainer');
+  const c = $('savedContainer');
+  if (!c) return;
   if (!State.saved.length) {
     c.innerHTML = `<div class="text-center py-12 text-slate-500 text-xs"><i class="fa-solid fa-box-open text-3xl mb-2"></i><p>কিছু সেভ করা হয়নি</p></div>`;
     return;
   }
   c.innerHTML = State.saved.map(item => `
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between fade-in">
       <div class="flex items-center space-x-3 min-w-0">
         <img src="${item.data}" class="w-12 h-12 rounded-lg object-cover border border-slate-700 flex-shrink-0">
         <p class="text-[11px] font-bold text-slate-200 truncate">${escapeHtml((item.prompt || '').slice(0,40))}</p>
@@ -1223,20 +1091,24 @@ function renderSaved() {
       <button onclick="deleteSaved(${item.id})" class="text-slate-500 hover:text-red-400 p-1"><i class="fa-solid fa-trash"></i></button>
     </div>`).join('');
 }
+
 function deleteSaved(id) {
   State.saved = State.saved.filter(i => i.id !== id);
-  persistSaved(); renderSaved();
-}
-function clearSaved() {
-  if (!confirm('সব সেভ মুছবেন?')) return;
-  State.saved = []; persistSaved(); renderSaved();
+  localStorage.setItem('mpa_saved', JSON.stringify(State.saved));
+  renderSaved();
   showToast('মুছে ফেলা হয়েছে');
 }
 
-/* ============================================================
-   BOOT
-   ============================================================ */
+function clearSaved() {
+  if (!confirm('সব সেভ মুছবেন?')) return;
+  State.saved = [];
+  localStorage.setItem('mpa_saved', '[]');
+  renderSaved();
+  showToast('সব মুছে ফেলা হয়েছে');
+}
+
+/* cleanup on close */
 window.addEventListener('beforeunload', () => { try { endCall(); } catch {} });
 </script>
 </body>
-                                                                                                                                                    </html>
+            </html>
