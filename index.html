@@ -1,821 +1,1242 @@
-```html
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pakhiiii🐦Misbah BD</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        fbBlue: '#1877f2',
-                        fbBgDark: '#18191a',
-                        fbCardDark: '#242526',
-                        fbInputDark: '#3a3b3c',
-                        fbTextDark: '#e4e6eb',
-                        fbSubtextDark: '#b0b3b8',
-                        fbBgLight: '#f0f2f5',
-                        fbCardLight: '#ffffff',
-                        fbInputLight: '#e4e6eb',
-                        fbTextLight: '#050505',
-                        fbSubtextLight: '#65676b'
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Hind Siliguri) -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Firebase Compat SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-    <style>
-        body { 
-            font-family: 'Hind Siliguri', system-ui, -apple-system, sans-serif;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Facebook Lite Page Loader Bar Animation */
-        #topLoaderBar {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 3px;
-            background-color: #ffffff;
-            box-shadow: 0 0 10px #ffffff, 0 0 5px #1877f2;
-            z-index: 9999;
-            transition: none;
-        }
-        .run-loader {
-            animation: fbLoader 0.4s linear forwards;
-        }
-        @keyframes fbLoader {
-            0% { left: -100%; width: 30%; }
-            50% { left: 0%; width: 70%; }
-            100% { left: 100%; width: 100%; }
-        }
-
-        .fb-tab.active {
-            color: #1877f2;
-            border-bottom: 3px solid #1877f2;
-        }
-
-        .react-popup {
-            animation: popUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popUp {
-            0% { opacity: 0; transform: scale(0.6) translateY(10px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0f172a" />
+<title>Misbah Powerful AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: {
+    fontFamily: { bn: ['"Hind Siliguri"', 'sans-serif'] },
+    colors: { brand: { 400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca' } }
+  }}
+};
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body { font-family: 'Hind Siliguri', system-ui, sans-serif; -webkit-user-select: none; user-select: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .gradient-text { background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .glass { background: rgba(15,23,42,.6); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.06); }
+  .chat-user { background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; border-radius: 18px 18px 2px 18px; }
+  .chat-ai { background: rgba(30,41,59,.75); border: 1px solid rgba(255,255,255,.08); color: #f8fafc; border-radius: 18px 18px 18px 2px; }
+  .tab-btn.active { color: #818cf8; }
+  .tab-btn.active .tab-icon { background: linear-gradient(135deg,#6366f1,#8b5cf6); color: #fff; }
+  .typing-dot { animation: bounceDot 1.2s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: .15s; }
+  .typing-dot:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounceDot { 0%,80%,100% { transform: scale(.6); opacity:.5 } 40% { transform: scale(1); opacity:1 } }
+  .pulse-ring { box-shadow: 0 0 0 0 rgba(99,102,241,.7); animation: pulseRing 2s infinite; }
+  @keyframes pulseRing {
+    0% { box-shadow: 0 0 0 0 rgba(99,102,241,.7); }
+    70% { box-shadow: 0 0 0 20px rgba(99,102,241,0); }
+    100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+  }
+  .fade-in { animation: fadeIn .25s ease-out; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(6px) } to { opacity:1; transform: translateY(0) } }
+  pre { background: #0b1220; padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 11px; line-height: 1.5; }
+  code { background: rgba(99,102,241,.15); padding: 1px 5px; border-radius: 4px; font-size: .9em; }
+  pre code { background: transparent; padding: 0; }
+  select, input, textarea { user-select: text; -webkit-user-select: text; }
+</style>
 </head>
-<body class="dark bg-fbBgDark text-fbTextDark dark:bg-fbBgDark dark:text-fbTextDark h-screen flex flex-col justify-between max-w-lg mx-auto border-x border-gray-700 dark:border-gray-800 relative transition-colors duration-200 overflow-x-hidden">
 
-    <!-- Top Loading Bar -->
-    <div id="topLoaderBar"></div>
+<body class="bg-slate-950 text-slate-100 h-screen flex flex-col max-w-md mx-auto border-x border-slate-800 overflow-hidden font-bn">
 
-    <!-- Toast Notification Popup -->
-    <div id="toastNotification" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white dark:bg-white dark:text-black px-4 py-2 rounded-full text-xs font-semibold shadow-2xl flex items-center space-x-2 border border-gray-700">
-        <i class="fa-solid fa-circle-info text-fbBlue"></i>
-        <span id="toastMessage">বার্তা</span>
+<!-- ========== TOAST ========== -->
+<div id="toast" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[200] bg-slate-900 text-white border border-indigo-500/40 text-xs px-4 py-2.5 rounded-full shadow-2xl flex items-center space-x-2">
+  <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+  <span id="toastMsg" class="font-semibold">মেসেজ</span>
+</div>
+
+<!-- ========== SETTINGS MODAL ========== -->
+<div id="settingsModal" class="hidden fixed inset-0 bg-black/80 z-[150] flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto no-scrollbar p-5 space-y-4">
+    <div class="flex justify-between items-center">
+      <h3 class="font-bold text-sm gradient-text"><i class="fa-solid fa-gear mr-1"></i> Settings</h3>
+      <button onclick="closeSettings()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <!-- Hidden Input for File Pickers -->
-    <input type="file" id="globalGalleryPicker" accept="image/*" class="hidden" onchange="handleGlobalFilePick(event)">
+    <p class="text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-300 rounded-lg p-2 leading-relaxed">
+      <i class="fa-solid fa-shield-halved mr-1"></i>
+      API key শুধু <b>আপনার ব্রাউজারে</b> 저장 হয়, কোথাও পাঠানো হয় না। পাবলিক কম্পিউটারে ব্যবহারের পর Settings → Clear চাপুন।
+    </p>
 
-    <!-- ==================== 1. AUTH / LOGIN SECTION (FB CAA Style) ==================== -->
-    <div id="authContainer" class="flex flex-col justify-center items-center h-full p-6 space-y-6 bg-fbCardLight dark:bg-fbBgDark">
-        <div class="text-center space-y-2">
-            <div class="w-20 h-20 bg-fbBlue rounded-2xl flex items-center justify-center mx-auto text-4xl text-white shadow-xl">
-                <i class="fa-solid fa-dove"></i>
-            </div>
-            <h1 class="text-2xl font-bold text-fbBlue tracking-wide">Pakhiiii🐦Misbah BD</h1>
-            <p class="text-xs text-fbSubtextLight dark:text-fbSubtextDark">ফেসবুক লাইট স্টাইল সোশাল নেটওয়ার্ক</p>
-        </div>
-
-        <div class="flex bg-gray-200 dark:bg-gray-800 p-1 rounded-xl w-full max-w-xs text-xs font-semibold">
-            <button onclick="triggerLoader(); switchAuthTab('login')" id="tabLoginBtn" class="flex-1 py-2 rounded-lg bg-fbBlue text-white transition">লগইন</button>
-            <button onclick="triggerLoader(); switchAuthTab('signup')" id="tabSignupBtn" class="flex-1 py-2 rounded-lg text-gray-500 dark:text-gray-400 transition">সাইন আপ</button>
-        </div>
-
-        <!-- Login Form -->
-        <form id="loginForm" onsubmit="handleLogin(event)" class="w-full max-w-xs space-y-3 text-xs">
-            <input type="email" id="loginEmail" placeholder="মোবাইল নম্বর বা ইমেইল..." required class="w-full p-3 bg-fbBgLight dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-fbTextLight dark:text-white focus:outline-none focus:border-fbBlue">
-            <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড..." required class="w-full p-3 bg-fbBgLight dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-fbTextLight dark:text-white focus:outline-none focus:border-fbBlue">
-            <p id="loginError" class="text-red-500 text-center hidden font-medium">লগইন ব্যর্থ হয়েছে! ইমেইল ও পাসওয়ার্ড চেক করুন।</p>
-            <button type="submit" class="w-full bg-fbBlue hover:bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg">লগইন করুন</button>
-        </form>
-
-        <!-- Signup Form -->
-        <form id="signupForm" onsubmit="handleSignup(event)" class="w-full max-w-xs space-y-3 text-xs hidden">
-            <input type="text" id="signupName" placeholder="আপনার পুরো নাম..." required class="w-full p-3 bg-fbBgLight dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-fbTextLight dark:text-white focus:outline-none focus:border-emerald-500">
-            <input type="email" id="signupEmail" placeholder="ইমেইল অ্যাড্রেস..." required class="w-full p-3 bg-fbBgLight dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-fbTextLight dark:text-white focus:outline-none focus:border-emerald-500">
-            <input type="password" id="signupPassword" placeholder="নতুন পাসওয়ার্ড (কমপক্ষে ৬ ডিজিট)..." required class="w-full p-3 bg-fbBgLight dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-fbTextLight dark:text-white focus:outline-none focus:border-emerald-500">
-            <p id="signupError" class="text-red-500 text-center hidden font-medium">সাইন আপ ব্যর্থ হয়েছে!</p>
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg">নতুন অ্যাকাউন্ট তৈরি করুন</button>
-        </form>
+    <!-- Gemini (free) -->
+    <div class="space-y-1">
+      <label class="text-[11px] font-bold text-emerald-300 flex items-center">
+        <i class="fa-solid fa-gem mr-1"></i> Gemini API Key
+        <span class="ml-auto text-[9px] bg-emerald-600 text-white px-1.5 py-0.5 rounded">FREE</span>
+      </label>
+      <input id="keyGemini" type="password" placeholder="AIza…" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
+      <a class="text-[9px] text-indigo-400 underline" target="_blank" href="https://aistudio.google.com/apikey">aistudio.google.com/apikey</a>
     </div>
 
-    <!-- ==================== 2. MAIN APP DASHBOARD ==================== -->
-    <div id="mainDashboard" class="hidden flex flex-col h-full relative bg-fbBgLight dark:bg-fbBgDark">
-        
-        <!-- FB Lite Header Bar -->
-        <header class="p-3 bg-fbCardLight dark:bg-fbCardDark flex items-center justify-between border-b border-gray-200 dark:border-gray-800 sticky top-0 z-30">
-            <div class="flex items-center space-x-2">
-                <span class="text-xl font-black text-fbBlue tracking-wider">Pakhiiii<span class="text-amber-500 text-sm">🐦BD</span></span>
-            </div>
-            <div class="flex items-center space-x-2 text-gray-700 dark:text-gray-300">
-                <button onclick="triggerLoader(); openCreatePostModal()" class="w-8 h-8 rounded-full bg-fbBgLight dark:bg-gray-700 flex items-center justify-center text-sm font-bold shadow-sm">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-                <button onclick="triggerLoader(); openSearchModal()" class="w-8 h-8 rounded-full bg-fbBgLight dark:bg-gray-700 flex items-center justify-center text-sm shadow-sm">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-                <button onclick="triggerLoader(); openMessengerView()" class="w-8 h-8 rounded-full bg-fbBgLight dark:bg-gray-700 flex items-center justify-center text-sm relative shadow-sm">
-                    <i class="fa-brands fa-facebook-messenger text-fbBlue"></i>
-                    <span id="msgDot" class="w-2.5 h-2.5 bg-red-500 rounded-full absolute -top-0.5 -right-0.5"></span>
-                </button>
-            </div>
-        </header>
-
-        <!-- Top Navigation Tabs (Facebook Lite Bar) -->
-        <nav class="flex justify-around bg-fbCardLight dark:bg-fbCardDark border-b border-gray-200 dark:border-gray-800 text-gray-500 dark:text-gray-400 text-lg py-1 sticky top-12 z-20">
-            <button onclick="triggerLoader(); switchTab('feed')" id="tabFeedBtn" class="fb-tab active flex-1 py-2 text-center relative">
-                <i class="fa-solid fa-house"></i>
-            </button>
-            <button onclick="triggerLoader(); switchTab('friends')" id="tabFriendsBtn" class="fb-tab flex-1 py-2 text-center relative">
-                <i class="fa-solid fa-user-group"></i>
-                <span id="friendsBadge" class="bg-red-500 text-white px-1 text-[9px] rounded-full absolute top-1 right-3 hidden">0</span>
-            </button>
-            <button onclick="triggerLoader(); switchTab('reels')" id="tabReelsBtn" class="fb-tab flex-1 py-2 text-center">
-                <i class="fa-solid fa-circle-play"></i>
-            </button>
-            <button onclick="triggerLoader(); switchTab('notif')" id="tabNotifBtn" class="fb-tab flex-1 py-2 text-center relative">
-                <i class="fa-solid fa-bell"></i>
-                <span id="notifBadge" class="bg-red-500 text-white px-1 text-[9px] rounded-full absolute top-1 right-3 hidden">0</span>
-            </button>
-            <button onclick="triggerLoader(); switchTab('menu')" id="tabMenuBtn" class="fb-tab flex-1 py-2 text-center">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </nav>
-
-        <!-- Dynamic Main Scrollable Content -->
-        <div id="mainContentContainer" class="flex-grow overflow-y-auto no-scrollbar pb-10 bg-fbBgLight dark:bg-fbBgDark">
-
-            <!-- ================= FEED VIEW ================= -->
-            <div id="viewFeed" class="space-y-2">
-                <!-- Create Post Input Bar -->
-                <div class="p-3 bg-fbCardLight dark:bg-fbCardDark flex items-center justify-between border-b border-gray-200 dark:border-gray-800 space-x-3">
-                    <img id="myFeedAvatar" src="https://via.placeholder.com/40" onclick="triggerLoader(); openSelfProfile()" class="w-10 h-10 rounded-full object-cover cursor-pointer border border-gray-300 dark:border-gray-700">
-                    <button onclick="triggerLoader(); openCreatePostModal()" class="flex-grow text-left bg-fbBgLight dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-2.5 rounded-full text-xs text-fbSubtextLight dark:text-fbSubtextDark border border-gray-300 dark:border-gray-700">
-                        কী ভাবছেন?
-                    </button>
-                    <button onclick="openGalleryPicker('post')" class="text-emerald-500 text-xl px-1">
-                        <i class="fa-solid fa-images"></i>
-                    </button>
-                </div>
-
-                <!-- Story Tray -->
-                <div class="p-3 flex space-x-2 overflow-x-auto no-scrollbar bg-fbCardLight dark:bg-fbCardDark border-b border-gray-200 dark:border-gray-800">
-                    <!-- Create Story Box -->
-                    <div onclick="openGalleryPicker('story')" class="min-w-[90px] w-24 h-36 bg-fbBgLight dark:bg-gray-800 rounded-xl relative overflow-hidden flex flex-col justify-between border border-gray-300 dark:border-gray-700 cursor-pointer shadow-sm">
-                        <img id="myStoryThumb" src="https://via.placeholder.com/90x100" class="w-full h-24 object-cover">
-                        <div class="absolute top-20 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-fbBlue border-2 border-white dark:border-fbCardDark flex items-center justify-center text-white text-xs shadow-md">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                        <span class="text-[10px] text-center font-bold pb-1 text-fbTextLight dark:text-white">স্টোরি তৈরি করুন</span>
-                    </div>
-
-                    <div id="feedStoriesList" class="flex space-x-2"></div>
-                </div>
-
-                <!-- Posts Stream -->
-                <div id="postsStream" class="space-y-2"></div>
-            </div>
-
-            <!-- ================= FRIENDS VIEW ================= -->
-            <div id="viewFriends" class="p-3 space-y-3 hidden">
-                <div class="flex justify-between items-center text-xs border-b border-gray-300 dark:border-gray-800 pb-2">
-                    <h3 class="font-bold text-fbTextLight dark:text-white text-sm">Pakhiiii ফ্রেন্ডস</h3>
-                    <span id="activeUserCount" class="text-emerald-500 font-semibold">244 জন অনলাইনে রয়েছে</span>
-                </div>
-
-                <!-- Friend Requests -->
-                <div class="space-y-2">
-                    <h4 class="text-xs font-bold text-amber-500">ফ্রেন্ড রিকোয়েস্ট</h4>
-                    <div id="friendsRequestsContainer" class="space-y-2">
-                        <div class="p-3 bg-fbCardLight dark:bg-fbCardDark rounded-xl border border-gray-200 dark:border-gray-800 flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full object-cover">
-                                <div>
-                                    <h5 class="text-xs font-bold text-fbTextLight dark:text-white">সাকিব আল হাসান</h5>
-                                    <p class="text-[10px] text-fbSubtextLight dark:text-fbSubtextDark">১২টি মিউচুয়াল ফ্রেন্ড</p>
-                                </div>
-                            </div>
-                            <div class="flex space-x-1 text-xs">
-                                <button onclick="showToast('রিকোয়েস্ট নিশ্চিত করা হয়েছে!')" class="bg-fbBlue text-white px-3 py-1.5 rounded-lg font-bold">কনফার্ম</button>
-                                <button onclick="showToast('রিকোয়েস্ট মুছে ফেলা হয়েছে!')" class="bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-3 py-1.5 rounded-lg font-bold">মুছুন</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Suggestions / Find People -->
-                <div class="space-y-2 pt-2 border-t border-gray-300 dark:border-gray-800">
-                    <h4 class="text-xs font-bold text-fbSubtextLight dark:text-fbSubtextDark">আপনি চিনতে পারেন এমন লোকজন</h4>
-                    <div id="friendsSuggestionsContainer" class="space-y-2">
-                        <div class="p-3 bg-fbCardLight dark:bg-fbCardDark rounded-xl border border-gray-200 dark:border-gray-800 flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full object-cover">
-                                <div>
-                                    <h5 class="text-xs font-bold text-fbTextLight dark:text-white">তামিম ইকবাল</h5>
-                                    <p class="text-[10px] text-fbSubtextLight dark:text-fbSubtextDark">৫টি মিউচুয়াল ফ্রেন্ড</p>
-                                </div>
-                            </div>
-                            <button onclick="showToast('এড ফ্রেন্ড রিকোয়েস্ট পাঠানো হয়েছে!')" class="bg-fbBlue/10 text-fbBlue border border-fbBlue/30 px-3 py-1.5 rounded-lg font-bold text-xs">
-                                <i class="fa-solid fa-user-plus mr-1"></i>এড ফ্রেন্ড
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ================= REELS VIEW ================= -->
-            <div id="viewReels" class="p-3 space-y-3 hidden text-center">
-                <div class="bg-fbCardLight dark:bg-fbCardDark p-6 rounded-2xl space-y-3 border border-gray-200 dark:border-gray-800 shadow-sm">
-                    <i class="fa-solid fa-film text-4xl text-fbBlue animate-bounce"></i>
-                    <h3 class="font-bold text-fbTextLight dark:text-white text-sm">Pakhiiii BD Reels</h3>
-                    <p class="text-xs text-fbSubtextLight dark:text-fbSubtextDark">শর্ট ভিডিও ও রিলস উপভোগ করুন</p>
-                    <div class="w-full h-64 bg-black rounded-xl flex items-center justify-center relative overflow-hidden">
-                        <span class="text-white text-xs"><i class="fa-solid fa-play text-3xl opacity-80"></i></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ================= NOTIFICATIONS VIEW ================= -->
-            <div id="viewNotif" class="p-3 space-y-2 hidden">
-                <h3 class="font-bold text-fbTextLight dark:text-white text-sm mb-2">নোটিফিকেশন</h3>
-                <div id="notifListContainer" class="space-y-2">
-                    <div class="p-3 bg-fbCardLight dark:bg-fbCardDark rounded-xl border border-gray-200 dark:border-gray-800 flex items-center space-x-3 cursor-pointer">
-                        <div class="w-9 h-9 rounded-full bg-fbBlue/20 text-fbBlue flex items-center justify-center text-sm font-bold">
-                            <i class="fa-solid fa-thumbs-up"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-fbTextLight dark:text-white font-medium">আপনার পোস্টে একজন লাইক দিয়েছেন।</p>
-                            <span class="text-[10px] text-fbSubtextLight dark:text-fbSubtextDark">১০ মিনিট আগে</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ================= MENU VIEW (SETTINGS & DARK MODE) ================= -->
-            <div id="viewMenu" class="p-3 space-y-3 hidden text-xs">
-                <!-- User Profile Card -->
-                <div onclick="triggerLoader(); openSelfProfile()" class="flex items-center space-x-3 p-3 bg-fbCardLight dark:bg-fbCardDark rounded-xl border border-gray-200 dark:border-gray-800 cursor-pointer shadow-sm">
-                    <img id="menuAvatar" src="https://via.placeholder.com/45" class="w-12 h-12 rounded-full object-cover border border-amber-400">
-                    <div>
-                        <h3 id="menuUserName" class="font-bold text-fbTextLight dark:text-white text-sm">ইউজার নাম</h3>
-                        <p class="text-[10px] text-fbSubtextLight dark:text-fbSubtextDark">আপনার প্রোফাইল দেখুন</p>
-                    </div>
-                </div>
-
-                <!-- Shortcuts Grid -->
-                <div class="grid grid-cols-2 gap-2 text-fbTextLight dark:text-gray-200">
-                    <div onclick="showToast('ড্যাশবোর্ড লোড হচ্ছে...')" class="p-3 bg-fbCardLight dark:bg-fbCardDark rounded-xl border border-gray-200 dark:border-gray-800 flex items-center space-x-3 cursor-pointer shadow-sm">
-                        <i class="fa-solid fa-chart-line text-fbBlue text-lg"></i>
-                        <span class="font-semibold">ক্রিয়েটর ড্যাশবোর্ড</span>
-                    </div>
-                    <div onclick="triggerLoader(); openMessengerView()" class="p-3 bg-fbCardLight dark:bg-fbCardDark rounded-xl border border-gray-200 dark:border-gray-800 flex items-center space-x-3 cursor-pointer shadow-sm">
-                        <i class="fa-brands fa-facebook-messenger text-emerald-500 text-lg"></i>
-                        <span class="font-semibold">মেসেজ</span>
-                    </div>
-                    <div onclick="showToast('গ্রুপ খুলছে...')" class="p-3 bg-fbCardLight dark:bg-fbCardDark rounded-xl border border-gray-200 dark:border-gray-800 flex items-center space-x-3 cursor-pointer shadow-sm">
-                        <i class="fa-solid fa-users text-purple-500 text-lg"></i>
-                        <span class="font-semibold">গ্রুপ</span>
-                    </div>
-                    <div onclick="showToast('মার্কেটপ্লেস লোড হচ্ছে...')" class="p-3 bg-fbCardLight dark:bg-fbCardDark rounded-xl border border-gray-200 dark:border-gray-800 flex items-center space-x-3 cursor-pointer shadow-sm">
-                        <i class="fa-solid fa-store text-amber-500 text-lg"></i>
-                        <span class="font-semibold">মার্কেটপ্লেস</span>
-                    </div>
-                </div>
-
-                <!-- Settings Switchers (Working Dark/Light Mode) -->
-                <div class="bg-fbCardLight dark:bg-fbCardDark rounded-xl border border-gray-200 dark:border-gray-800 divide-y divide-gray-200 dark:divide-gray-800 shadow-sm">
-                    <div class="p-3 flex justify-between items-center text-fbTextLight dark:text-gray-300">
-                        <span class="flex items-center space-x-2">
-                            <i id="darkModeIcon" class="fa-solid fa-moon text-fbBlue"></i>
-                            <span class="font-medium">ডার্ক মোড</span>
-                        </span>
-                        <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()" checked class="w-4 h-4 accent-fbBlue cursor-pointer">
-                    </div>
-                    <div class="p-3 flex justify-between items-center text-fbTextLight dark:text-gray-300">
-                        <span class="flex items-center space-x-2">
-                            <i class="fa-solid fa-wifi text-emerald-500"></i>
-                            <span class="font-medium">ডাটা সেভার</span>
-                        </span>
-                        <span class="text-[10px] text-green-500 font-bold">চালু</span>
-                    </div>
-                    <button onclick="logout()" class="w-full p-3 text-left text-red-500 font-bold flex items-center space-x-2">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        <span>লগ আউট করুন</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+    <!-- OpenAI -->
+    <div class="space-y-1">
+      <label class="text-[11px] font-bold text-emerald-400"><i class="fa-solid fa-brain mr-1"></i> OpenAI Key (GPT, DALL·E, Whisper, TTS)</label>
+      <input id="keyOpenAI" type="password" placeholder="sk-…" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
+      <a class="text-[9px] text-indigo-400 underline" target="_blank" href="https://platform.openai.com/api-keys">platform.openai.com/api-keys</a>
     </div>
 
-    <!-- ==================== 3. USER PROFILE SCREEN ==================== -->
-    <div id="profileViewModal" class="hidden fixed inset-0 bg-fbBgLight dark:bg-fbBgDark z-50 overflow-y-auto">
-        <header class="p-3 bg-fbCardLight dark:bg-fbCardDark flex items-center justify-between border-b border-gray-200 dark:border-gray-800 sticky top-0 z-20">
-            <div class="flex items-center space-x-3">
-                <button onclick="triggerLoader(); closeProfileView()" class="text-fbTextLight dark:text-gray-300 text-lg"><i class="fa-solid fa-arrow-left"></i></button>
-                <h3 id="profileHeaderTitle" class="font-bold text-sm text-fbTextLight dark:text-white">প্রোফাইল</h3>
-            </div>
-            <button onclick="openGalleryPicker('profile')" class="text-fbBlue text-xs font-bold bg-fbBgLight dark:bg-gray-800 px-3 py-1 rounded-lg border border-gray-300 dark:border-gray-700">সম্পাদনা</button>
-        </header>
-
-        <div class="pb-10 space-y-3">
-            <!-- Cover & Avatar Banner -->
-            <div class="relative bg-gray-300 dark:bg-gray-800 h-40">
-                <img id="profileCoverImg" src="https://via.placeholder.com/500x200" class="w-full h-full object-cover">
-                <div class="absolute -bottom-10 left-4">
-                    <img id="profileAvatarImg" src="https://via.placeholder.com/100" class="w-24 h-24 rounded-full border-4 border-fbBgLight dark:border-fbBgDark object-cover shadow-lg">
-                </div>
-            </div>
-
-            <!-- Profile Info & Actions -->
-            <div class="pt-10 px-4 space-y-2">
-                <h2 id="profileFullName" class="text-xl font-bold text-fbTextLight dark:text-white">HM Abu Sayed Misbah</h2>
-                <p id="profileBioText" class="text-xs text-fbSubtextLight dark:text-fbSubtextDark">৩.৯K ফলোয়ার • ৩.৪K ফলো করেছেন</p>
-                
-                <div class="flex space-x-2 pt-2">
-                    <button class="flex-1 bg-fbBlue hover:bg-blue-600 text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-1 shadow-sm">
-                        <i class="fa-solid fa-plus"></i><span>স্টোরিতে যোগ করুন</span>
-                    </button>
-                    <button class="bg-gray-200 dark:bg-gray-800 text-fbTextLight dark:text-gray-300 px-4 py-2 rounded-xl text-xs font-bold">
-                        <i class="fa-solid fa-ellipsis"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Profile Navigation Tabs -->
-            <div class="px-4 flex space-x-2 text-xs font-semibold border-b border-gray-200 dark:border-gray-800 pb-2">
-                <button class="bg-fbBlue/20 text-fbBlue px-4 py-1.5 rounded-full border border-fbBlue/30">সব</button>
-                <button class="bg-gray-200 dark:bg-gray-800 text-fbSubtextLight dark:text-gray-400 px-4 py-1.5 rounded-full">Reels</button>
-                <button class="bg-gray-200 dark:bg-gray-800 text-fbSubtextLight dark:text-gray-400 px-4 py-1.5 rounded-full">ফটো</button>
-            </div>
-
-            <!-- Profile Posts -->
-            <div id="profilePostsContainer" class="p-3 space-y-2"></div>
-        </div>
+    <!-- Grok -->
+    <div class="space-y-1">
+      <label class="text-[11px] font-bold text-orange-400"><i class="fa-solid fa-bolt mr-1"></i> xAI Grok Key</label>
+      <input id="keyGrok" type="password" placeholder="xai-…" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
+      <a class="text-[9px] text-indigo-400 underline" target="_blank" href="https://console.x.ai">console.x.ai</a>
     </div>
 
-    <!-- ==================== 4. CREATE POST MODAL ==================== -->
-    <div id="createPostModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-        <div class="bg-fbCardLight dark:bg-fbCardDark border border-gray-300 dark:border-gray-700 w-full max-w-sm rounded-2xl p-4 space-y-3 text-xs shadow-2xl">
-            <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-2">
-                <h3 class="font-bold text-fbTextLight dark:text-white text-sm">পোস্ট লিখুন</h3>
-                <button onclick="closeCreatePostModal()" class="text-gray-500 hover:text-black dark:hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-            
-            <textarea id="postInputText" rows="4" placeholder="কী ভাবছেন?" class="w-full p-3 bg-fbBgLight dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-fbTextLight dark:text-white focus:outline-none"></textarea>
-
-            <div id="postImagePreview" class="hidden relative">
-                <img id="postPreviewImg" src="" class="max-h-40 w-full object-cover rounded-xl border border-gray-300 dark:border-gray-700">
-            </div>
-
-            <div class="flex justify-between items-center bg-fbBgLight dark:bg-gray-900 p-2.5 rounded-xl border border-gray-300 dark:border-gray-800">
-                <span class="text-fbSubtextLight dark:text-gray-400 font-semibold">আপনার পোস্টে যোগ করুন:</span>
-                <button onclick="openGalleryPicker('post')" class="text-emerald-500 text-lg"><i class="fa-solid fa-images"></i></button>
-            </div>
-
-            <button onclick="submitNewPost()" class="w-full bg-fbBlue hover:bg-blue-600 text-white font-bold py-2.5 rounded-xl shadow-lg">পোস্ট করুন</button>
-        </div>
+    <!-- Claude -->
+    <div class="space-y-1">
+      <label class="text-[11px] font-bold text-amber-400"><i class="fa-solid fa-feather mr-1"></i> Anthropic Claude Key</label>
+      <input id="keyClaude" type="password" placeholder="sk-ant-…" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500" />
+      <a class="text-[9px] text-indigo-400 underline" target="_blank" href="https://console.anthropic.com">console.anthropic.com</a>
     </div>
 
-    <!-- ==================== 5. COMMENTS MODAL ==================== -->
-    <div id="commentsModal" class="hidden fixed inset-0 bg-black/80 z-50 flex flex-col justify-end">
-        <div class="bg-fbCardLight dark:bg-fbCardDark rounded-t-3xl border-t border-gray-300 dark:border-gray-700 h-[70vh] flex flex-col justify-between p-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-800 pb-2">
-                <h3 class="font-bold text-fbTextLight dark:text-white text-sm">কমেন্টসমূহ</h3>
-                <button onclick="closeCommentsModal()" class="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-
-            <div id="commentsList" class="flex-grow overflow-y-auto space-y-2 py-2 text-xs"></div>
-
-            <div class="flex items-center space-x-2 pt-2 border-t border-gray-200 dark:border-gray-800">
-                <input type="text" id="commentInputField" placeholder="কমেন্ট লিখুন..." class="flex-grow bg-fbBgLight dark:bg-gray-900 text-fbTextLight dark:text-white border border-gray-300 dark:border-gray-700 px-4 py-2.5 rounded-full text-xs focus:outline-none">
-                <button onclick="submitComment()" class="bg-fbBlue text-white px-4 py-2.5 rounded-full text-xs font-bold shadow-md">পাঠান</button>
-            </div>
-        </div>
+    <!-- Voice language -->
+    <div class="space-y-1">
+      <label class="text-[11px] font-bold text-slate-300">Voice Language</label>
+      <select id="voiceLangSel" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-xs">
+        <option value="bn-BD">বাংলা (বাংলাদেশ)</option>
+        <option value="bn-IN">বাংলা (ভারত)</option>
+        <option value="en-US">English (US)</option>
+        <option value="en-GB">English (UK)</option>
+        <option value="hi-IN">हिन्दी</option>
+        <option value="ar-SA">العربية</option>
+      </select>
     </div>
 
-    <!-- Controller Scripts -->
-    <script>
-        // Web Audio Synthesizer for Notifications
-        function playNotificationSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.15, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.25);
-            } catch(e) {}
+    <div class="flex space-x-2 pt-1">
+      <button onclick="saveSettings()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 rounded-lg">
+        <i class="fa-solid fa-floppy-disk mr-1"></i> Save
+      </button>
+      <button onclick="clearKeys()" class="px-3 bg-red-900/50 text-red-300 text-xs rounded-lg">Clear</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODEL PICKER MODAL ========== -->
+<div id="modelModal" class="hidden fixed inset-0 bg-black/80 z-[150] flex items-end justify-center">
+  <div class="bg-slate-900 border-t border-slate-700 rounded-t-2xl w-full max-w-md max-h-[70vh] overflow-y-auto no-scrollbar p-4 space-y-3">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+      <h3 id="modelModalTitle" class="text-sm font-bold gradient-text">মডেল বাছুন</h3>
+      <button onclick="closeModelPicker()" class="text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="providerTabs" class="flex space-x-1 overflow-x-auto no-scrollbar pb-1"></div>
+    <div id="modelList" class="space-y-1.5"></div>
+  </div>
+</div>
+
+<!-- ========== HEADER ========== -->
+<header class="glass px-3 py-2.5 border-b border-slate-800 flex items-center justify-between sticky top-0 z-30">
+  <div class="flex items-center space-x-2">
+    <div class="w-9 h-9 rounded-xl p-0.5 bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 pulse-ring">
+      <div class="w-full h-full bg-slate-900 rounded-[9px] flex items-center justify-center">
+        <i class="fa-solid fa-robot text-indigo-400 text-sm"></i>
+      </div>
+    </div>
+    <div>
+      <h1 class="text-sm font-extrabold gradient-text leading-tight">Misbah Powerful AI</h1>
+      <p id="headerStatus" class="text-[9px] text-indigo-400 font-semibold">Initializing…</p>
+    </div>
+  </div>
+  <div class="flex space-x-1.5">
+    <button onclick="openSettings()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs"><i class="fa-solid fa-gear"></i></button>
+    <button onclick="newChat()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs"><i class="fa-solid fa-plus"></i></button>
+  </div>
+</header>
+
+<!-- ========== MAIN ========== -->
+<main class="flex-1 overflow-y-auto no-scrollbar p-3 pb-24 bg-slate-950">
+
+  <!-- CHAT -->
+  <section id="viewChat" class="h-full flex flex-col">
+    <div class="flex items-center space-x-2 mb-2">
+      <button onclick="openModelPicker('chat')" id="chatModelBtn" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-left text-[11px] font-semibold hover:border-indigo-500 transition">
+        <i class="fa-solid fa-cube text-indigo-400 mr-1"></i>
+        <span id="chatModelLabel">Gemini · 2.5 Flash</span>
+        <i class="fa-solid fa-chevron-down float-right text-slate-500"></i>
+      </button>
+      <button onclick="showChatList()" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 text-xs"><i class="fa-solid fa-list"></i></button>
+    </div>
+    <div id="chatContainer" class="flex-1 overflow-y-auto no-scrollbar space-y-3"></div>
+    <div class="bg-slate-950 pt-2 sticky bottom-0">
+      <div class="bg-slate-900 border border-slate-700 rounded-2xl p-1.5 flex items-end space-x-1.5 focus-within:border-indigo-500 transition">
+        <button onclick="quickVoice()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm flex-shrink-0"><i class="fa-solid fa-microphone"></i></button>
+        <textarea id="userInput" rows="1" placeholder="যেকোনো প্রশ্ন করুন…" class="flex-1 bg-transparent text-xs text-slate-100 resize-none max-h-24 py-2 focus:outline-none"></textarea>
+        <button onclick="sendMessage()" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white text-sm flex-shrink-0 active:scale-95 transition"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMAGE -->
+  <section id="viewImage" class="hidden space-y-3 fade-in">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
+          <h3 class="text-xs font-bold">AI Image Generator</h3>
+        </div>
+        <button onclick="openModelPicker('image')" id="imageModelBtn" class="text-[10px] bg-slate-800 px-2 py-1 rounded-lg text-indigo-300">
+          <span id="imageModelLabel">Gemini · Nano Banana</span> ▾
+        </button>
+      </div>
+      <textarea id="imagePrompt" rows="3" placeholder="e.g., A cyberpunk Dhaka at night, neon rickshaws, monsoon rain, cinematic 8k…" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-purple-500"></textarea>
+      <div class="flex justify-between items-center">
+        <span class="text-[10px] text-slate-400">Aspect Ratio</span>
+        <select id="imageAspect" class="bg-slate-950 border border-slate-700 text-slate-300 text-[10px] rounded-lg px-2 py-1">
+          <option value="1:1">1:1</option>
+          <option value="16:9">16:9</option>
+          <option value="9:16">9:16</option>
+          <option value="4:3">4:3</option>
+          <option value="3:4">3:4</option>
+        </select>
+      </div>
+      <button onclick="generateImage()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-2.5 rounded-xl text-xs active:scale-95 transition">
+        <i class="fa-solid fa-sparkles mr-1"></i> Generate Image
+      </button>
+      <p class="text-[9px] text-amber-400/80"><i class="fa-solid fa-shield-halved mr-1"></i> Explicit / nude কনটেন্ট ব্লক করা হয়।</p>
+    </div>
+    <div id="imageResults" class="space-y-3"></div>
+  </section>
+
+  <!-- VIDEO -->
+  <section id="viewVideo" class="hidden space-y-3 fade-in">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <i class="fa-solid fa-film text-pink-400"></i>
+          <h3 class="text-xs font-bold">AI Video Generator</h3>
+        </div>
+        <button onclick="openModelPicker('video')" id="videoModelBtn" class="text-[10px] bg-slate-800 px-2 py-1 rounded-lg text-pink-300">
+          <span id="videoModelLabel">Gemini · Veo 3</span> ▾
+        </button>
+      </div>
+      <textarea id="videoPrompt" rows="3" placeholder="e.g., Waves crashing on a tropical beach at sunset, drone shot, 4K cinematic…" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-pink-500"></textarea>
+      <div class="flex justify-between items-center">
+        <span class="text-[10px] text-slate-400">Aspect</span>
+        <select id="videoAspect" class="bg-slate-950 border border-slate-700 text-slate-300 text-[10px] rounded-lg px-2 py-1">
+          <option value="16:9">16:9</option>
+          <option value="9:16">9:16</option>
+          <option value="1:1">1:1</option>
+        </select>
+      </div>
+      <button onclick="generateVideo()" class="w-full bg-gradient-to-r from-pink-600 to-red-600 text-white font-bold py-2.5 rounded-xl text-xs active:scale-95 transition">
+        <i class="fa-solid fa-video mr-1"></i> Generate Video (~1-3 min)
+      </button>
+      <p class="text-[10px] text-amber-400/80 leading-relaxed">
+        <i class="fa-solid fa-circle-info mr-1"></i>
+        Veo 3 Gemini API-তে paid tier দরকার। Free key দিলে স্পষ্ট error আসবে। কাজ করলে ভিডিওর লিংক নিচে আসবে।
+      </p>
+    </div>
+    <div id="videoResults" class="space-y-3"></div>
+  </section>
+
+  <!-- VOICE -->
+  <section id="viewVoice" class="hidden space-y-3 fade-in">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-volume-high text-emerald-400"></i>
+        <h3 class="text-xs font-bold">Text → Speech</h3>
+      </div>
+      <textarea id="ttsInput" rows="4" placeholder="যা শুনতে চান, এখানে লিখুন…" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-emerald-500"></textarea>
+      <div class="grid grid-cols-2 gap-2 text-[10px]">
+        <label class="text-slate-400">Engine
+          <select id="ttsEngine" class="w-full bg-slate-950 border border-slate-700 rounded px-1 py-1 mt-1">
+            <option value="browser">Browser (Free)</option>
+            <option value="openai">OpenAI TTS</option>
+          </select>
+        </label>
+        <label class="text-slate-400">Voice
+          <select id="ttsVoice" class="w-full bg-slate-950 border border-slate-700 rounded px-1 py-1 mt-1"></select>
+        </label>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-[10px]">
+        <label class="text-slate-400">Rate <input id="ttsRate" type="range" min=".5" max="2" step=".1" value="1" class="w-full accent-emerald-500" /></label>
+        <label class="text-slate-400">Pitch <input id="ttsPitch" type="range" min=".5" max="2" step=".1" value="1" class="w-full accent-emerald-500" /></label>
+      </div>
+      <div class="flex space-x-2">
+        <button onclick="doTTS()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-lg"><i class="fa-solid fa-play mr-1"></i> Speak</button>
+        <button onclick="stopTTS()" class="bg-slate-700 px-3 rounded-lg text-xs"><i class="fa-solid fa-stop"></i></button>
+      </div>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-microphone-lines text-blue-400"></i>
+        <h3 class="text-xs font-bold">Speech → Text</h3>
+      </div>
+      <div id="sttLive" class="min-h-[70px] bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-300 whitespace-pre-wrap">Tap "Start" and speak…</div>
+      <div class="flex space-x-2">
+        <button onclick="startSTT()" id="sttStartBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg"><i class="fa-solid fa-microphone mr-1"></i> Start</button>
+        <button onclick="stopSTT()" class="bg-slate-700 px-3 rounded-lg text-xs"><i class="fa-solid fa-stop"></i></button>
+        <button onclick="copyText(State.stt.buffer)" class="bg-slate-700 px-3 rounded-lg text-xs"><i class="fa-solid fa-copy"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALL -->
+  <section id="viewCall" class="hidden fade-in h-full flex flex-col">
+    <div class="flex-1 relative rounded-3xl overflow-hidden border border-slate-800 bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950">
+      <video id="callVideo" autoplay muted playsinline class="hidden absolute inset-0 w-full h-full object-cover"></video>
+      <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 space-y-3">
+        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center pulse-ring">
+          <i class="fa-solid fa-robot text-white text-3xl"></i>
+        </div>
+        <h3 class="text-base font-bold gradient-text">Misbah AI</h3>
+        <p id="callStatus" class="text-xs text-slate-400">"Start Call" চাপুন — কথা বলে AI-র সাথে</p>
+        <div id="callTranscript" class="w-full max-h-40 overflow-y-auto no-scrollbar text-left text-[11px] space-y-1.5 px-2"></div>
+      </div>
+      <div class="absolute bottom-3 left-0 right-0 flex justify-center space-x-3">
+        <button onclick="startCall('voice')" class="w-14 h-14 rounded-full bg-emerald-600 text-white shadow-xl active:scale-95 transition"><i class="fa-solid fa-phone text-lg"></i></button>
+        <button onclick="startCall('video')" class="w-14 h-14 rounded-full bg-indigo-600 text-white shadow-xl active:scale-95 transition"><i class="fa-solid fa-video text-lg"></i></button>
+        <button onclick="endCall()" class="w-14 h-14 rounded-full bg-red-600 text-white shadow-xl active:scale-95 transition"><i class="fa-solid fa-phone-slash text-lg"></i></button>
+      </div>
+    </div>
+    <p class="text-[10px] text-slate-500 text-center mt-2 px-3 leading-relaxed">
+      Voice loop: আপনার কথা → STT → LLM → TTS → আবার শুনবে।<br>
+      <span class="text-amber-500">AI-এর মুখ নড়ানো লিপ-সিঙ্ক ভিডিও কল করতে HeyGen/D-ID-এর paid API লাগবে।</span>
+    </p>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="viewTools" class="hidden space-y-3 fade-in">
+    <div class="border-b border-slate-800 pb-2">
+      <h3 class="text-xs font-bold"><i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Prompt Tools</h3>
+      <p class="text-[10px] text-slate-400">এক ট্যাপে প্রম্পট লোড হবে</p>
+    </div>
+    <div id="toolsGrid" class="grid grid-cols-2 gap-2"></div>
+  </section>
+
+  <!-- SAVED -->
+  <section id="viewSaved" class="hidden space-y-3 fade-in">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+      <h3 class="text-xs font-bold"><i class="fa-solid fa-bookmark text-indigo-400 mr-1"></i> Saved Items</h3>
+      <button onclick="clearSaved()" class="text-[10px] text-red-400 font-bold">Clear All</button>
+    </div>
+    <div id="savedContainer" class="space-y-2"></div>
+  </section>
+
+</main>
+
+<!-- ========== BOTTOM NAV ========== -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 z-40">
+  <div class="grid grid-cols-7 text-[9px] font-bold text-slate-500">
+    <button onclick="switchTab('chat')"  data-tab="chat"  class="tab-btn active flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-comments text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Chat</button>
+    <button onclick="switchTab('image')" data-tab="image" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-image text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Image</button>
+    <button onclick="switchTab('video')" data-tab="video" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-film text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Video</button>
+    <button onclick="switchTab('voice')" data-tab="voice" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-volume-high text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Voice</button>
+    <button onclick="switchTab('call')"  data-tab="call"  class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-phone text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Call</button>
+    <button onclick="switchTab('tools')" data-tab="tools" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-bolt text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Tools</button>
+    <button onclick="switchTab('saved')" data-tab="saved" class="tab-btn flex flex-col items-center py-2 gap-0.5"><i class="tab-icon fa-solid fa-bookmark text-sm w-7 h-7 flex items-center justify-center rounded-lg"></i>Saved</button>
+  </div>
+</nav>
+
+<script>
+/* ============================================================
+   1. PROVIDER REGISTRY
+   ============================================================ */
+const PROVIDERS = {
+  gemini: {
+    label: 'Gemini', icon: 'fa-gem', color: 'text-blue-400', free: true,
+    chatModels: [
+      { id:'gemini-2.5-flash', name:'Gemini 2.5 Flash' },
+      { id:'gemini-2.5-pro',   name:'Gemini 2.5 Pro' },
+      { id:'gemini-2.0-flash', name:'Gemini 2.0 Flash' },
+    ],
+    imageModels: [
+      { id:'gemini-2.5-flash-image-preview', name:'Nano Banana (2.5 Flash Image)' },
+      { id:'imagen-4.0-generate-001',        name:'Imagen 4' },
+    ],
+    videoModels: [
+      { id:'veo-3.0-generate-001', name:'Veo 3' },
+      { id:'veo-2.0-generate-001', name:'Veo 2' },
+    ],
+  },
+  openai: {
+    label: 'OpenAI', icon: 'fa-brain', color: 'text-emerald-400', free: false,
+    chatModels: [
+      { id:'gpt-4o',        name:'GPT-4o' },
+      { id:'gpt-4o-mini',   name:'GPT-4o Mini' },
+      { id:'gpt-4-turbo',   name:'GPT-4 Turbo' },
+      { id:'o1-mini',       name:'o1 Mini' },
+    ],
+    imageModels: [{ id:'dall-e-3', name:'DALL·E 3' }],
+    videoModels: [],
+  },
+  grok: {
+    label: 'Grok', icon: 'fa-bolt', color: 'text-orange-400', free: false,
+    chatModels: [
+      { id:'grok-2-latest',    name:'Grok 2' },
+      { id:'grok-vision-beta', name:'Grok Vision' },
+      { id:'grok-beta',        name:'Grok Beta' },
+    ],
+    imageModels: [], videoModels: [],
+  },
+  claude: {
+    label: 'Claude', icon: 'fa-feather', color: 'text-amber-400', free: false,
+    chatModels: [
+      { id:'claude-3-5-sonnet-latest', name:'Claude 3.5 Sonnet' },
+      { id:'claude-3-5-haiku-latest',  name:'Claude 3.5 Haiku' },
+      { id:'claude-3-opus-latest',     name:'Claude 3 Opus' },
+    ],
+    imageModels: [], videoModels: [],
+  },
+};
+
+/* ============================================================
+   2. STATE (persisted)
+   ============================================================ */
+const State = {
+  keys: {
+    gemini: localStorage.getItem('mpa_key_gemini') || '',
+    openai: localStorage.getItem('mpa_key_openai') || '',
+    grok:   localStorage.getItem('mpa_key_grok')   || '',
+    claude: localStorage.getItem('mpa_key_claude') || '',
+  },
+  selection: {
+    chat:  { provider:'gemini', model:'gemini-2.5-flash' },
+    image: { provider:'gemini', model:'gemini-2.5-flash-image-preview' },
+    video: { provider:'gemini', model:'veo-3.0-generate-001' },
+  },
+  voiceLang: localStorage.getItem('mpa_voice_lang') || 'bn-BD',
+  chats: JSON.parse(localStorage.getItem('mpa_chats') || '[]'),
+  activeChatId: localStorage.getItem('mpa_active_chat') || null,
+  saved: JSON.parse(localStorage.getItem('mpa_saved') || '[]'),
+  stt: { recognition: null, buffer: '' },
+  call: { active: false, mode: 'voice', stream: null, recognition: null, speaking: false },
+  recorder: null, mediaStream: null, mediaChunks: [],
+};
+
+function persistKeys() {
+  Object.keys(State.keys).forEach(k => localStorage.setItem('mpa_key_' + k, State.keys[k]));
+}
+function persistChats() {
+  localStorage.setItem('mpa_chats', JSON.stringify(State.chats.slice(-20)));
+  localStorage.setItem('mpa_active_chat', State.activeChatId || '');
+}
+function persistSaved() {
+  State.saved = State.saved.slice(0, 40);
+  localStorage.setItem('mpa_saved', JSON.stringify(State.saved));
+}
+
+/* ============================================================
+   3. UTILITIES
+   ============================================================ */
+function showToast(msg, icon = 'fa-circle-check', color = 'text-emerald-400') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').innerText = msg;
+  document.getElementById('toastIcon').className = `fa-solid ${icon} ${color}`;
+  t.classList.remove('hidden');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.add('hidden'), 2600);
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function renderMarkdown(t) {
+  let s = escapeHtml(t);
+  s = s.replace(/```(\w+)?\n?([\s\S]*?)```/g, (_,l,c) => `<pre><code>${c.trim()}</code></pre>`);
+  s = s.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  s = s.replace(/^### (.*)$/gm, '<h4 class="font-bold mt-2 mb-1">$1</h4>');
+  s = s.replace(/^## (.*)$/gm, '<h3 class="font-bold mt-2 mb-1 text-sm">$1</h3>');
+  s = s.replace(/^# (.*)$/gm, '<h2 class="font-bold mt-2 mb-1 text-base">$1</h2>');
+  s = s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  s = s.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<i>$1</i>');
+  s = s.replace(/^- (.+)$/gm, '<li class="ml-4 list-disc">$1</li>');
+  s = s.replace(/\n/g, '<br>');
+  return s;
+}
+function copyText(txt) {
+  navigator.clipboard.writeText(txt).then(() => showToast('কপি হয়েছে', 'fa-copy'))
+    .catch(() => showToast('ব্যর্থ', 'fa-triangle-exclamation', 'text-red-400'));
+}
+
+/* ============================================================
+   4. INIT
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  startClock();
+  renderTools();
+  renderSaved();
+  populateBrowserVoices();
+  updateChatModelLabel();
+  updateImageModelLabel();
+  updateVideoModelLabel();
+  loadChat();
+  document.getElementById('userInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+  document.getElementById('userInput').addEventListener('input', e => {
+    e.target.style.height = 'auto';
+    e.target.style.height = Math.min(e.target.scrollHeight, 96) + 'px';
+  });
+  if (!State.keys.gemini && !State.keys.openai) {
+    setTimeout(() => { showToast('Settings থেকে API key দিন', 'fa-key', 'text-amber-400'); openSettings(); }, 700);
+  }
+});
+
+function startClock() {
+  const el = document.getElementById('headerStatus');
+  const tick = () => {
+    const t = new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    el.innerHTML = `<i class="fa-solid fa-circle text-emerald-400 text-[6px] mr-1"></i>Online • ${t}`;
+  };
+  tick(); setInterval(tick, 1000);
+}
+
+/* ============================================================
+   5. TABS
+   ============================================================ */
+function switchTab(tab) {
+  document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+  if (tab === 'saved') renderSaved();
+  if (tab === 'voice') populateBrowserVoices();
+}
+
+/* ============================================================
+   6. SETTINGS
+   ============================================================ */
+function openSettings() {
+  ['gemini','openai','grok','claude'].forEach(p => {
+    document.getElementById('key' + p.charAt(0).toUpperCase() + p.slice(1)).value = State.keys[p] || '';
+  });
+  document.getElementById('voiceLangSel').value = State.voiceLang;
+  document.getElementById('settingsModal').classList.remove('hidden');
+}
+function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
+function saveSettings() {
+  State.keys.gemini = document.getElementById('keyGemini').value.trim();
+  State.keys.openai = document.getElementById('keyOpenAI').value.trim();
+  State.keys.grok   = document.getElementById('keyGrok').value.trim();
+  State.keys.claude = document.getElementById('keyClaude').value.trim();
+  State.voiceLang   = document.getElementById('voiceLangSel').value;
+  localStorage.setItem('mpa_voice_lang', State.voiceLang);
+  persistKeys();
+  closeSettings();
+  showToast('সেটিংস সংরক্ষিত', 'fa-floppy-disk');
+}
+function clearKeys() {
+  if (!confirm('সব API key মুছে ফেলবেন?')) return;
+  State.keys = { gemini:'', openai:'', grok:'', claude:'' };
+  persistKeys(); closeSettings();
+  showToast('মুছে ফেলা হয়েছে', 'fa-trash');
+}
+
+/* ============================================================
+   7. MODEL PICKER
+   ============================================================ */
+let pickerTarget = 'chat', pickerProvider = 'gemini';
+function openModelPicker(target) {
+  pickerTarget = target;
+  pickerProvider = State.selection[target].provider;
+  document.getElementById('modelModalTitle').innerText = `মডেল বাছুন — ${target.toUpperCase()}`;
+  document.getElementById('modelModal').classList.remove('hidden');
+  renderPicker();
+}
+function closeModelPicker() { document.getElementById('modelModal').classList.add('hidden'); }
+
+function renderPicker() {
+  const modelKey = pickerTarget + 'Models';
+  const tabs = document.getElementById('providerTabs');
+  tabs.innerHTML = Object.entries(PROVIDERS)
+    .filter(([k,p]) => (p[modelKey] || []).length > 0)
+    .map(([k,p]) => {
+      const active = k === pickerProvider;
+      const keySet = !!State.keys[k];
+      return `<button onclick="pickerProvider='${k}';renderPicker()"
+        class="px-3 py-1.5 rounded-full text-[10px] font-bold whitespace-nowrap border ${active ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-800 border-slate-700 text-slate-300'}">
+        <i class="fa-solid ${p.icon} mr-1"></i>${p.label}
+        ${p.free ? '<span class="ml-1 text-[8px] bg-emerald-600 px-1 rounded">FREE</span>' : ''}
+        ${!keySet ? '<i class="fa-solid fa-key ml-1 text-[8px] text-amber-400"></i>' : ''}
+      </button>`;
+    }).join('');
+
+  const provider = PROVIDERS[pickerProvider];
+  const models = provider[modelKey] || [];
+  const list = document.getElementById('modelList');
+  const current = State.selection[pickerTarget];
+
+  list.innerHTML = models.map(m => {
+    const selected = current.provider === pickerProvider && current.model === m.id;
+    return `<button onclick="pickModel('${pickerProvider}','${m.id}')"
+      class="w-full text-left p-2.5 rounded-xl border flex items-center justify-between ${selected ? 'bg-indigo-600/20 border-indigo-500' : 'bg-slate-800/50 border-slate-700 hover:border-slate-500'}">
+      <span class="text-[11px] font-semibold">${m.name}</span>
+      <code class="text-[9px] text-slate-500">${m.id}</code>
+    </button>`;
+  }).join('') +
+  (!State.keys[pickerProvider] ?
+    `<p class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-lg p-2 mt-2">
+      <i class="fa-solid fa-key mr-1"></i> এই provider-এর key নেই। Settings থেকে দিন।
+    </p>` : '');
+}
+
+function pickModel(provider, model) {
+  State.selection[pickerTarget] = { provider, model };
+  if (pickerTarget === 'chat') updateChatModelLabel();
+  if (pickerTarget === 'image') updateImageModelLabel();
+  if (pickerTarget === 'video') updateVideoModelLabel();
+  closeModelPicker();
+  showToast('মডেল বদলানো হয়েছে', 'fa-check');
+}
+function updateChatModelLabel() {
+  const s = State.selection.chat;
+  document.getElementById('chatModelLabel').innerText = `${PROVIDERS[s.provider].label} · ${PROVIDERS[s.provider].chatModels.find(m => m.id === s.model)?.name || s.model}`;
+}
+function updateImageModelLabel() {
+  const s = State.selection.image;
+  document.getElementById('imageModelLabel').innerText = `${PROVIDERS[s.provider].label} · ${PROVIDERS[s.provider].imageModels.find(m => m.id === s.model)?.name || s.model}`;
+}
+function updateVideoModelLabel() {
+  const s = State.selection.video;
+  document.getElementById('videoModelLabel').innerText = `${PROVIDERS[s.provider].label} · ${PROVIDERS[s.provider].videoModels.find(m => m.id === s.model)?.name || s.model}`;
+}
+
+/* ============================================================
+   8. PROVIDER ADAPTERS — CHAT
+   ============================================================ */
+async function chatGemini(key, model, messages, system) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+  const body = {
+    contents: messages.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
+  };
+  if (system) body.systemInstruction = { parts: [{ text: system }] };
+  const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  const c = data.candidates?.[0];
+  const text = c?.content?.parts?.map(p => p.text).filter(Boolean).join('') || 'উত্তর পাওয়া যায়নি।';
+  const sources = (c?.groundingMetadata?.groundingChunks || []).map(x => x.web?.title || x.web?.uri).filter(Boolean);
+  return { text, sources };
+}
+
+async function chatOpenAI(key, model, messages, system) {
+  const url = 'https://api.openai.com/v1/chat/completions';
+  const msgs = system ? [{ role:'system', content: system }, ...messages] : messages;
+  const res = await fetch(url, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${key}` },
+    body: JSON.stringify({ model, messages: msgs })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return { text: data.choices?.[0]?.message?.content || 'উত্তর পাওয়া যায়নি।', sources: [] };
+}
+
+async function chatGrok(key, model, messages, system) {
+  const url = 'https://api.x.ai/v1/chat/completions';
+  const msgs = system ? [{ role:'system', content: system }, ...messages] : messages;
+  const res = await fetch(url, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${key}` },
+    body: JSON.stringify({ model, messages: msgs })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return { text: data.choices?.[0]?.message?.content || 'উত্তর পাওয়া যায়নি।', sources: [] };
+}
+
+async function chatClaude(key, model, messages, system) {
+  const url = 'https://api.anthropic.com/v1/messages';
+  const body = { model, max_tokens: 4096, messages };
+  if (system) body.system = system;
+  const res = await fetch(url, {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key': key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true',
+    },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return { text: data.content?.map(c => c.text).filter(Boolean).join('') || 'উত্তর পাওয়া যায়নি।', sources: [] };
+}
+
+async function callChat(messages) {
+  const { provider, model } = State.selection.chat;
+  const key = State.keys[provider];
+  if (!key) throw new Error(`${PROVIDERS[provider].label} API key দেওয়া হয়নি — Settings থেকে দিন।`);
+  const system = 'You are Misbah Powerful AI, a smart, friendly multilingual assistant. Reply in the same language as the user (Bengali/English/etc). Use markdown when helpful. Refuse sexual/explicit content, deception, or harm.';
+  if (provider === 'gemini') return chatGemini(key, model, messages, system);
+  if (provider === 'openai') return chatOpenAI(key, model, messages, system);
+  if (provider === 'grok')   return chatGrok(key, model, messages, system);
+  if (provider === 'claude') return chatClaude(key, model, messages, system);
+  throw new Error('Unknown provider');
+}
+
+/* ============================================================
+   9. CHAT — CORE
+   ============================================================ */
+function getActiveChat() {
+  return State.chats.find(c => c.id === State.activeChatId);
+}
+function ensureChat() {
+  let chat = getActiveChat();
+  if (!chat) {
+    chat = { id: Date.now(), title: 'New Chat', messages: [] };
+    State.chats.unshift(chat);
+    State.activeChatId = chat.id;
+    persistChats();
+  }
+  return chat;
+}
+
+function loadChat() {
+  const chat = getActiveChat();
+  if (!chat || !chat.messages.length) { renderWelcome(); return; }
+  const c = document.getElementById('chatContainer');
+  c.innerHTML = '';
+  chat.messages.forEach(m => appendMessage(m.role, m.content, m.sources || [], false));
+  c.scrollTop = c.scrollHeight;
+}
+
+function renderWelcome() {
+  document.getElementById('chatContainer').innerHTML = `
+    <div class="bg-gradient-to-br from-slate-900 via-indigo-950/50 to-slate-900 border border-indigo-500/20 rounded-2xl p-4 text-center space-y-2 fade-in">
+      <div class="w-14 h-14 rounded-full bg-indigo-600/20 text-indigo-400 mx-auto flex items-center justify-center text-2xl"><i class="fa-solid fa-brain"></i></div>
+      <h3 class="text-sm font-bold text-slate-200">Misbah Powerful AI-তে স্বাগতম!</h3>
+      <p class="text-[11px] text-slate-400 leading-relaxed">Chat, Image, Video, Voice, Call — সব এক জায়গায়। উপরে মডেল বাছুন।</p>
+      <div class="flex flex-wrap gap-1.5 justify-center pt-1">
+        ${[
+          ['আজকের শীর্ষ খবর কী?', '📰 খবর'],
+          ['Python এ for loop বুঝিয়ে দাও', '💻 কোড'],
+          ['১০ লাইনে গল্প লিখো', '📖 গল্প'],
+          ['একটি অনুপ্রেরণামূলক উক্তি', '✨ মোটিভেশন'],
+        ].map(([q,l]) => `<button onclick="quickAsk(${JSON.stringify(q).replace(/"/g,'&quot;')})" class="text-[10px] bg-indigo-950/80 border border-indigo-500/30 text-indigo-300 px-2.5 py-1 rounded-full hover:bg-indigo-900">${l}</button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function appendMessage(role, text, sources = [], save = true) {
+  const c = document.getElementById('chatContainer');
+  if (c.children.length === 1 && c.children[0].querySelector('.fa-brain')) c.innerHTML = '';
+
+  const wrap = document.createElement('div');
+  wrap.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} fade-in`;
+
+  const bubble = document.createElement('div');
+  bubble.className = `max-w-[88%] p-3 text-xs leading-relaxed shadow-md ${role === 'user' ? 'chat-user whitespace-pre-wrap' : 'chat-ai'}`;
+
+  if (role === 'user') bubble.textContent = text;
+  else {
+    bubble.innerHTML = renderMarkdown(text);
+    if (sources.length) {
+      bubble.innerHTML += `<div class="mt-2 pt-2 border-t border-slate-700/60 text-[9px] text-slate-400"><b>🔗 Sources:</b><br>${sources.slice(0,4).map(s => '• ' + escapeHtml(s)).join('<br>')}</div>`;
+    }
+    bubble.innerHTML += `<div class="mt-1.5 flex gap-3">
+      <button onclick="quickSpeak(this.closest('.chat-ai').innerText)" class="text-[10px] text-indigo-400 hover:underline"><i class="fa-solid fa-volume-high mr-0.5"></i>শুনুন</button>
+      <button onclick="copyText(this.closest('.chat-ai').innerText)" class="text-[10px] text-slate-400 hover:underline"><i class="fa-solid fa-copy mr-0.5"></i>কপি</button>
+    </div>`;
+  }
+
+  wrap.appendChild(bubble);
+  c.appendChild(wrap);
+  c.scrollTop = c.scrollHeight;
+
+  if (save) {
+    const chat = ensureChat();
+    chat.messages.push({ role, content: text, sources });
+    if (chat.messages.length === 1 && role === 'user') chat.title = text.slice(0, 30);
+    persistChats();
+  }
+}
+
+function appendLoader() {
+  const c = document.getElementById('chatContainer');
+  const id = 'ldr_' + Date.now();
+  const div = document.createElement('div');
+  div.id = id;
+  div.className = 'flex justify-start fade-in';
+  div.innerHTML = `<div class="chat-ai px-4 py-3 flex items-center space-x-1.5">
+    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 typing-dot"></span>
+    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 typing-dot"></span>
+    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 typing-dot"></span>
+  </div>`;
+  c.appendChild(div);
+  c.scrollTop = c.scrollHeight;
+  return id;
+}
+function removeById(id) { const e = document.getElementById(id); if (e) e.remove(); }
+
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const provider = State.selection.chat.provider;
+  if (!State.keys[provider]) { openSettings(); showToast(`${PROVIDERS[provider].label} key দিন`, 'fa-key', 'text-amber-400'); return; }
+
+  appendMessage('user', text);
+  input.value = ''; input.style.height = 'auto';
+  const ldr = appendLoader();
+
+  try {
+    const chat = getActiveChat();
+    const history = chat.messages.slice(-20).map(m => ({ role: m.role, content: m.content }));
+    const { text: aiText, sources } = await callChat(history);
+    removeById(ldr);
+    appendMessage('assistant', aiText, sources);
+  } catch (e) {
+    removeById(ldr);
+    appendMessage('assistant', '❌ ত্রুটি: ' + (e.message || 'Network error'));
+  }
+}
+
+function quickAsk(q) {
+  document.getElementById('userInput').value = q;
+  switchTab('chat');
+  sendMessage();
+}
+
+function newChat() {
+  State.activeChatId = null;
+  renderWelcome();
+  showToast('নতুন চ্যাট');
+}
+
+function showChatList() {
+  if (!State.chats.length) return showToast('কোনো চ্যাট নেই');
+  const list = State.chats.slice(0, 15).map(c =>
+    `<button onclick="loadChatById(${c.id})" class="w-full text-left p-2.5 bg-slate-800 rounded-lg mb-1 text-[11px]">
+      <b>${escapeHtml(c.title || 'Untitled')}</b><br>
+      <span class="text-[9px] text-slate-500">${c.messages.length} messages</span>
+    </button>`
+  ).join('');
+  // Simple alert-style list (could be modal but keeping simple)
+  const modal = window.confirm('চ্যাট লিস্ট দেখতে OK চাপুন, অথবা Cancel দিয়ে বাতিল') ;
+  if (!modal) return;
+  const w = window.open('', '_blank', 'width=300,height=400');
+  if (w) {
+    w.document.write(`<html><body style="font-family:sans-serif;background:#0f172a;color:#fff;padding:12px">
+      <h3 style="font-size:13px">আপনার চ্যাট</h3>${list}</body></html>`);
+  }
+}
+function loadChatById(id) {
+  State.activeChatId = id;
+  persistChats();
+  switchTab('chat');
+  loadChat();
+}
+
+/* ============================================================
+   10. IMAGE GENERATION
+   ============================================================ */
+async function imageGemini(key, model, prompt, aspect) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+  const body = {
+    contents: [{ role:'user', parts:[{ text: prompt }] }],
+    generationConfig: { responseModalities:['IMAGE'], imageConfig: { aspectRatio: aspect } }
+  };
+  const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  const part = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+  if (!part) throw new Error('ছবি পাওয়া যায়নি (key-তে access নেই?)');
+  return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+}
+
+async function imageOpenAI(key, model, prompt, aspect) {
+  const url = 'https://api.openai.com/v1/images/generations';
+  const sizeMap = { '1:1':'1024x1024', '16:9':'1792x1024', '9:16':'1024x1792' };
+  const body = { model, prompt, n:1, size: sizeMap[aspect] || '1024x1024', response_format:'b64_json' };
+  const res = await fetch(url, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${key}` },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return `data:image/png;base64,${data.data[0].b64_json}`;
+}
+
+async function generateImage() {
+  const prompt = document.getElementById('imagePrompt').value.trim();
+  const aspect = document.getElementById('imageAspect').value;
+  if (!prompt) return showToast('ছবির বর্ণনা লিখুন', 'fa-pen', 'text-amber-400');
+  const { provider, model } = State.selection.image;
+  const key = State.keys[provider];
+  if (!key) { openSettings(); return showToast(`${PROVIDERS[provider].label} key দিন`, 'fa-key', 'text-amber-400'); }
+
+  if (/\b(nude|naked|nudity|porn|sex|xxx|18\+|explicit|nsfw|erotic)\b/i.test(prompt)) {
+    return showToast('এই কনটেন্ট অনুমোদিত নয়', 'fa-shield-halved', 'text-red-400');
+  }
+
+  const results = document.getElementById('imageResults');
+  const id = 'img_' + Date.now();
+  results.insertAdjacentHTML('afterbegin', `
+    <div id="${id}" class="bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-2 fade-in">
+      <div class="py-6 text-center space-y-2">
+        <i class="fa-solid fa-spinner fa-spin text-2xl text-purple-400"></i>
+        <p class="text-xs font-bold">ছবি তৈরি হচ্ছে…</p>
+      </div>
+    </div>`);
+
+  try {
+    let dataUrl;
+    if (provider === 'gemini') dataUrl = await imageGemini(key, model, prompt, aspect);
+    else if (provider === 'openai') dataUrl = await imageOpenAI(key, model, prompt, aspect);
+    else throw new Error('এই provider-এ image generation নেই');
+
+    const saved = { id: Date.now(), type:'image', data: dataUrl, prompt };
+    document.getElementById(id).innerHTML = `
+      <img src="${dataUrl}" class="w-full rounded-xl border border-slate-700" />
+      <p class="text-[10px] text-slate-400 italic">"${escapeHtml(prompt).slice(0,80)}"</p>
+      <div class="flex space-x-2">
+        <button onclick='saveToLibrary(${JSON.stringify(saved)})' class="flex-1 bg-indigo-600 text-white text-xs py-1.5 rounded-lg"><i class="fa-solid fa-bookmark mr-1"></i>Save</button>
+        <a href="${dataUrl}" download="misbah-ai-${Date.now()}.png" class="flex-1 bg-slate-700 text-white text-xs py-1.5 rounded-lg text-center"><i class="fa-solid fa-download mr-1"></i>Download</a>
+      </div>`;
+    showToast('ছবি তৈরি ✓', 'fa-image');
+  } catch (e) {
+    document.getElementById(id).innerHTML = `<p class="text-xs text-red-400 p-2">❌ ${escapeHtml(e.message)}</p>`;
+  }
+}
+
+/* ============================================================
+   11. VIDEO GENERATION (Veo)
+   ============================================================ */
+async function generateVideo() {
+  const prompt = document.getElementById('videoPrompt').value.trim();
+  const aspect = document.getElementById('videoAspect').value;
+  if (!prompt) return showToast('ভিডিও বর্ণনা লিখুন', 'fa-pen', 'text-amber-400');
+  const { provider, model } = State.selection.video;
+  const key = State.keys[provider];
+  if (!key) { openSettings(); return showToast('Gemini key দিন', 'fa-key', 'text-amber-400'); }
+
+  if (/\b(nude|naked|porn|sex|xxx|18\+|explicit|nsfw)\b/i.test(prompt)) {
+    return showToast('এই কনটেন্ট অনুমোদিত নয়', 'fa-shield-halved', 'text-red-400');
+  }
+
+  const results = document.getElementById('videoResults');
+  const id = 'vid_' + Date.now();
+  results.insertAdjacentHTML('afterbegin', `
+    <div id="${id}" class="bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-2 fade-in">
+      <div class="py-6 text-center space-y-2">
+        <i class="fa-solid fa-spinner fa-spin text-2xl text-pink-400"></i>
+        <p class="text-xs font-bold">ভিডিও তৈরি হচ্ছে… (১–৩ মিনিট)</p>
+        <p id="${id}_status" class="text-[9px] text-slate-500"></p>
+      </div>
+    </div>`);
+
+  try {
+    const startUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predictLongRunning?key=${key}`;
+    const res = await fetch(startUrl, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ instances:[{ prompt }], parameters:{ aspectRatio: aspect } })
+    });
+    const startData = await res.json();
+    if (startData.error) throw new Error(startData.error.message);
+    const opName = startData.name;
+    document.getElementById(id + '_status').innerText = 'Operation: ' + opName.split('/').pop();
+
+    // Poll
+    let attempts = 0;
+    const poll = setInterval(async () => {
+      attempts++;
+      try {
+        const pollRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/${opName}?key=${key}`);
+        const pollData = await pollRes.json();
+        if (pollData.error) { clearInterval(poll); throw new Error(pollData.error.message); }
+        if (pollData.done) {
+          clearInterval(poll);
+          const resp = pollData.response || {};
+          const uri = resp.generateVideoResponse?.generatedSamples?.[0]?.video?.uri
+                   || resp.videos?.[0]?.uri
+                   || resp.generatedVideos?.[0]?.video?.uri;
+          if (!uri) {
+            document.getElementById(id).innerHTML = `<p class="text-xs text-amber-400 p-2">Operation শেষ কিন্তু video URL পাওয়া যায়নি। Response inspect করুন।</p>`;
+            return;
+          }
+          document.getElementById(id).innerHTML = `
+            <video src="${uri}" controls class="w-full rounded-xl border border-slate-700"></video>
+            <div class="flex space-x-2">
+              <a href="${uri}" target="_blank" class="flex-1 bg-pink-600 text-white text-xs py-1.5 rounded-lg text-center"><i class="fa-solid fa-download mr-1"></i>Open / Download</a>
+            </div>`;
+          showToast('ভিডিও তৈরি ✓', 'fa-video');
+        } else if (attempts > 100) {
+          clearInterval(poll);
+          document.getElementById(id + '_status').innerText = 'Time out — Google AI Studio-তে চেক করুন।';
         }
+      } catch (e) {
+        clearInterval(poll);
+        document.getElementById(id).innerHTML = `<p class="text-xs text-red-400 p-2">❌ ${escapeHtml(e.message)}</p>`;
+      }
+    }, 5000);
 
-        // Custom Toast Notification System
-        function showToast(msg) {
-            const toast = document.getElementById('toastNotification');
-            document.getElementById('toastMessage').innerText = msg;
-            toast.classList.remove('hidden');
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 2500);
-        }
+  } catch (e) {
+    document.getElementById(id).innerHTML = `<p class="text-xs text-red-400 p-2">❌ ${escapeHtml(e.message)}<br><span class="text-slate-500 text-[10px]">Veo = paid tier। আপনার key-তে access না থাকলে এই error আসবে।</span></p>`;
+  }
+}
 
-        // Top Loader Bar Animation Trigger
-        function triggerLoader() {
-            const bar = document.getElementById('topLoaderBar');
-            bar.classList.remove('run-loader');
-            void bar.offsetWidth;
-            bar.classList.add('run-loader');
-        }
+/* ============================================================
+   12. TTS / STT
+   ============================================================ */
+function populateBrowserVoices() {
+  const sel = document.getElementById('ttsVoice');
+  if (!sel) return;
+  const voices = speechSynthesis.getVoices();
+  if (!voices.length) { setTimeout(populateBrowserVoices, 300); return; }
+  sel.innerHTML = voices.map((v,i) => `<option value="${i}">${v.name.slice(0,16)}</option>`).join('');
+}
+if (window.speechSynthesis) speechSynthesis.onvoiceschanged = populateBrowserVoices;
 
-        // Working Dark Mode & Light Mode Switcher
-        function toggleDarkMode() {
-            const isChecked = document.getElementById('darkModeToggle').checked;
-            const body = document.body;
-            const icon = document.getElementById('darkModeIcon');
-            if (isChecked) {
-                body.classList.add('dark');
-                icon.className = 'fa-solid fa-moon text-fbBlue';
-                showToast('ডার্ক মোড সক্রিয় করা হয়েছে');
-            } else {
-                body.classList.remove('dark');
-                icon.className = 'fa-solid fa-sun text-amber-500';
-                showToast('লাইট মোড সক্রিয় করা হয়েছে');
-            }
-        }
+function quickSpeak(txt) {
+  if (!('speechSynthesis' in window)) return showToast('TTS সাপোর্ট নেই');
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(txt);
+  u.lang = State.voiceLang;
+  speechSynthesis.speak(u);
+  showToast('বলছে…', 'fa-volume-high');
+}
 
-        // Firebase Setup Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDlX9EiOIisDR_n22nY47kZBWUvcvYEd3E",
-            authDomain: "misbah-feed0.firebaseapp.com",
-            databaseURL: "https://misbah-feed0-default-rtdb.firebaseio.com",
-            projectId: "misbah-feed0",
-            storageBucket: "misbah-feed0.firebasestorage.app",
-            messagingSenderId: "117643854786",
-            appId: "1:117643854786:web:d0fcc3f44a825e6f74d8c5b",
-            measurementId: "G-GWENW8Q1J6"
-        };
+async function doTTS() {
+  const text = document.getElementById('ttsInput').value.trim();
+  if (!text) return showToast('কিছু লিখুন', 'fa-pen', 'text-amber-400');
+  const engine = document.getElementById('ttsEngine').value;
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
+  if (engine === 'browser') {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = State.voiceLang;
+    u.rate = parseFloat(document.getElementById('ttsRate').value);
+    u.pitch = parseFloat(document.getElementById('ttsPitch').value);
+    const voices = speechSynthesis.getVoices();
+    const idx = document.getElementById('ttsVoice').value;
+    if (voices[idx]) u.voice = voices[idx];
+    speechSynthesis.speak(u);
+    showToast('বলছে…', 'fa-volume-high');
+  } else {
+    const key = State.keys.openai;
+    if (!key) return showToast('OpenAI key দিন', 'fa-key', 'text-amber-400');
+    try {
+      const res = await fetch('https://api.openai.com/v1/audio/speech', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${key}` },
+        body: JSON.stringify({ model:'tts-1', input: text, voice:'alloy' })
+      });
+      if (!res.ok) throw new Error('TTS ব্যর্থ');
+      const blob = await res.blob();
+      const audio = new Audio(URL.createObjectURL(blob));
+      audio.play();
+      showToast('বাজছে…', 'fa-volume-high');
+    } catch (e) { showToast(e.message, 'fa-triangle-exclamation', 'text-red-400'); }
+  }
+}
+function stopTTS() { speechSynthesis.cancel(); }
 
-        let currentUser = null;
-        let currentUserId = null;
-        let currentUserName = "HM Abu Sayed Misbah";
-        let currentUserPic = "https://via.placeholder.com/40";
-        let pickedFileBase64 = "";
-        let currentPickerContext = "post"; 
-        let activePostForComment = null;
+function startSTT() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return showToast('STT সাপোর্ট নেই', 'fa-triangle-exclamation', 'text-amber-400');
+  stopSTT();
+  State.stt.buffer = '';
+  const r = new SR();
+  r.lang = State.voiceLang;
+  r.interimResults = true;
+  r.continuous = true;
+  r.onresult = e => {
+    let final = '', interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const res = e.results[i];
+      if (res.isFinal) final += res[0].transcript + ' ';
+      else interim += res[0].transcript;
+    }
+    State.stt.buffer += final;
+    document.getElementById('sttLive').innerHTML = escapeHtml(State.stt.buffer) +
+      `<span class="text-slate-500">${escapeHtml(interim)}</span>`;
+  };
+  r.onerror = ev => showToast('STT: ' + ev.error, 'fa-triangle-exclamation', 'text-red-400');
+  r.onend = () => { document.getElementById('sttStartBtn').innerHTML = '<i class="fa-solid fa-microphone mr-1"></i> Start'; };
+  r.start();
+  State.stt.recognition = r;
+  document.getElementById('sttStartBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Listening…';
+  showToast('বলুন…', 'fa-microphone', 'text-blue-400');
+}
+function stopSTT() { if (State.stt.recognition) { try { State.stt.recognition.stop(); } catch {} State.stt.recognition = null; } }
 
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                currentUser = user;
-                currentUserId = user.uid;
-                database.ref('users/' + currentUserId).on('value', (snapshot) => {
-                    if (snapshot.exists()) {
-                        const uData = snapshot.val();
-                        currentUserName = uData.name || "User";
-                        currentUserPic = uData.photoUrl || "https://via.placeholder.com/40";
-                        updateUserHeaderUI();
-                    } else {
-                        currentUserName = user.email ? user.email.split('@')[0] : "User";
-                        database.ref('users/' + currentUserId).set({ name: currentUserName, email: user.email, photoUrl: currentUserPic });
-                    }
-                });
-                document.getElementById('authContainer').classList.add('hidden');
-                document.getElementById('mainDashboard').classList.remove('hidden');
-                loadAllFBData();
-            } else {
-                currentUser = null;
-                currentUserId = null;
-                document.getElementById('mainDashboard').classList.add('hidden');
-                document.getElementById('authContainer').classList.remove('hidden');
-            }
-        });
+function quickVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return showToast('STT সাপোর্ট নেই');
+  const r = new SR();
+  r.lang = State.voiceLang;
+  r.interimResults = false;
+  r.onresult = e => {
+    document.getElementById('userInput').value = e.results[0][0].transcript;
+    showToast('ক্যাপচার ✓');
+  };
+  r.onerror = () => showToast('STT error', 'fa-triangle-exclamation', 'text-red-400');
+  r.start();
+  showToast('বলুন…', 'fa-microphone', 'text-indigo-400');
+}
 
-        function updateUserHeaderUI() {
-            document.getElementById('myFeedAvatar').src = currentUserPic;
-            document.getElementById('menuAvatar').src = currentUserPic;
-            document.getElementById('menuUserName').innerText = currentUserName;
-            document.getElementById('myStoryThumb').src = currentUserPic;
-        }
+/* ============================================================
+   13. CALL (voice / video)
+   ============================================================ */
+async function startCall(mode) {
+  const provider = State.selection.chat.provider;
+  if (!State.keys[provider]) { openSettings(); return showToast('API key দিন', 'fa-key', 'text-amber-400'); }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return showToast('STT সাপোর্ট নেই');
+  if (!('speechSynthesis' in window)) return showToast('TTS সাপোর্ট নেই');
 
-        function switchAuthTab(tab) {
-            if(tab === 'login') {
-                document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('signupForm').classList.add('hidden');
-                document.getElementById('tabLoginBtn').className = 'flex-1 py-2 rounded-lg bg-fbBlue text-white transition';
-                document.getElementById('tabSignupBtn').className = 'flex-1 py-2 rounded-lg text-gray-500 dark:text-gray-400 transition';
-            } else {
-                document.getElementById('signupForm').classList.remove('hidden');
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('tabSignupBtn').className = 'flex-1 py-2 rounded-lg bg-emerald-600 text-white transition';
-                document.getElementById('tabLoginBtn').className = 'flex-1 py-2 rounded-lg text-gray-500 dark:text-gray-400 transition';
-            }
-        }
+  if (State.call.active) endCall();
+  State.call.active = true;
+  State.call.mode = mode;
+  document.getElementById('callTranscript').innerHTML = '';
 
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPassword').value;
-            auth.signInWithEmailAndPassword(email, pass).catch(() => {
-                document.getElementById('loginError').classList.remove('hidden');
-            });
-        }
+  if (mode === 'video') {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio: false });
+      State.call.stream = stream;
+      const v = document.getElementById('callVideo');
+      v.srcObject = stream;
+      v.classList.remove('hidden');
+    } catch { showToast('ক্যামেরা নেই — voice মোড', 'fa-camera', 'text-amber-400'); State.call.mode = 'voice'; }
+  }
 
-        function handleSignup(e) {
-            e.preventDefault();
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
-            const pass = document.getElementById('signupPassword').value;
+  setCallStatus('Listening…');
+  callTurn();
+}
 
-            auth.createUserWithEmailAndPassword(email, pass).then((res) => {
-                database.ref('users/' + res.user.uid).set({ name: name, email: email, photoUrl: 'https://via.placeholder.com/40' });
-            }).catch(() => {
-                document.getElementById('signupError').classList.remove('hidden');
-            });
-        }
+function callTurn() {
+  if (!State.call.active) return;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const r = new SR();
+  State.call.recognition = r;
+  r.lang = State.voiceLang;
+  r.interimResults = false;
+  r.continuous = false;
 
-        function logout() { 
-            auth.signOut(); 
-            showToast('লগ আউট সফল হয়েছে');
-        }
+  r.onresult = async e => {
+    const userText = e.results[0][0].transcript.trim();
+    if (!userText) return;
+    addCallMsg('user', userText);
+    setCallStatus('Thinking…');
+    try {
+      const history = [{ role: 'user', content: userText }];
+      const { text: aiText } = await callChat(history);
+      addCallMsg('ai', aiText);
+      setCallStatus('Speaking…');
+      State.call.speaking = true;
+      const u = new SpeechSynthesisUtterance(aiText);
+      u.lang = State.voiceLang;
+      u.onend = () => {
+        State.call.speaking = false;
+        if (State.call.active) { setCallStatus('Listening…'); setTimeout(callTurn, 300); }
+      };
+      speechSynthesis.speak(u);
+    } catch (err) {
+      addCallMsg('ai', '❌ ' + err.message);
+      if (State.call.active) setTimeout(callTurn, 800);
+    }
+  };
+  r.onerror = () => { if (State.call.active) setTimeout(callTurn, 800); };
+  r.onend = () => { if (State.call.active && !State.call.speaking) setTimeout(callTurn, 300); };
+  try { r.start(); } catch {}
+}
 
-        function switchTab(tab) {
-            document.getElementById('viewFeed').classList.add('hidden');
-            document.getElementById('viewFriends').classList.add('hidden');
-            document.getElementById('viewReels').classList.add('hidden');
-            document.getElementById('viewNotif').classList.add('hidden');
-            document.getElementById('viewMenu').classList.add('hidden');
+function addCallMsg(role, text) {
+  const c = document.getElementById('callTranscript');
+  const p = document.createElement('div');
+  p.className = role === 'user'
+    ? 'text-right bg-indigo-600/30 rounded-lg px-2 py-1.5'
+    : 'bg-slate-800/70 rounded-lg px-2 py-1.5';
+  p.textContent = (role === 'user' ? '🧑 ' : '🤖 ') + text;
+  c.appendChild(p);
+  c.scrollTop = c.scrollHeight;
+}
+function setCallStatus(t) { document.getElementById('callStatus').textContent = t; }
 
-            document.querySelectorAll('.fb-tab').forEach(b => b.classList.remove('active'));
+function endCall() {
+  State.call.active = false;
+  State.call.speaking = false;
+  try { State.call.recognition?.stop(); } catch {}
+  if (State.call.stream) { State.call.stream.getTracks().forEach(t => t.stop()); State.call.stream = null; }
+  document.getElementById('callVideo').classList.add('hidden');
+  document.getElementById('callVideo').srcObject = null;
+  speechSynthesis.cancel();
+  setCallStatus('"Start Call" চাপুন');
+  showToast('কল শেষ', 'fa-phone-slash');
+}
 
-            if(tab === 'feed') {
-                document.getElementById('viewFeed').classList.remove('hidden');
-                document.getElementById('tabFeedBtn').classList.add('active');
-            } else if(tab === 'friends') {
-                document.getElementById('viewFriends').classList.remove('hidden');
-                document.getElementById('tabFriendsBtn').classList.add('active');
-            } else if(tab === 'reels') {
-                document.getElementById('viewReels').classList.remove('hidden');
-                document.getElementById('tabReelsBtn').classList.add('active');
-            } else if(tab === 'notif') {
-                document.getElementById('viewNotif').classList.remove('hidden');
-                document.getElementById('tabNotifBtn').classList.add('active');
-            } else if(tab === 'menu') {
-                document.getElementById('viewMenu').classList.remove('hidden');
-                document.getElementById('tabMenuBtn').classList.add('active');
-            }
-        }
+/* ============================================================
+   14. TOOLS
+   ============================================================ */
+const TOOLS = [
+  { icon:'fa-language', color:'text-blue-400', title:'অনুবাদক', prefix:'নিচের লেখাটি সুন্দরভাবে বাংলায় অনুবাদ করে দাও:\n' },
+  { icon:'fa-envelope-open-text', color:'text-emerald-400', title:'Email Writer', prefix:'নিচের বিষয়ে পেশাদার ইমেইল লিখে দাও:\n' },
+  { icon:'fa-code', color:'text-purple-400', title:'কোড হেল্পার', prefix:'এই সমস্যার সমাধান কোডসহ বুঝিয়ে দাও:\n' },
+  { icon:'fa-file-lines', color:'text-amber-400', title:'সামারি', prefix:'নিচের লেখার সংক্ষিপ্ত সারমর্ম দাও:\n' },
+  { icon:'fa-pen-fancy', color:'text-pink-400', title:'ব্লগ রাইটার', prefix:'নিচের বিষয়ে আকর্ষণীয় ব্লগ পোস্ট লিখে দাও:\n' },
+  { icon:'fa-bullhorn', color:'text-orange-400', title:'মার্কেটিং', prefix:'নিচের পণ্যের মার্কেটিং কপি লিখে দাও:\n' },
+  { icon:'fa-graduation-cap', color:'text-cyan-400', title:'শিক্ষক', prefix:'নিচের বিষয়টি সহজ ভাষায় উদাহরণ দিয়ে ব্যাখ্যা করো:\n' },
+  { icon:'fa-lightbulb', color:'text-yellow-400', title:'আইডিয়া', prefix:'নিচের বিষয়ে ১০টি ক্রিয়েটিভ আইডিয়া দাও:\n' },
+  { icon:'fa-utensils', color:'text-red-400', title:'রেসিপি', prefix:'এই উপকরণ দিয়ে রেসিপি লেখো:\n' },
+  { icon:'fa-plane', color:'text-sky-400', title:'ট্রাভেল', prefix:'নিচের গন্তব্যের ৩ দিনের ট্রাভেল প্ল্যান:\n' },
+];
+function renderTools() {
+  document.getElementById('toolsGrid').innerHTML = TOOLS.map(t => `
+    <div onclick="useTool(${JSON.stringify(t.prefix).replace(/"/g,'&quot;')},${JSON.stringify(t.title).replace(/"/g,'&quot;')})"
+         class="bg-slate-900 border border-slate-800 p-3 rounded-xl cursor-pointer hover:border-indigo-500 transition space-y-1">
+      <i class="fa-solid ${t.icon} ${t.color} text-lg"></i>
+      <h4 class="font-bold text-slate-200 text-[11px]">${t.title}</h4>
+    </div>`).join('');
+}
+function useTool(prefix, title) {
+  switchTab('chat');
+  const inp = document.getElementById('userInput');
+  inp.value = prefix; inp.focus();
+  showToast(`${title} প্রম্পট লোড`, 'fa-bolt', 'text-amber-400');
+}
 
-        function openGalleryPicker(ctx) {
-            currentPickerContext = ctx;
-            document.getElementById('globalGalleryPicker').click();
-        }
+/* ============================================================
+   15. SAVED
+   ============================================================ */
+function saveToLibrary(item) {
+  State.saved.unshift(item);
+  persistSaved();
+  renderSaved();
+  showToast('সেভ হয়েছে', 'fa-bookmark');
+}
+function renderSaved() {
+  const c = document.getElementById('savedContainer');
+  if (!State.saved.length) {
+    c.innerHTML = `<div class="text-center py-12 text-slate-500 text-xs"><i class="fa-solid fa-box-open text-3xl mb-2"></i><p>কিছু সেভ করা হয়নি</p></div>`;
+    return;
+  }
+  c.innerHTML = State.saved.map(item => `
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3 min-w-0">
+        <img src="${item.data}" class="w-12 h-12 rounded-lg object-cover border border-slate-700 flex-shrink-0">
+        <p class="text-[11px] font-bold text-slate-200 truncate">${escapeHtml((item.prompt || '').slice(0,40))}</p>
+      </div>
+      <button onclick="deleteSaved(${item.id})" class="text-slate-500 hover:text-red-400 p-1"><i class="fa-solid fa-trash"></i></button>
+    </div>`).join('');
+}
+function deleteSaved(id) {
+  State.saved = State.saved.filter(i => i.id !== id);
+  persistSaved(); renderSaved();
+}
+function clearSaved() {
+  if (!confirm('সব সেভ মুছবেন?')) return;
+  State.saved = []; persistSaved(); renderSaved();
+  showToast('মুছে ফেলা হয়েছে');
+}
 
-        function handleGlobalFilePick(event) {
-            const file = event.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    pickedFileBase64 = e.target.result;
-                    if(currentPickerContext === 'post') {
-                        document.getElementById('postPreviewImg').src = pickedFileBase64;
-                        document.getElementById('postImagePreview').classList.remove('hidden');
-                    } else if(currentPickerContext === 'story') {
-                        uploadStory(pickedFileBase64);
-                    } else if(currentPickerContext === 'profile') {
-                        database.ref('users/' + currentUserId).update({ photoUrl: pickedFileBase64 });
-                        showToast('প্রোফাইল ছবি আপডেট করা হয়েছে!');
-                    }
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function openCreatePostModal() {
-            document.getElementById('createPostModal').classList.remove('hidden');
-        }
-
-        function closeCreatePostModal() {
-            document.getElementById('createPostModal').classList.add('hidden');
-            pickedFileBase64 = "";
-            document.getElementById('postImagePreview').classList.add('hidden');
-            document.getElementById('postInputText').value = "";
-        }
-
-        function submitNewPost() {
-            const text = document.getElementById('postInputText').value.trim();
-            if(!text && !pickedFileBase64) return;
-
-            database.ref('posts').push({
-                userId: currentUserId,
-                userName: currentUserName,
-                userPic: currentUserPic,
-                text: text,
-                imageUrl: pickedFileBase64,
-                timestamp: Date.now()
-            }).then(() => {
-                playNotificationSound();
-                closeCreatePostModal();
-                showToast('পোস্ট করা হয়েছে!');
-            });
-        }
-
-        function uploadStory(imgData) {
-            database.ref('stories').push({
-                userId: currentUserId,
-                userName: currentUserName,
-                userPic: currentUserPic,
-                imageUrl: imgData,
-                timestamp: Date.now()
-            }).then(() => {
-                playNotificationSound();
-                showToast('স্টোরি আপলোড করা হয়েছে!');
-            });
-        }
-
-        function loadAllFBData() {
-            database.ref('posts').on('value', (snap) => {
-                const stream = document.getElementById('postsStream');
-                stream.innerHTML = '';
-                const posts = snap.val();
-                if(posts) {
-                    Object.entries(posts).reverse().forEach(([pId, p]) => {
-                        const div = document.createElement('div');
-                        div.className = "bg-fbCardLight dark:bg-fbCardDark border-b border-gray-200 dark:border-gray-800 p-3 space-y-2 shadow-sm";
-                        
-                        let imgHtml = p.imageUrl ? `<img src="${p.imageUrl}" class="w-full rounded-xl max-h-80 object-cover mt-2">` : '';
-
-                        div.innerHTML = `
-                            <div class="flex items-center space-x-2">
-                                <img src="${p.userPic || 'https://via.placeholder.com/36'}" class="w-9 h-9 rounded-full object-cover border border-gray-300 dark:border-gray-700">
-                                <div>
-                                    <h4 class="font-bold text-xs text-fbTextLight dark:text-white">${p.userName}</h4>
-                                    <p class="text-[9px] text-fbSubtextLight dark:text-fbSubtextDark">১ দিন • <i class="fa-solid fa-earth-americas"></i></p>
-                                </div>
-                            </div>
-                            <p class="text-xs text-fbTextLight dark:text-gray-200">${p.text || ''}</p>
-                            ${imgHtml}
-                            <div class="flex justify-around items-center pt-2 border-t border-gray-200 dark:border-gray-800 text-xs text-fbSubtextLight dark:text-gray-400 font-semibold relative">
-                                <button onclick="toggleReactionPopup('${pId}')" class="flex items-center space-x-1 hover:text-fbBlue">
-                                    <i class="fa-regular fa-thumbs-up"></i><span>পছন্দ</span>
-                                </button>
-                                <button onclick="openCommentsModal('${pId}')" class="flex items-center space-x-1 hover:text-fbTextLight dark:hover:text-gray-200">
-                                    <i class="fa-regular fa-comment"></i><span>মন্তব্য</span>
-                                </button>
-                                <button onclick="showToast('পোস্ট শেয়ার করা হয়েছে!')" class="flex items-center space-x-1 hover:text-fbTextLight dark:hover:text-gray-200">
-                                    <i class="fa-solid fa-share"></i><span>শেয়ার</span>
-                                </button>
-                                
-                                <div id="reactPopup_${pId}" class="react-popup hidden absolute -top-10 left-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 px-3 py-1.5 rounded-full flex space-x-3 text-xl shadow-2xl">
-                                    <span onclick="sendReaction('${pId}', '👍')" class="cursor-pointer hover:scale-125 transition">👍</span>
-                                    <span onclick="sendReaction('${pId}', '❤️')" class="cursor-pointer hover:scale-125 transition">❤️</span>
-                                    <span onclick="sendReaction('${pId}', '😆')" class="cursor-pointer hover:scale-125 transition">😆</span>
-                                    <span onclick="sendReaction('${pId}', '😮')" class="cursor-pointer hover:scale-125 transition">😮</span>
-                                    <span onclick="sendReaction('${pId}', '😢')" class="cursor-pointer hover:scale-125 transition">😢</span>
-                                    <span onclick="sendReaction('${pId}', '😡')" class="cursor-pointer hover:scale-125 transition">😡</span>
-                                </div>
-                            </div>
-                        `;
-                        stream.appendChild(div);
-                    });
-                }
-            });
-
-            database.ref('stories').on('value', (snap) => {
-                const sContainer = document.getElementById('feedStoriesList');
-                sContainer.innerHTML = '';
-                const stories = snap.val();
-                if(stories) {
-                    Object.values(stories).forEach(st => {
-                        const div = document.createElement('div');
-                        div.className = "min-w-[90px] w-24 h-36 rounded-xl relative overflow-hidden border border-gray-300 dark:border-gray-700 cursor-pointer shadow-sm";
-                        div.innerHTML = `
-                            <img src="${st.imageUrl}" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-b from-black/20 to-black/80 flex flex-col justify-between p-1.5">
-                                <img src="${st.userPic}" class="w-7 h-7 rounded-full border-2 border-fbBlue object-cover">
-                                <span class="text-[10px] text-white font-bold truncate">${st.userName}</span>
-                            </div>`;
-                        sContainer.appendChild(div);
-                    });
-                }
-            });
-        }
-
-        function toggleReactionPopup(pId) {
-            const el = document.getElementById(`reactPopup_${pId}`);
-            el.classList.toggle('hidden');
-        }
-
-        function sendReaction(pId, emoji) {
-            playNotificationSound();
-            showToast(`পোস্টে ${emoji} রিঅ্যাক্ট করা হয়েছে!`);
-            document.getElementById(`reactPopup_${pId}`).classList.add('hidden');
-        }
-
-        function openCommentsModal(pId) {
-            activePostForComment = pId;
-            document.getElementById('commentsModal').classList.remove('hidden');
-            loadComments(pId);
-        }
-
-        function closeCommentsModal() {
-            document.getElementById('commentsModal').classList.add('hidden');
-            activePostForComment = null;
-        }
-
-        function submitComment() {
-            const txt = document.getElementById('commentInputField').value.trim();
-            if(!txt || !activePostForComment) return;
-
-            database.ref(`comments/${activePostForComment}`).push({
-                userName: currentUserName,
-                userPic: currentUserPic,
-                text: txt,
-                timestamp: Date.now()
-            }).then(() => {
-                playNotificationSound();
-                document.getElementById('commentInputField').value = '';
-                showToast('কমেন্ট যোগ করা হয়েছে');
-            });
-        }
-
-        function loadComments(pId) {
-            database.ref(`comments/${pId}`).on('value', (snap) => {
-                const list = document.getElementById('commentsList');
-                list.innerHTML = '';
-                const cmts = snap.val();
-                if(cmts) {
-                    Object.values(cmts).forEach(c => {
-                        const div = document.createElement('div');
-                        div.className = "flex items-start space-x-2 bg-fbBgLight dark:bg-gray-900 p-2 rounded-xl border border-gray-200 dark:border-gray-800";
-                        div.innerHTML = `
-                            <img src="${c.userPic}" class="w-7 h-7 rounded-full object-cover">
-                            <div>
-                                <h5 class="font-bold text-fbTextLight dark:text-white text-[11px]">${c.userName}</h5>
-                                <p class="text-fbTextLight dark:text-gray-300 text-xs">${c.text}</p>
-                            </div>`;
-                        list.appendChild(div);
-                    });
-                }
-            });
-        }
-
-        function openSelfProfile() {
-            document.getElementById('profileFullName').innerText = currentUserName;
-            document.getElementById('profileAvatarImg').src = currentUserPic;
-            document.getElementById('profileViewModal').classList.remove('hidden');
-        }
-
-        function closeProfileView() {
-            document.getElementById('profileViewModal').classList.add('hidden');
-        }
-
-        function openMessengerView() {
-            switchTab('menu');
-            showToast('মেসেঞ্জার এক্টিভ করা রয়েছে!');
-        }
-
-        function openSearchModal() {
-            switchTab('friends');
-            showToast('সার্চ অপশন অ্যাক্টিভ!');
-        }
-    </script>
+/* ============================================================
+   BOOT
+   ============================================================ */
+window.addEventListener('beforeunload', () => { try { endCall(); } catch {} });
+</script>
 </body>
-</html>
-```
+                                                                                                                                                    </html>
